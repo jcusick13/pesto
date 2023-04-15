@@ -1,10 +1,55 @@
 from pesto.board.enums import Square
 
+
+_TestKnightPsuedoLegalMovesCase = tuple[
+    Square,
+    set[Square],
+    set[Square],
+]
+
+
+class TestKnightPsuedoLegalMovesCases:
+    def case_center_of_empty_board(self) -> _TestKnightPsuedoLegalMovesCase:
+        curr = Square.E4
+        piece_set = {Square.E4}
+        exp = {
+            # fmt: off
+            Square.F6, Square.G5, Square.G3, Square.F2,
+            Square.D2, Square.C3, Square.C5, Square.D6,
+            # fmt: on
+        }
+        return curr, piece_set, exp
+
+    def case_edge_of_empty_board(self) -> _TestKnightPsuedoLegalMovesCase:
+        curr = Square.B8
+        piece_set = {Square.B8}
+        exp = {Square.A6, Square.C6, Square.D7}
+        return curr, piece_set, exp
+
+    def case_completely_surrounded(self) -> _TestKnightPsuedoLegalMovesCase:
+        curr = Square.E4
+        piece_set = {
+            # fmt: off
+            Square.D3, Square.E3, Square.F3, Square.D4,
+            Square.F4, Square.D5, Square.E5, Square.F5
+            # fmt: on
+        }
+        exp = {
+            # fmt: off
+            Square.F6, Square.G5, Square.G3, Square.F2,
+            Square.D2, Square.C3, Square.C5, Square.D6,
+            # fmt: on
+        }
+        return curr, piece_set, exp
+
+
 _TestBishopPsuedoLegalMovesCase = tuple[
     Square,
     set[Square],
     set[Square],
 ]
+
+
 class TestBishopPsuedoLegalMovesCases:
     def case_center_of_empty_board(self) -> _TestBishopPsuedoLegalMovesCase:
         curr = Square.E5
@@ -31,13 +76,13 @@ class TestBishopPsuedoLegalMovesCases:
     def case_completely_surrounded(self) -> _TestBishopPsuedoLegalMovesCase:
         curr = Square.E3
         piece_set = {Square.E3, Square.D2, Square.D4, Square.F4, Square.F2}
-        exp: set[Square] = set()
+        exp = piece_set - {curr}
         return curr, piece_set, exp
 
     def case_limited_movement_in_corner(self) -> _TestBishopPsuedoLegalMovesCase:
         curr = Square.G2
         piece_set = {Square.G2, Square.F3}
-        exp = {Square.F1, Square.H1, Square.H3}
+        exp = {Square.F1, Square.H1, Square.H3, Square.F3}
         return curr, piece_set, exp
 
 
@@ -46,6 +91,8 @@ _TestRookPsuedoLegalMovesCase = tuple[
     set[Square],
     set[Square],
 ]
+
+
 class TestRookPsuedoLegalMovesCases:
     def case_center_of_empty_board(self) -> _TestRookPsuedoLegalMovesCase:
         curr = Square.D4
@@ -72,11 +119,110 @@ class TestRookPsuedoLegalMovesCases:
     def case_completely_surrounded(self) -> _TestRookPsuedoLegalMovesCase:
         curr = Square.D4
         piece_set = {Square.D4, Square.D5, Square.E4, Square.D3, Square.C4}
-        exp: set[Square] = set()
+        exp = piece_set - {curr}
         return curr, piece_set, exp
 
     def case_limited_movement_in_corner(self) -> _TestRookPsuedoLegalMovesCase:
         curr = Square.G7
         piece_set = {Square.G7, Square.F7, Square.G6}
-        exp = {Square.G8, Square.H7}
+        exp = {Square.G8, Square.H7, Square.F7, Square.G6}
+        return curr, piece_set, exp
+
+
+_TestQueenPsuedoLegalMovesCase = tuple[
+    Square,
+    set[Square],
+    set[Square],
+]
+
+
+class TestQueenPsuedoLegalMovesCases:
+    def case_center_of_empty_board(self) -> _TestQueenPsuedoLegalMovesCase:
+        curr = Square.D5
+        piece_set = {Square.D5}
+        exp = {
+            # fmt: off
+            Square.D1, Square.D2, Square.D3, Square.D4, Square.D6, Square.D7, Square.D8,
+            Square.A5, Square.B5, Square.C5, Square.E5, Square.F5, Square.G5, Square.H5,
+            Square.A2, Square.B3, Square.C4, Square.E6, Square.F7, Square.G8,
+            Square.A8, Square.B7, Square.C6, Square.E4, Square.F3, Square.G2, Square.H1,
+            # fmt: on
+        }
+        return curr, piece_set, exp
+
+    def case_edge_of_empty_board(self) -> _TestQueenPsuedoLegalMovesCase:
+        curr = Square.G2
+        piece_set = {Square.G2}
+        exp = {
+            # fmt: off
+            Square.A2, Square.B2, Square.C2, Square.D2, Square.E2, Square.F2, Square.H2,
+            Square.G1, Square.G3, Square.G4, Square.G5, Square.G6, Square.G7, Square.G8,
+            Square.A8, Square.B7, Square.C6, Square.D5, Square.E4, Square.F3, Square.H1,
+            Square.F1, Square.H3,
+            # fmt: on
+        }
+        return curr, piece_set, exp
+
+    def case_completely_surrounded(self) -> _TestQueenPsuedoLegalMovesCase:
+        curr = Square.C4
+        piece_set = {
+            # fmt: off
+            Square.C4, Square.C5, Square.D5, Square.D4, Square.D3,
+            Square.C3, Square.B3, Square.B4, Square.B5,
+            # fmt: on
+        }
+        exp = piece_set - {curr}
+        return curr, piece_set, exp
+
+    def case_limited_movement_in_corner(self) -> _TestQueenPsuedoLegalMovesCase:
+        curr = Square.B7
+        piece_set = {Square.A6, Square.B7, Square.C8, Square.B6, Square.C6, Square.C7}
+        exp = {
+            # fmt: off
+            Square.A8, Square.A7, Square.B8, Square.A6,
+            Square.C8, Square.B6, Square.C6, Square.C7,
+            # fmt: on
+        }
+        return curr, piece_set, exp
+
+
+_TestKingPsuedoLegalMovesCase = tuple[
+    Square,
+    set[Square],
+    set[Square],
+]
+
+
+class TestKingPsuedoLegalMovesCases:
+    def case_center_of_empty_board(self) -> _TestKingPsuedoLegalMovesCase:
+        curr = Square.D5
+        piece_set = {Square.D5}
+        exp = {
+            # fmt: off
+            Square.C4, Square.D4, Square.E4, Square.C5,
+            Square.E5, Square.C6, Square.D6, Square.E6,
+            # fmt: on
+        }
+        return curr, piece_set, exp
+
+    def case_edge_of_empty_board(self) -> _TestKingPsuedoLegalMovesCase:
+        curr = Square.H1
+        piece_set = {Square.H1}
+        exp = {Square.G1, Square.G2, Square.H2}
+        return curr, piece_set, exp
+
+    def case_completely_surrounded(self) -> _TestKingPsuedoLegalMovesCase:
+        curr = Square.B6
+        piece_set = {
+            # fmt: off
+            Square.A5, Square.B5, Square.C5, Square.A6,
+            Square.C6, Square.A7, Square.B7, Square.C7, Square.B6
+        }
+        exp = piece_set - {curr}
+        return curr, piece_set, exp
+
+    def case_limited_movement_in_corner(self) -> _TestKingPsuedoLegalMovesCase:
+        curr = Square.H8
+        piece_set = {Square.H8, Square.G7, Square.H7}
+        exp = {Square.G8, Square.G7, Square.H7}
         return curr, piece_set, exp

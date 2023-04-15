@@ -33,9 +33,7 @@ class BasePiece:
         of a piece's next move"""
         pass
 
-    def generate_psuedo_legal_moves(
-        self, piece_set: set[Square]
-    ) -> set[Square]:
+    def generate_psuedo_legal_moves(self, piece_set: set[Square]) -> set[Square]:
         """Create set of moves which only consider the movement
         rules of a piece along with the placement of other
         pieces on the board.
@@ -50,13 +48,13 @@ class BasePiece:
 
             while not blocked:
                 if (square.value + offset) & 0x88 != 0:
+                    # Offset square is off the board
                     break
                 square = Square(square.value + offset)
+                moves.add(square)
 
                 if square in piece_set:
                     break
-
-                moves.add(square)
 
                 if not self._slides:
                     break
@@ -76,9 +74,7 @@ class Pawn(BasePiece):
     def _offsets(self, **kwargs) -> set[int]:
         return set()
 
-    def generate_psuedo_legal_moves(
-        self, piece_set: set[Square]
-    ) -> set[Square]:
+    def generate_psuedo_legal_moves(self, piece_set: set[Square]) -> set[Square]:
         return set()
 
 
@@ -108,7 +104,6 @@ class Bishop(BasePiece):
         return DIAG_OFFSETS
 
 
-
 class Rook(BasePiece):
     @property
     def type(self) -> PieceType:
@@ -120,6 +115,7 @@ class Rook(BasePiece):
 
     def _offsets(self, **kwargs) -> set[int]:
         return VERT_HORIZ_OFFSETS
+
 
 class Queen(BasePiece):
     @property
