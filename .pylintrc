@@ -3,7 +3,10 @@
 init-hook='import sys; sys.setrecursionlimit(5000)'
 
 [MESSAGES CONTROL]
-disable = missing-class-docstring, missing-function-docstring, missing-module-docstring
+disable=missing-class-docstring, missing-function-docstring, missing-module-docstring
+
+[BASIC]
+good-names = by
 
 [DESIGN]
 max-args = 10

@@ -19,9 +19,7 @@ class TestPawn:
             "color",
             "curr",
             "piece_set",
-            "first_move",
-            "en_passant_l",
-            "en_passant_r",
+            "is_first_move",
             "exp",
         ),
         TestPawnPsuedoLegalMovesCases,
@@ -31,17 +29,12 @@ class TestPawn:
         color: Color,
         curr: Square,
         piece_set: set[Square],
-        first_move: bool,
-        en_passant_l: bool,
-        en_passant_r: bool,
+        is_first_move: bool,
         exp: set[Square],
     ):
-        obs = Pawn(color=color, curr=curr).generate_psuedo_legal_moves(
-            piece_set=piece_set,
-            first_move=first_move,
-            en_passant_l=en_passant_l,
-            en_passant_r=en_passant_r,
-        )
+        pawn = Pawn(color=color, curr=curr)
+        pawn.is_first_move = is_first_move
+        obs = pawn.generate_psuedo_legal_moves(piece_set=piece_set)
         assert obs == exp
 
 

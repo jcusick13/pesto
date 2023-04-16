@@ -6,8 +6,6 @@ _TestPawnPsuedoLegalMovesCase = tuple[
     Square,
     set[Square],
     bool,
-    bool,
-    bool,
     set[Square],
 ]
 
@@ -17,69 +15,49 @@ class TestPawnPsuedoLegalMovesCases:
         color = Color.WHITE
         curr = Square.D2
         piece_set = {Square.D2}
-        first_move = True
-        ep_l = ep_r = False
+        is_first_move = True
         exp = {Square.D3, Square.D4}
-        return color, curr, piece_set, first_move, ep_l, ep_r, exp
+        return color, curr, piece_set, is_first_move, exp
 
     def case_black_first_move(self) -> _TestPawnPsuedoLegalMovesCase:
         color = Color.BLACK
         curr = Square.C7
         piece_set = {Square.C7}
-        first_move = True
-        ep_l = ep_r = False
+        is_first_move = True
         exp = {Square.C6, Square.C5}
-        return color, curr, piece_set, first_move, ep_l, ep_r, exp
+        return color, curr, piece_set, is_first_move, exp
 
     def case_white_blocked(self) -> _TestPawnPsuedoLegalMovesCase:
         color = Color.WHITE
         curr = Square.D7
         piece_set = {Square.D7, Square.D8}
-        first_move = ep_l = ep_r = False
+        is_first_move = False
         exp: set[Square] = set()
-        return color, curr, piece_set, first_move, ep_l, ep_r, exp
+        return color, curr, piece_set, is_first_move, exp
 
     def case_black_blocked(self) -> _TestPawnPsuedoLegalMovesCase:
         color = Color.BLACK
         curr = Square.A6
         piece_set = {Square.A6, Square.A5}
-        first_move = ep_l = ep_r = False
+        is_first_move = False
         exp: set[Square] = set()
-        return color, curr, piece_set, first_move, ep_l, ep_r, exp
+        return color, curr, piece_set, is_first_move, exp
 
     def case_white_capture(self) -> _TestPawnPsuedoLegalMovesCase:
         color = Color.WHITE
         curr = Square.D5
         piece_set = {Square.D5, Square.C6, Square.E6}
-        first_move = ep_l = ep_r = False
+        is_first_move = False
         exp = {Square.C6, Square.E6, Square.D6}
-        return color, curr, piece_set, first_move, ep_l, ep_r, exp
+        return color, curr, piece_set, is_first_move, exp
 
     def case_black_capture(self) -> _TestPawnPsuedoLegalMovesCase:
         color = Color.BLACK
         curr = Square.G4
         piece_set = {Square.G4, Square.H3, Square.F3}
-        first_move = ep_l = ep_r = False
+        first_move = False
         exp = {Square.H3, Square.F3, Square.G3}
-        return color, curr, piece_set, first_move, ep_l, ep_r, exp
-
-    def case_white_en_passant(self) -> _TestPawnPsuedoLegalMovesCase:
-        color = Color.WHITE
-        curr = Square.G5
-        piece_set = {Square.G5, Square.F5, Square.H5}
-        first_move = False
-        ep_l = ep_r = True
-        exp = {Square.G6, Square.F6, Square.H6}
-        return color, curr, piece_set, first_move, ep_l, ep_r, exp
-
-    def case_black_en_passant(self) -> _TestPawnPsuedoLegalMovesCase:
-        color = Color.BLACK
-        curr = Square.D4
-        piece_set = {Square.D4, Square.C4, Square.E4}
-        first_move = False
-        ep_l = ep_r = True
-        exp = {Square.D3, Square.C3, Square.E3}
-        return color, curr, piece_set, first_move, ep_l, ep_r, exp
+        return color, curr, piece_set, first_move, exp
 
 
 _TestKnightPsuedoLegalMovesCase = tuple[

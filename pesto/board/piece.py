@@ -1,5 +1,5 @@
 # pylint: disable=too-many-branches
-from abc import abstractmethod, abstractproperty
+from abc import abstractproperty
 from dataclasses import dataclass
 
 from pesto.board.enums import Square
@@ -30,8 +30,9 @@ class NonPawnPiece(BasePiece):
         """Is the piece a sliding piece (queen, rook, bishop) or
         not (knight and king only make one hop)"""
 
-    @abstractmethod
-    def _offsets(self, **kwargs) -> set[int]:
+    @property
+    @abstractproperty
+    def _offsets(self) -> set[int]:
         """Contains offsets required for the possible locations
         of a piece's next move"""
 
@@ -44,7 +45,7 @@ class NonPawnPiece(BasePiece):
         """
         moves: set[Square] = set()
 
-        for offset in self._offsets():
+        for offset in self._offsets:
             blocked: bool = False
             square: Square = self.curr
 
@@ -64,6 +65,9 @@ class NonPawnPiece(BasePiece):
 
 
 class Pawn(BasePiece):
+    # To be set to False after having moved
+    is_first_move: bool = True
+
     @property
     def type(self) -> PieceType:
         return PieceType.PAWN
@@ -71,17 +75,12 @@ class Pawn(BasePiece):
     def generate_psuedo_legal_moves(
         self,
         piece_set: set[Square],
-        first_move: bool,
-        en_passant_l: bool,
-        en_passant_r: bool,
     ) -> set[Square]:
         """Create set of moves which only consider the movement
         rules of a pawn along with the placement of other
         pieces on the board.
 
         piece_set: Contains squares which have a piece on them
-        first_move: Indicates if this would be the pawn's first move
-        en_passant_{l, r}: Denotes if an en passant capture is available
         """
         direction = 1 if self.color == Color.WHITE else -1
         moves: set[Square] = set()
@@ -95,7 +94,7 @@ class Pawn(BasePiece):
                 moves.add(Square(next_idx))
 
         # Check two squares forward
-        if first_move:
+        if self.is_first_move:
             next_idx = self.curr.value + (2 * 16 * direction)
             if index_on_board(next_idx):
                 if Square(next_idx) not in piece_set:
@@ -113,16 +112,6 @@ class Pawn(BasePiece):
             if Square(capture_idx) in piece_set:
                 moves.add(Square(capture_idx))
 
-        if en_passant_l:
-            capture_idx = self.curr.value + (15 * direction)
-            if index_on_board(capture_idx):
-                moves.add(Square(capture_idx))
-
-        if en_passant_r:
-            capture_idx = self.curr.value + (17 * direction)
-            if index_on_board(capture_idx):
-                moves.add(Square(capture_idx))
-
         return moves
 
 
@@ -135,7 +124,8 @@ class Knight(NonPawnPiece):
     def _slides(self) -> bool:
         return False
 
-    def _offsets(self, **kwargs) -> set[int]:
+    @property
+    def _offsets(self) -> set[int]:
         return {-33, -18, 14, 31, 33, 18, -14, -31}
 
 
@@ -148,7 +138,8 @@ class Bishop(NonPawnPiece):
     def _slides(self) -> bool:
         return True
 
-    def _offsets(self, **kwargs) -> set[int]:
+    @property
+    def _offsets(self) -> set[int]:
         return DIAG_OFFSETS
 
 
@@ -161,7 +152,8 @@ class Rook(NonPawnPiece):
     def _slides(self) -> bool:
         return True
 
-    def _offsets(self, **kwargs) -> set[int]:
+    @property
+    def _offsets(self) -> set[int]:
         return VERT_HORIZ_OFFSETS
 
 
@@ -174,7 +166,8 @@ class Queen(NonPawnPiece):
     def _slides(self) -> bool:
         return True
 
-    def _offsets(self, **kwargs) -> set[int]:
+    @property
+    def _offsets(self) -> set[int]:
         return DIAG_OFFSETS | VERT_HORIZ_OFFSETS
 
 
@@ -187,5 +180,9 @@ class King(NonPawnPiece):
     def _slides(self) -> bool:
         return False
 
-    def _offsets(self, **kwargs) -> set[int]:
+    @property
+    def _offsets(self) -> set[int]:
         return DIAG_OFFSETS | VERT_HORIZ_OFFSETS
+
+
+Piece = tuple[Pawn, Knight, Bishop, Rook, Queen, King]
