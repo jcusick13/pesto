@@ -1,8 +1,9 @@
+# pylint: disable=too-many-branches
 from abc import abstractmethod, abstractproperty
 from dataclasses import dataclass
-from typing import Mapping
 
 from pesto.board.enums import Square
+from pesto.board.utils import index_on_board
 from pesto.core.enums import Color, PieceType
 
 
@@ -20,18 +21,19 @@ class BasePiece:
     def type(self) -> PieceType:
         pass
 
+
+@dataclass
+class NonPawnPiece(BasePiece):
     @property
     @abstractproperty
     def _slides(self) -> bool:
         """Is the piece a sliding piece (queen, rook, bishop) or
         not (knight and king only make one hop)"""
-        pass
 
     @abstractmethod
     def _offsets(self, **kwargs) -> set[int]:
         """Contains offsets required for the possible locations
         of a piece's next move"""
-        pass
 
     def generate_psuedo_legal_moves(self, piece_set: set[Square]) -> set[Square]:
         """Create set of moves which only consider the movement
@@ -47,8 +49,7 @@ class BasePiece:
             square: Square = self.curr
 
             while not blocked:
-                if (square.value + offset) & 0x88 != 0:
-                    # Offset square is off the board
+                if not index_on_board(square.value + offset):
                     break
                 square = Square(square.value + offset)
                 moves.add(square)
@@ -67,18 +68,65 @@ class Pawn(BasePiece):
     def type(self) -> PieceType:
         return PieceType.PAWN
 
-    @property
-    def _slides(self) -> bool:
-        return False
+    def generate_psuedo_legal_moves(
+        self,
+        piece_set: set[Square],
+        first_move: bool,
+        en_passant_l: bool,
+        en_passant_r: bool,
+    ) -> set[Square]:
+        """Create set of moves which only consider the movement
+        rules of a pawn along with the placement of other
+        pieces on the board.
 
-    def _offsets(self, **kwargs) -> set[int]:
-        return set()
+        piece_set: Contains squares which have a piece on them
+        first_move: Indicates if this would be the pawn's first move
+        en_passant_{l, r}: Denotes if an en passant capture is available
+        """
+        direction = 1 if self.color == Color.WHITE else -1
+        moves: set[Square] = set()
+        next_idx: int
+        capture_idx: int
 
-    def generate_psuedo_legal_moves(self, piece_set: set[Square]) -> set[Square]:
-        return set()
+        # Check one square forward
+        next_idx = self.curr.value + (16 * direction)
+        if index_on_board(next_idx):
+            if Square(next_idx) not in piece_set:
+                moves.add(Square(next_idx))
+
+        # Check two squares forward
+        if first_move:
+            next_idx = self.curr.value + (2 * 16 * direction)
+            if index_on_board(next_idx):
+                if Square(next_idx) not in piece_set:
+                    moves.add(Square(next_idx))
+
+        # Check capture left
+        capture_idx = self.curr.value + (15 * direction)
+        if index_on_board(capture_idx):
+            if Square(capture_idx) in piece_set:
+                moves.add(Square(capture_idx))
+
+        # Check capture right
+        capture_idx = self.curr.value + (17 * direction)
+        if index_on_board(capture_idx):
+            if Square(capture_idx) in piece_set:
+                moves.add(Square(capture_idx))
+
+        if en_passant_l:
+            capture_idx = self.curr.value + (15 * direction)
+            if index_on_board(capture_idx):
+                moves.add(Square(capture_idx))
+
+        if en_passant_r:
+            capture_idx = self.curr.value + (17 * direction)
+            if index_on_board(capture_idx):
+                moves.add(Square(capture_idx))
+
+        return moves
 
 
-class Knight(BasePiece):
+class Knight(NonPawnPiece):
     @property
     def type(self) -> PieceType:
         return PieceType.KNIGHT
@@ -91,7 +139,7 @@ class Knight(BasePiece):
         return {-33, -18, 14, 31, 33, 18, -14, -31}
 
 
-class Bishop(BasePiece):
+class Bishop(NonPawnPiece):
     @property
     def type(self) -> PieceType:
         return PieceType.BISHOP
@@ -104,7 +152,7 @@ class Bishop(BasePiece):
         return DIAG_OFFSETS
 
 
-class Rook(BasePiece):
+class Rook(NonPawnPiece):
     @property
     def type(self) -> PieceType:
         return PieceType.ROOK
@@ -117,7 +165,7 @@ class Rook(BasePiece):
         return VERT_HORIZ_OFFSETS
 
 
-class Queen(BasePiece):
+class Queen(NonPawnPiece):
     @property
     def type(self) -> PieceType:
         return PieceType.QUEEN
@@ -130,7 +178,7 @@ class Queen(BasePiece):
         return DIAG_OFFSETS | VERT_HORIZ_OFFSETS
 
 
-class King(BasePiece):
+class King(NonPawnPiece):
     @property
     def type(self) -> PieceType:
         return PieceType.KING

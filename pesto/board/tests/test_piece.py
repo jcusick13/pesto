@@ -1,15 +1,48 @@
 from pytest_cases import parametrize_with_cases
 
 from pesto.board.enums import Square
-from pesto.board.piece import Bishop, Knight, Rook, Queen, King
+from pesto.board.piece import Bishop, King, Knight, Pawn, Rook, Queen
 from pesto.board.tests.test_piece_cases import (
     TestBishopPsuedoLegalMovesCases,
     TestKingPsuedoLegalMovesCases,
     TestKnightPsuedoLegalMovesCases,
+    TestPawnPsuedoLegalMovesCases,
     TestRookPsuedoLegalMovesCases,
     TestQueenPsuedoLegalMovesCases,
 )
 from pesto.core.enums import Color
+
+
+class TestPawn:
+    @parametrize_with_cases(
+        (
+            "color",
+            "curr",
+            "piece_set",
+            "first_move",
+            "en_passant_l",
+            "en_passant_r",
+            "exp",
+        ),
+        TestPawnPsuedoLegalMovesCases,
+    )
+    def test_generate_psuedo_legal_moves(
+        self,
+        color: Color,
+        curr: Square,
+        piece_set: set[Square],
+        first_move: bool,
+        en_passant_l: bool,
+        en_passant_r: bool,
+        exp: set[Square],
+    ):
+        obs = Pawn(color=color, curr=curr).generate_psuedo_legal_moves(
+            piece_set=piece_set,
+            first_move=first_move,
+            en_passant_l=en_passant_l,
+            en_passant_r=en_passant_r,
+        )
+        assert obs == exp
 
 
 class TestKnight:

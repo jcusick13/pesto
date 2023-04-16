@@ -1,0 +1,20 @@
+[MASTER]
+# pylint makes deeply recursive calls, make sure we have a big enough stack
+init-hook='import sys; sys.setrecursionlimit(5000)'
+
+[MESSAGES CONTROL]
+disable = missing-class-docstring, missing-function-docstring, missing-module-docstring
+
+[DESIGN]
+max-args = 10
+max-attributes = 20
+max-line-length = 88
+max-locals = 20
+min-public-methods = 0
+
+[SIMILARITIES]
+# Ignore the below when computing similarities
+ignore-comments=yes
+ignore-docstrings=yes
+ignore-imports=yes
+min-similarity-lines=10
