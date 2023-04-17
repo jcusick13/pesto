@@ -2,7 +2,7 @@ from typing import Mapping, Optional
 
 from pytest_cases import parametrize_with_cases
 
-from pesto.board.enums import Square
+from pesto.board.square import Square
 from pesto.board.piece import Piece
 from pesto.board.move_gen.attack import square_is_attacked
 from pesto.core.enums import Color

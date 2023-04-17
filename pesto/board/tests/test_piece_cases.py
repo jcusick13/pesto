@@ -1,4 +1,4 @@
-from pesto.board.enums import Square
+from pesto.board.square import Square
 from pesto.core.enums import Color
 
 _TestPawnPsuedoLegalMovesCase = tuple[

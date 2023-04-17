@@ -1,6 +1,6 @@
 from typing import Mapping, Optional
 
-from pesto.board.enums import Square
+from pesto.board.square import Square
 from pesto.board.piece import Bishop, Pawn, Piece, Rook
 from pesto.core.enums import Color
 

@@ -1,6 +1,6 @@
 from pytest_cases import parametrize_with_cases
 
-from pesto.board.enums import Square
+from pesto.board.square import Square
 from pesto.board.piece import Bishop, King, Knight, Pawn, Rook, Queen
 from pesto.board.tests.test_piece_cases import (
     TestBishopPsuedoLegalMovesCases,

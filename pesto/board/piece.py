@@ -2,7 +2,7 @@
 from abc import abstractproperty
 from dataclasses import dataclass
 
-from pesto.board.enums import Square
+from pesto.board.square import Square
 from pesto.board.utils import index_on_board
 from pesto.core.enums import Color, PieceType
 

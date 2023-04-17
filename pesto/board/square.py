@@ -68,3 +68,10 @@ class Square(Enum):
     F8: int = 117
     G8: int = 118
     H8: int = 119
+
+
+def str_to_square(string: str) -> Square:
+    """Maps a string in algebraic notation to a `Square`"""
+    if len(string) != 2:
+        raise ValueError(f"Expected a single square, received {string}")
+    return Square[string.upper()]
