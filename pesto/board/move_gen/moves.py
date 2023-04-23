@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from copy import deepcopy
 from dataclasses import dataclass
 from typing import Mapping, Optional
@@ -12,6 +14,11 @@ class Move:
     start: Square
     end: Square
     captures: Optional[Piece] = None
+
+    def __lt__(self, other: Move) -> bool:
+        return (self.start.value + self.end.value) < (
+            other.start.value + other.end.value
+        )
 
 
 def make_move(

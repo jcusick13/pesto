@@ -6,15 +6,15 @@ from pesto.core.enums import Color
 
 
 def square_is_attacked(
-    square: Square,
     piece_map: Mapping[Square, Piece],
+    square: Square,
     by: Optional[Color] = None,
 ) -> bool:
     """Determines if `square` is attacked by any pieces on
     the board.
 
-    square: Location to check if under attack
     piece_map: Locations of all pieces on the board
+    square: Location to check if under attack
     by: When `Color` is provided, check only if that `Color`
         attacks `square`
     """
