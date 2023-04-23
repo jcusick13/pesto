@@ -1,7 +1,8 @@
+from typing import Mapping
 from pytest_cases import parametrize_with_cases
 
 from pesto.board.square import Square
-from pesto.board.piece import Bishop, King, Knight, Pawn, Rook, Queen
+from pesto.board.piece import Bishop, King, Knight, Pawn, Piece, Rook, Queen
 from pesto.board.tests.test_piece_cases import (
     TestBishopPsuedoLegalMovesCases,
     TestKingPsuedoLegalMovesCases,
@@ -10,99 +11,82 @@ from pesto.board.tests.test_piece_cases import (
     TestRookPsuedoLegalMovesCases,
     TestQueenPsuedoLegalMovesCases,
 )
-from pesto.core.enums import Color
 
 
 class TestPawn:
     @parametrize_with_cases(
         (
-            "color",
-            "curr",
-            "piece_set",
-            "is_first_move",
+            "pawn",
+            "piece_map",
             "exp",
         ),
         TestPawnPsuedoLegalMovesCases,
     )
     def test_generate_psuedo_legal_moves(
         self,
-        color: Color,
-        curr: Square,
-        piece_set: set[Square],
-        is_first_move: bool,
+        pawn: Pawn,
+        piece_map: Mapping[Square, Piece],
         exp: set[Square],
     ):
-        pawn = Pawn(color=color, curr=curr)
-        pawn.is_first_move = is_first_move
-        obs = pawn.generate_psuedo_legal_moves(piece_set=piece_set)
+        obs = pawn.generate_psuedo_legal_moves(piece_map=piece_map)
         assert obs == exp
 
 
 class TestKnight:
     @parametrize_with_cases(
-        ("curr", "piece_set", "exp"),
+        ("knight", "piece_map", "exp"),
         TestKnightPsuedoLegalMovesCases,
     )
     def test_generate_psuedo_legal_moves(
-        self, curr: Square, piece_set: set[Square], exp: set[Square]
+        self, knight: Knight, piece_map: Mapping[Square, Piece], exp: set[Square]
     ):
-        obs = Knight(color=Color.BLACK, curr=curr).generate_psuedo_legal_moves(
-            piece_set=piece_set
-        )
+        obs = knight.generate_psuedo_legal_moves(piece_map=piece_map)
         assert obs == exp
 
 
 class TestBishop:
     @parametrize_with_cases(
-        ("curr", "piece_set", "exp"),
+        ("bishop", "piece_map", "exp"),
         TestBishopPsuedoLegalMovesCases,
     )
     def test_generate_psuedo_legal_moves(
-        self, curr: Square, piece_set: set[Square], exp: set[Square]
+        self, bishop: Bishop, piece_map: Mapping[Square, Piece], exp: set[Square]
     ):
-        obs = Bishop(color=Color.WHITE, curr=curr).generate_psuedo_legal_moves(
-            piece_set=piece_set
-        )
+        obs = bishop.generate_psuedo_legal_moves(piece_map=piece_map)
         assert obs == exp
 
 
 class TestRook:
     @parametrize_with_cases(
-        ("curr", "piece_set", "exp"),
+        ("rook", "piece_map", "exp"),
         TestRookPsuedoLegalMovesCases,
     )
     def test_generate_psuedo_legal_moves(
-        self, curr: Square, piece_set: set[Square], exp: set[Square]
+        self, rook: Rook, piece_map: Mapping[Square, Piece], exp: set[Square]
     ):
-        obs = Rook(color=Color.BLACK, curr=curr).generate_psuedo_legal_moves(
-            piece_set=piece_set
-        )
+        obs = rook.generate_psuedo_legal_moves(piece_map=piece_map)
         assert obs == exp
 
 
 class TestQueen:
     @parametrize_with_cases(
-        ("curr", "piece_set", "exp"),
+        ("queen", "piece_map", "exp"),
         TestQueenPsuedoLegalMovesCases,
     )
     def test_generate_psuedo_legal_moves(
-        self, curr: Square, piece_set: set[Square], exp: set[Square]
+        self, queen: Queen, piece_map: Mapping[Square, Piece], exp: set[Square]
     ):
-        obs = Queen(color=Color.WHITE, curr=curr).generate_psuedo_legal_moves(
-            piece_set=piece_set
-        )
+        obs = queen.generate_psuedo_legal_moves(piece_map=piece_map)
         assert obs == exp
 
 
 class TestKing:
     @parametrize_with_cases(
-        ("curr", "piece_set", "exp"),
+        ("king", "piece_map", "exp"),
         TestKingPsuedoLegalMovesCases,
     )
     def test_generate_psuedo_legal_moves(
-        self, curr: Square, piece_set: set[Square], exp: set[Square]
+        self, king: King, piece_map: Mapping[Square, Piece], exp: set[Square]
     ):
-        obs = King(color=Color.BLACK, curr=curr).generate_psuedo_legal_moves(
-            piece_set=piece_set
-        )
+        obs = king.generate_psuedo_legal_moves(piece_map=piece_map)
         assert obs == exp

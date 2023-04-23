@@ -1,6 +1,7 @@
 # pylint: disable=too-many-branches
 from abc import abstractproperty
 from dataclasses import dataclass
+from typing import Mapping
 
 from pesto.board.square import Square
 from pesto.board.utils import index_on_board
@@ -36,12 +37,12 @@ class NonPawnPiece(BasePiece):
         """Contains offsets required for the possible locations
         of a piece's next move"""
 
-    def generate_psuedo_legal_moves(self, piece_set: set[Square]) -> set[Square]:
+    def generate_psuedo_legal_moves(
+        self, piece_map: Mapping[Square, BasePiece]
+    ) -> set[Square]:
         """Create set of moves which only consider the movement
         rules of a piece along with the placement of other
         pieces on the board.
-
-        piece_set: Contains squares which have a piece on them
         """
         moves: set[Square] = set()
 
@@ -52,12 +53,14 @@ class NonPawnPiece(BasePiece):
             while not blocked:
                 if not index_on_board(square.value + offset):
                     break
-                square = Square(square.value + offset)
-                moves.add(square)
 
-                if square in piece_set:
+                square = Square(square.value + offset)
+                if (piece := piece_map.get(square)) is not None:
+                    if piece.color != self.color:
+                        moves.add(square)
                     break
 
+                moves.add(square)
                 if not self._slides:
                     break
 
@@ -74,13 +77,11 @@ class Pawn(BasePiece):
 
     def generate_psuedo_legal_moves(
         self,
-        piece_set: set[Square],
+        piece_map: Mapping[Square, BasePiece],
     ) -> set[Square]:
         """Create set of moves which only consider the movement
         rules of a pawn along with the placement of other
         pieces on the board.
-
-        piece_set: Contains squares which have a piece on them
         """
         direction = 1 if self.color == Color.WHITE else -1
         moves: set[Square] = set()
@@ -90,27 +91,29 @@ class Pawn(BasePiece):
         # Check one square forward
         next_idx = self.curr.value + (16 * direction)
         if index_on_board(next_idx):
-            if Square(next_idx) not in piece_set:
+            if Square(next_idx) not in piece_map:
                 moves.add(Square(next_idx))
 
         # Check two squares forward
         if self.is_first_move:
             next_idx = self.curr.value + (2 * 16 * direction)
             if index_on_board(next_idx):
-                if Square(next_idx) not in piece_set:
+                if Square(next_idx) not in piece_map:
                     moves.add(Square(next_idx))
 
         # Check capture left
         capture_idx = self.curr.value + (15 * direction)
         if index_on_board(capture_idx):
-            if Square(capture_idx) in piece_set:
-                moves.add(Square(capture_idx))
+            if (piece := piece_map.get(Square(capture_idx))) is not None:
+                if piece.color != self.color:
+                    moves.add(Square(capture_idx))
 
         # Check capture right
         capture_idx = self.curr.value + (17 * direction)
         if index_on_board(capture_idx):
-            if Square(capture_idx) in piece_set:
-                moves.add(Square(capture_idx))
+            if (piece := piece_map.get(Square(capture_idx))) is not None:
+                if piece.color != self.color:
+                    moves.add(Square(capture_idx))
 
         return moves
 

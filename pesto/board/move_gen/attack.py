@@ -22,7 +22,7 @@ def square_is_attacked(
         if by is not None and piece.color != by:
             continue
 
-        attacked_squares = piece.generate_psuedo_legal_moves(piece_set=piece_map.keys())
+        attacked_squares = piece.generate_psuedo_legal_moves(piece_map=piece_map)
         if square in attacked_squares:
             return True
 
