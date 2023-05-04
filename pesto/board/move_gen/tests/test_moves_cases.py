@@ -1,8 +1,9 @@
 from typing import Mapping
 
+from pesto.board.board import CastleRights, CastleSide
 from pesto.board.move_gen.moves import Move
 from pesto.board.square import Square
-from pesto.board.piece import Knight, King, Pawn, Piece
+from pesto.board.piece import Knight, King, Pawn, Piece, Rook
 from pesto.core.enums import Color
 
 
@@ -167,3 +168,116 @@ class TestUnmakeMoveCases:
         }
         exception = False
         return in_piece_map, in_move, out_piece_map, exception
+
+
+_TestGenerateCastlingMovesCase = tuple[
+    Mapping[Square, Piece],
+    CastleRights,
+    Color,
+    list[Move],
+]
+
+
+class TestGenerateCastlingMovesCases:
+    def case_side_to_move_has_no_castle_rights(self) -> _TestGenerateCastlingMovesCase:
+        piece_map: Mapping[Square, Piece] = {}
+        castle_rights = CastleRights(
+            _rights={
+                Color.WHITE: {CastleSide.SHORT: False, CastleSide.LONG: False},
+                Color.BLACK: {CastleSide.SHORT: True, CastleSide.LONG: True},
+            }
+        )
+        to_move = Color.WHITE
+        exp_moves: list[Move] = []
+
+        return piece_map, castle_rights, to_move, exp_moves
+
+    def case_able_to_castle_short(self) -> _TestGenerateCastlingMovesCase:
+        king = King(Color.BLACK, Square.E8)
+        rook = Rook(Color.BLACK, Square.H8)
+        piece_map = {Square.E8: king, Square.H8: rook}
+        castle_rights = CastleRights(
+            _rights={
+                Color.WHITE: {CastleSide.SHORT: False, CastleSide.LONG: False},
+                Color.BLACK: {CastleSide.SHORT: True, CastleSide.LONG: False},
+            }
+        )
+        to_move = Color.BLACK
+        exp_moves = [
+            Move(piece=king, start=Square.E8, end=Square.G8),
+            Move(piece=rook, start=Square.H8, end=Square.F8),
+        ]
+        return piece_map, castle_rights, to_move, exp_moves
+
+    def case_able_to_castle_long(self) -> _TestGenerateCastlingMovesCase:
+        king = King(Color.BLACK, Square.E8)
+        rook = Rook(Color.BLACK, Square.A8)
+        piece_map = {Square.E8: king, Square.A8: rook}
+        castle_rights = CastleRights(
+            _rights={
+                Color.WHITE: {CastleSide.SHORT: False, CastleSide.LONG: False},
+                Color.BLACK: {CastleSide.SHORT: False, CastleSide.LONG: True},
+            }
+        )
+        to_move = Color.BLACK
+        exp_moves = [
+            Move(piece=king, start=Square.E8, end=Square.C8),
+            Move(piece=rook, start=Square.A8, end=Square.D8),
+        ]
+        return piece_map, castle_rights, to_move, exp_moves
+
+    def case_cant_castle_through_check(self) -> _TestGenerateCastlingMovesCase:
+        king = King(Color.WHITE, Square.E1)
+        piece_map = {
+            Square.E1: king,
+            Square.A1: Rook(Color.WHITE, Square.A1),
+            Square.B8: Rook(Color.BLACK, Square.B8),
+        }
+        castle_rights = CastleRights(
+            _rights={
+                Color.WHITE: {CastleSide.SHORT: False, CastleSide.LONG: True},
+                Color.BLACK: {CastleSide.SHORT: False, CastleSide.LONG: False},
+            }
+        )
+        to_move = Color.WHITE
+        exp_moves: list[Move] = []
+        return piece_map, castle_rights, to_move, exp_moves
+
+    def case_cant_castle_ending_in_check(self) -> _TestGenerateCastlingMovesCase:
+        king = King(Color.WHITE, Square.E1)
+        rook = Rook(Color.WHITE, Square.H1)
+        piece_map = {
+            Square.E1: king,
+            Square.A1: Rook(Color.WHITE, Square.A1),
+            Square.H1: rook,
+            Square.C8: Rook(Color.BLACK, Square.C8),  # prevents long castling
+        }
+        castle_rights = CastleRights(
+            _rights={
+                Color.WHITE: {CastleSide.SHORT: True, CastleSide.LONG: True},
+                Color.BLACK: {CastleSide.SHORT: False, CastleSide.LONG: False},
+            }
+        )
+        to_move = Color.WHITE
+        exp_moves = [
+            Move(piece=king, start=Square.E1, end=Square.G1),
+            Move(piece=rook, start=Square.H1, end=Square.F1),
+        ]
+        return piece_map, castle_rights, to_move, exp_moves
+
+    def case_cant_castle_through_another_piece(self) -> _TestGenerateCastlingMovesCase:
+        king = King(Color.WHITE, Square.E1)
+        piece_map = {
+            Square.E1: king,
+            Square.A1: Rook(Color.WHITE, Square.A1),
+            Square.B1: Knight(Color.WHITE, Square.B1),
+        }
+        castle_rights = CastleRights(
+            _rights={
+                Color.WHITE: {CastleSide.SHORT: False, CastleSide.LONG: True},
+                Color.BLACK: {CastleSide.SHORT: False, CastleSide.LONG: True},
+            }
+        )
+        to_move = Color.WHITE
+        exp_moves: list[Move] = []
+        return piece_map, castle_rights, to_move, exp_moves

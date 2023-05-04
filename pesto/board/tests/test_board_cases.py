@@ -1,4 +1,6 @@
-from pesto.board.board import Board, CastleRights
+# pylint: disable=duplicate-code
+
+from pesto.board.board import Board, CastleRights, CastleSide
 from pesto.board.piece import Bishop, King, Knight, Rook, Pawn, Queen
 from pesto.board.square import Square
 from pesto.core.enums import Color
@@ -52,7 +54,7 @@ class TestBoardFromFenCases:
                 Square.G8: Knight(Color.BLACK, Square.G8),
                 Square.H8: Rook(Color.BLACK, Square.H8),
             },
-            castle_rights=CastleRights.from_game_start(),
+            castle_rights=CastleRights.new(),
             en_passant_targets=set(),
         )
         return fen, board
@@ -88,7 +90,12 @@ class TestBoardFromFenCases:
                 Square.C8: King(Color.BLACK, Square.C8),
                 Square.H8: Rook(Color.BLACK, Square.H8),
             },
-            castle_rights=CastleRights(False, False, False, False),
+            castle_rights=CastleRights(
+                _rights={
+                    Color.WHITE: {CastleSide.SHORT: False, CastleSide.LONG: False},
+                    Color.BLACK: {CastleSide.SHORT: False, CastleSide.LONG: False},
+                }
+            ),
             en_passant_targets=set(),
         )
         return fen, board
@@ -108,7 +115,12 @@ class TestBoardFromFenCases:
                 Square.G7: Knight(Color.WHITE, Square.G7),
                 Square.D8: King(Color.BLACK, Square.D8),
             },
-            castle_rights=CastleRights(False, False, False, False),
+            castle_rights=CastleRights(
+                _rights={
+                    Color.WHITE: {CastleSide.SHORT: False, CastleSide.LONG: False},
+                    Color.BLACK: {CastleSide.SHORT: False, CastleSide.LONG: False},
+                }
+            ),
             en_passant_targets=set(),
         )
         return fen, board

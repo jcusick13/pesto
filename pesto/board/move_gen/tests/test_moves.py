@@ -3,8 +3,15 @@ from typing import Mapping
 import pytest
 from pytest_cases import parametrize_with_cases
 
-from pesto.board.move_gen.moves import Move, make_move, unmake_move
+from pesto.board.board import CastleRights
+from pesto.board.move_gen.moves import (
+    Move,
+    generate_castling_moves,
+    make_move,
+    unmake_move,
+)
 from pesto.board.move_gen.tests.test_moves_cases import (
+    TestGenerateCastlingMovesCases,
     TestMakeMoveCases,
     TestUnmakeMoveCases,
 )
@@ -70,3 +77,19 @@ def test_make_and_unmake_move():
     ending_piece_map = unmake_move(piece_map, move)
 
     assert starting_piece_map == ending_piece_map
+
+
+@parametrize_with_cases(
+    ("piece_map", "castle_rights", "to_move", "exp_moves"),
+    TestGenerateCastlingMovesCases,
+)
+def test_generate_castling_moves(
+    piece_map: Mapping[Square, Piece],
+    castle_rights: CastleRights,
+    to_move: Color,
+    exp_moves: list[Move],
+):
+    obs_moves = generate_castling_moves(
+        piece_map=piece_map, castle_rights=castle_rights, to_move=to_move
+    )
+    assert sorted(obs_moves) == sorted(exp_moves)

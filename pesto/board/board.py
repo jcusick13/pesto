@@ -1,26 +1,37 @@
 from __future__ import annotations
 from dataclasses import dataclass
+from enum import Enum
 
 from pesto.board.square import Square, str_to_square
 from pesto.board.piece import Bishop, King, Knight, Rook, Pawn, Piece, Queen
 from pesto.core.enums import Color
 
 
+class CastleSide(Enum):
+    SHORT: str = "short"
+    LONG: str = "long"
+
+
 @dataclass
 class CastleRights:
-    white_short: bool
-    white_long: bool
-    black_short: bool
-    black_long: bool
+    _rights: dict[Color, dict[CastleSide, bool]]
 
     @classmethod
-    def from_game_start(cls) -> CastleRights:
+    def new(cls) -> CastleRights:
+        """Initialize a `CastleRights` object representing game start"""
         return CastleRights(
-            white_short=True,
-            white_long=True,
-            black_short=True,
-            black_long=True,
+            _rights={
+                Color.WHITE: {CastleSide.SHORT: True, CastleSide.LONG: True},
+                Color.BLACK: {CastleSide.SHORT: True, CastleSide.LONG: True},
+            }
         )
+
+    def __call__(self, color: Color) -> dict[CastleSide, bool]:
+        return self._rights[color]
+
+    def flip(self, color: Color, castle_side: CastleSide) -> None:
+        """Flips the boolean flag for the given `color` and `castle`"""
+        self._rights[color][castle_side] = not self._rights[color][castle_side]
 
 
 @dataclass
@@ -40,7 +51,7 @@ class Board:
             halfmove_clock=0,
             to_move=Color.WHITE,
             piece_map=starting_piece_map(),
-            castle_rights=CastleRights.from_game_start(),
+            castle_rights=CastleRights.new(),
             en_passant_targets=set(),
         )
 
@@ -119,25 +130,26 @@ def _parse_fen_castling_rights(string: str) -> CastleRights:
     """Maps the castling string segment of a FEN string into
     a `CastleRights` object
     """
-    rights: dict[str, bool] = {
-        "white_short": False,
-        "white_long": False,
-        "black_short": False,
-        "black_long": False,
-    }
+    castle_rights = CastleRights(
+        _rights={
+            Color.WHITE: {CastleSide.SHORT: False, CastleSide.LONG: False},
+            Color.BLACK: {CastleSide.SHORT: False, CastleSide.LONG: False},
+        }
+    )
     if string == "-":
-        return CastleRights(**rights)
+        return castle_rights
 
-    char_map: dict[str, str] = {
-        "K": "white_short",
-        "Q": "white_long",
-        "k": "black_short",
-        "q": "black_long",
+    char_map: dict[str, tuple[Color, CastleSide]] = {
+        "K": (Color.WHITE, CastleSide.SHORT),
+        "Q": (Color.WHITE, CastleSide.LONG),
+        "k": (Color.BLACK, CastleSide.SHORT),
+        "q": (Color.BLACK, CastleSide.LONG),
     }
     for char in string:
-        rights[char_map[char]] = True
+        color, castle_side = char_map[char]
+        castle_rights.flip(color, castle_side)
 
-    return CastleRights(**rights)
+    return castle_rights
 
 
 def starting_piece_map() -> dict[Square, Piece]:
