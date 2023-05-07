@@ -69,9 +69,8 @@ def test_make_and_unmake_move():
         Square.E5: Pawn(Color.WHITE, Square.E5),
     }
     input_move = Move(
-        piece=King(Color.BLACK, Square.E4),
-        start=Square.E4,
-        end=Square.E5,
+        start=King(Color.BLACK, Square.E4),
+        end=King(Color.BLACK, Square.E5),
     )
     piece_map, move = make_move(starting_piece_map, input_move)
     ending_piece_map = unmake_move(piece_map, move)

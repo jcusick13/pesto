@@ -1,7 +1,7 @@
 # pylint: disable=too-many-branches
 from abc import abstractproperty
 from dataclasses import dataclass
-from typing import Mapping
+from typing import Mapping, Union
 
 from pesto.board.square import Square
 from pesto.board.utils import index_on_board
@@ -188,4 +188,4 @@ class King(NonPawnPiece):
         return DIAG_OFFSETS | VERT_HORIZ_OFFSETS
 
 
-Piece = tuple[Pawn, Knight, Bishop, Rook, Queen, King]
+Piece = Union[Pawn, Knight, Bishop, Rook, Queen, King]

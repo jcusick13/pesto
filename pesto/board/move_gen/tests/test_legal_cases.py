@@ -44,33 +44,35 @@ class TestLegalMoveGeneratorCases:
             Square.E4: pawn,
         }
         to_move = Color.WHITE
-        exp = [Move(piece=pawn, start=pawn.curr, end=Square.E5)]
+        exp = [
+            Move(start=Pawn(Color.WHITE, Square.E4), end=Pawn(Color.WHITE, Square.E5))
+        ]
         return piece_map, to_move, exp
 
     def case_single_legal_king_move(self) -> _TestLegalMoveGeneratorCase:
         """King is trapped along the a-file"""
-        king = King(Color.BLACK, Square.A8)
         piece_map = {
-            Square.A8: king,
+            Square.A8: King(Color.BLACK, Square.A8),
             Square.B1: Rook(Color.WHITE, Square.B1),
         }
         to_move = Color.BLACK
-        exp = [Move(piece=king, start=king.curr, end=Square.A7)]
+        exp = [
+            Move(start=King(Color.BLACK, Square.A8), end=King(Color.BLACK, Square.A7))
+        ]
         return piece_map, to_move, exp
 
     def case_multiple_legal_moves(self) -> _TestLegalMoveGeneratorCase:
-        king = King(Color.WHITE, Square.A8)
         pawn = Pawn(Color.WHITE, Square.B6)
         pawn.is_first_move = False
         piece_map = {
-            Square.A8: king,
+            Square.A8: King(Color.WHITE, Square.A8),
             Square.B6: pawn,
             Square.D6: Bishop(Color.BLACK, Square.D6),
         }
         to_move = Color.WHITE
         exp = [
-            Move(piece=king, start=king.curr, end=Square.A7),
-            Move(piece=king, start=king.curr, end=Square.B7),
-            Move(piece=pawn, start=pawn.curr, end=Square.B7),
+            Move(start=King(Color.WHITE, Square.A8), end=King(Color.WHITE, Square.A7)),
+            Move(start=King(Color.WHITE, Square.A8), end=King(Color.WHITE, Square.B7)),
+            Move(start=Pawn(Color.WHITE, Square.B6), end=Pawn(Color.WHITE, Square.B7)),
         ]
         return piece_map, to_move, exp
