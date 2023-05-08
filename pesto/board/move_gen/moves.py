@@ -1,26 +1,12 @@
-from __future__ import annotations
-
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Mapping, Optional
+from typing import Mapping
 
 from pesto.board.board import CastleRights, CastleSide
 from pesto.board.move_gen.attack import square_is_attacked
 from pesto.board.square import Square
-from pesto.board.piece import King, Piece, Rook
+from pesto.board.piece import King, Move, Piece, Rook
 from pesto.core.enums import Color
-
-
-@dataclass
-class Move:
-    start: Piece
-    end: Piece
-    captures: Optional[Piece] = None
-
-    def __lt__(self, other: Move) -> bool:
-        return (self.start.curr.value + self.end.curr.value) < (
-            other.start.curr.value + other.end.curr.value
-        )
 
 
 def make_move(
@@ -30,21 +16,20 @@ def make_move(
     given `move` to be played.
     """
     _piece_map = deepcopy(piece_map)
-    _move = deepcopy(move)
 
-    if (piece := _piece_map.pop(_move.start.curr, None)) is None:
-        raise ValueError(f"Could not find piece on {_move.start.curr} to move")
+    if (piece := _piece_map.pop(move.start.curr, None)) is None:
+        raise ValueError(f"Could not find piece on {move.start.curr} to move")
 
-    if piece != _move.start:
+    if piece != move.start:
         raise ValueError(
             "Discrepancy between provided piece and what was found on that square"
         )
 
     # Remove captured piece
-    if (captured_piece := _piece_map.pop(_move.end.curr, None)) is not None:
-        if captured_piece.color == _move.end.color:
+    if (captured_piece := _piece_map.pop(move.end.curr, None)) is not None:
+        if captured_piece.color == move.end.color:
             raise ValueError("Attempted to capture piece of same color")
-    _move.captures = captured_piece
+    _move = Move(start=move.start, end=move.end, captures=captured_piece)
 
     # Update piece map to reflect having moved the piece
     _piece_map[_move.end.curr] = _move.end

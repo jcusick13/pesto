@@ -1,4 +1,3 @@
-from copy import deepcopy
 from typing import Mapping
 
 from pesto.board.move_gen.attack import square_is_attacked
@@ -35,11 +34,7 @@ def legal_move_generator(
 
         piece_is_king: bool = piece == king
 
-        for to_square in piece.generate_psuedo_legal_moves(piece_map=piece_map):
-            end_piece = deepcopy(piece)
-            end_piece.curr = to_square
-            move = Move(start=piece, end=end_piece)
-
+        for move in piece.generate_psuedo_legal_moves(piece_map=piece_map):
             # Temporarily make move and see if king is in check
             tmp_piece_map, tmp_move = make_move(piece_map=piece_map, move=move)
 

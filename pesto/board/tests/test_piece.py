@@ -2,7 +2,7 @@ from typing import Mapping
 from pytest_cases import parametrize_with_cases
 
 from pesto.board.square import Square
-from pesto.board.piece import Bishop, King, Knight, Pawn, Piece, Rook, Queen
+from pesto.board.piece import Bishop, King, Knight, Move, Pawn, Piece, Rook, Queen
 from pesto.board.tests.test_piece_cases import (
     TestBishopPsuedoLegalMovesCases,
     TestKingPsuedoLegalMovesCases,
@@ -26,7 +26,7 @@ class TestPawn:
         self,
         pawn: Pawn,
         piece_map: Mapping[Square, Piece],
-        exp: set[Square],
+        exp: set[Move],
     ):
         obs = pawn.generate_psuedo_legal_moves(piece_map=piece_map)
         assert obs == exp
@@ -38,7 +38,7 @@ class TestKnight:
         TestKnightPsuedoLegalMovesCases,
     )
     def test_generate_psuedo_legal_moves(
-        self, knight: Knight, piece_map: Mapping[Square, Piece], exp: set[Square]
+        self, knight: Knight, piece_map: Mapping[Square, Piece], exp: set[Move]
     ):
         obs = knight.generate_psuedo_legal_moves(piece_map=piece_map)
         assert obs == exp
@@ -50,7 +50,7 @@ class TestBishop:
         TestBishopPsuedoLegalMovesCases,
     )
     def test_generate_psuedo_legal_moves(
-        self, bishop: Bishop, piece_map: Mapping[Square, Piece], exp: set[Square]
+        self, bishop: Bishop, piece_map: Mapping[Square, Piece], exp: set[Move]
     ):
         obs = bishop.generate_psuedo_legal_moves(piece_map=piece_map)
         assert obs == exp
@@ -62,7 +62,7 @@ class TestRook:
         TestRookPsuedoLegalMovesCases,
     )
     def test_generate_psuedo_legal_moves(
-        self, rook: Rook, piece_map: Mapping[Square, Piece], exp: set[Square]
+        self, rook: Rook, piece_map: Mapping[Square, Piece], exp: set[Move]
     ):
         obs = rook.generate_psuedo_legal_moves(piece_map=piece_map)
         assert obs == exp
@@ -74,7 +74,7 @@ class TestQueen:
         TestQueenPsuedoLegalMovesCases,
     )
     def test_generate_psuedo_legal_moves(
-        self, queen: Queen, piece_map: Mapping[Square, Piece], exp: set[Square]
+        self, queen: Queen, piece_map: Mapping[Square, Piece], exp: set[Move]
     ):
         obs = queen.generate_psuedo_legal_moves(piece_map=piece_map)
         assert obs == exp
@@ -86,7 +86,7 @@ class TestKing:
         TestKingPsuedoLegalMovesCases,
     )
     def test_generate_psuedo_legal_moves(
-        self, king: King, piece_map: Mapping[Square, Piece], exp: set[Square]
+        self, king: King, piece_map: Mapping[Square, Piece], exp: set[Move]
     ):
         obs = king.generate_psuedo_legal_moves(piece_map=piece_map)
         assert obs == exp
