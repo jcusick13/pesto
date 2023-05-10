@@ -1,6 +1,6 @@
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Mapping
+from typing import Mapping, Optional
 
 from pesto.board.board import CastleRights, CastleSide
 from pesto.board.move_gen.attack import square_is_attacked
@@ -25,10 +25,25 @@ def make_move(
             "Discrepancy between provided piece and what was found on that square"
         )
 
-    # Remove captured piece
-    if (captured_piece := _piece_map.pop(move.end.curr, None)) is not None:
-        if captured_piece.color == move.end.color:
+    captured_piece: Optional[Piece] = None
+
+    # Check for captures found from looking on the board
+    if (observed_capture := _piece_map.pop(move.end.curr, None)) is not None:
+        if observed_capture.color == move.end.color:
             raise ValueError("Attempted to capture piece of same color")
+        captured_piece = observed_capture
+
+    # Check for captures from provided `move` object
+    if (provided_capture := move.captures) is not None:
+        if provided_capture.color == move.end.color:
+            raise ValueError("Attempted to capture piece of same color")
+
+        if _piece_map.pop(provided_capture.curr, None) is None:
+            raise ValueError(
+                f"Provided capture, {provided_capture} is not found on the board"
+            )
+        captured_piece = provided_capture
+
     _move = Move(start=move.start, end=move.end, captures=captured_piece)
 
     # Update piece map to reflect having moved the piece
@@ -41,7 +56,11 @@ def unmake_move(
     piece_map: Mapping[Square, Piece], move: Move
 ) -> Mapping[Square, Piece]:
     """Creates and returns a new `piece_map` based on
-    reverting the provided `move`
+    reverting the provided `move`.
+
+    Considers reverting both the "main" piece (i.e. the piece
+    described in `move.start`) the the "captured" piece (i.e.
+    the piece described in `move.captures`)
     """
     _piece_map = deepcopy(piece_map)
     _move = deepcopy(move)
@@ -49,25 +68,19 @@ def unmake_move(
     if _piece_map.get(_move.start.curr) is not None:
         raise ValueError("Could not revert move, as existing piece was found on square")
 
+    if _piece_map.get(_move.end.curr) != move.end:
+        raise ValueError(
+            "Could not revert move, as the main piece was not found on the end square"
+        )
+
+    # Clear the square where the main piece landed
+    _piece_map.pop(_move.end.curr, None)
+
     if _move.captures is not None:
-        if (piece := _piece_map.get(_move.end.curr)) is None:
-            raise ValueError(
-                f"Expected to find {_move.end.type} on {_move.end.curr}, but found None"
-            )
+        # Add captured piece back to it's original location
+        _piece_map[_move.captures.curr] = _move.captures
 
-        if piece != _move.end:
-            raise ValueError(
-                f"Expected to find {_move.end.type} on {_move.end.curr}, "
-                f"but found {piece}"
-            )
-        # Add back captured piece
-        _piece_map[_move.end.curr] = _move.captures
-
-    else:
-        # Empty square of any piece
-        _piece_map.pop(_move.end.curr, None)
-
-    # Update piece mpa to reflect having moved the piece
+    # Update piece map to put the original piece back in it's starting place
     _piece_map[_move.start.curr] = _move.start
 
     return _piece_map

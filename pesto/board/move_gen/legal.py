@@ -1,4 +1,4 @@
-from typing import Mapping
+from typing import Mapping, Optional
 
 from pesto.board.move_gen.attack import square_is_attacked
 from pesto.board.move_gen.moves import Move, make_move, unmake_move
@@ -9,7 +9,7 @@ from pesto.core.enums import Color
 
 
 def legal_move_generator(
-    piece_map: Mapping[Square, Piece], to_move: Color
+    piece_map: Mapping[Square, Piece], en_passant_sq: Optional[Square], to_move: Color
 ) -> list[Move]:
     """Creates a group of moves that are legal when considering the
     full scope of the board (i.e. do not leave the king in check)
@@ -33,7 +33,9 @@ def legal_move_generator(
 
         piece_is_king: bool = piece == king
 
-        for move in piece.generate_psuedo_legal_moves(piece_map=piece_map):
+        for move in piece.generate_psuedo_legal_moves(
+            piece_map=piece_map, **{"en_passant_sq": en_passant_sq}
+        ):
             # Temporarily make move and see if king is in check
             tmp_piece_map, tmp_move = make_move(piece_map=piece_map, move=move)
 

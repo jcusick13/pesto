@@ -1,6 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
+from typing import Optional
 
 from pesto.board.square import Square, str_to_square
 from pesto.board.piece import Bishop, King, Knight, Rook, Pawn, Piece, Queen
@@ -41,7 +42,7 @@ class Board:
     to_move: Color
     piece_map: dict[Square, Piece]
     castle_rights: CastleRights
-    en_passant_targets: set[Square]
+    en_passant_target: Optional[Square]
 
     @classmethod
     def new(cls) -> Board:
@@ -52,7 +53,7 @@ class Board:
             to_move=Color.WHITE,
             piece_map=starting_piece_map(),
             castle_rights=CastleRights.new(),
-            en_passant_targets=set(),
+            en_passant_target=None,
         )
 
     @classmethod
@@ -78,7 +79,7 @@ class Board:
             to_move=to_move,
             piece_map=_parse_fen_piece_map(pieces),
             castle_rights=_parse_fen_castling_rights(castling),
-            en_passant_targets=_parse_fen_en_passant_target(en_passant),
+            en_passant_target=_parse_fen_en_passant_target(en_passant),
         )
 
 
@@ -115,13 +116,12 @@ def _parse_fen_piece_map(string: str) -> dict[Square, Piece]:
     return piece_map
 
 
-def _parse_fen_en_passant_target(string: str) -> set[Square]:
+def _parse_fen_en_passant_target(string: str) -> Optional[Square]:
     """Maps the en passant string segment of a FEN string into
-    a set of `Square`s
+    a `Square`, if one is present
     """
-    squares: set[Square] = set()
     if string == "-":
-        return squares
+        return None
 
     return str_to_square(string)
 

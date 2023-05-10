@@ -1,4 +1,4 @@
-from typing import Mapping
+from typing import Mapping, Optional
 
 from pesto.board.piece import Bishop, King, Knight, Move, Rook, Pawn, Piece, Queen
 from pesto.board.square import Square
@@ -7,6 +7,7 @@ from pesto.core.enums import Color
 _TestPawnPsuedoLegalMovesCase = tuple[
     Pawn,
     Mapping[Square, Piece],
+    Optional[Square],
     set[Move],
 ]
 
@@ -16,21 +17,23 @@ class TestPawnPsuedoLegalMovesCases:
         pawn = Pawn(Color.WHITE, Square.D2)
         pawn.is_first_move = True
         piece_map = {Square.D2: pawn}
+        ep_square: Optional[Square] = None
         exp = {
             Move(pawn, Pawn(Color.WHITE, Square.D3)),
             Move(pawn, Pawn(Color.WHITE, Square.D4)),
         }
-        return pawn, piece_map, exp
+        return pawn, piece_map, ep_square, exp
 
     def case_black_first_move(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.BLACK, Square.C7)
         pawn.is_first_move = True
         piece_map = {Square.C7: pawn}
+        ep_square: Optional[Square] = None
         exp = {
             Move(pawn, Pawn(Color.BLACK, Square.C6)),
             Move(pawn, Pawn(Color.BLACK, Square.C5)),
         }
-        return pawn, piece_map, exp
+        return pawn, piece_map, ep_square, exp
 
     def case_white_blocked(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.WHITE, Square.D7)
@@ -39,8 +42,9 @@ class TestPawnPsuedoLegalMovesCases:
             Square.D7: pawn,
             Square.D8: Rook(Color.BLACK, Square.D8),
         }
+        ep_square: Optional[Square] = None
         exp: set[Move] = set()
-        return pawn, piece_map, exp
+        return pawn, piece_map, ep_square, exp
 
     def case_black_blocked(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.BLACK, Square.A6)
@@ -49,8 +53,9 @@ class TestPawnPsuedoLegalMovesCases:
             Square.A6: pawn,
             Square.A5: Rook(Color.WHITE, Square.A5),
         }
+        ep_square: Optional[Square] = None
         exp: set[Move] = set()
-        return pawn, piece_map, exp
+        return pawn, piece_map, ep_square, exp
 
     def case_white_capture(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.WHITE, Square.D5)
@@ -60,12 +65,13 @@ class TestPawnPsuedoLegalMovesCases:
             Square.C6: Rook(Color.BLACK, Square.C6),
             Square.E6: Rook(Color.BLACK, Square.E6),
         }
+        ep_square: Optional[Square] = None
         exp = {
             Move(pawn, Pawn(Color.WHITE, Square.C6)),
             Move(pawn, Pawn(Color.WHITE, Square.E6)),
             Move(pawn, Pawn(Color.WHITE, Square.D6)),
         }
-        return pawn, piece_map, exp
+        return pawn, piece_map, ep_square, exp
 
     def case_black_capture(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.BLACK, Square.G4)
@@ -75,12 +81,13 @@ class TestPawnPsuedoLegalMovesCases:
             Square.H3: Rook(Color.WHITE, Square.H3),
             Square.F3: Rook(Color.WHITE, Square.F3),
         }
+        ep_square: Optional[Square] = None
         exp = {
             Move(pawn, Pawn(Color.BLACK, Square.H3)),
             Move(pawn, Pawn(Color.BLACK, Square.F3)),
             Move(pawn, Pawn(Color.BLACK, Square.G3)),
         }
-        return pawn, piece_map, exp
+        return pawn, piece_map, ep_square, exp
 
     def case_white_cant_capture_white(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.WHITE, Square.E4)
@@ -90,8 +97,9 @@ class TestPawnPsuedoLegalMovesCases:
             Square.D5: Rook(Color.WHITE, Square.D5),
             Square.F5: Rook(Color.WHITE, Square.F5),
         }
+        ep_square: Optional[Square] = None
         exp = {Move(pawn, Pawn(Color.WHITE, Square.E5))}
-        return pawn, piece_map, exp
+        return pawn, piece_map, ep_square, exp
 
     def case_black_cant_capture_black(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.BLACK, Square.D6)
@@ -101,33 +109,59 @@ class TestPawnPsuedoLegalMovesCases:
             Square.C5: Rook(Color.BLACK, Square.C5),
             Square.E5: Rook(Color.BLACK, Square.E5),
         }
+        ep_square: Optional[Square] = None
         exp = {Move(pawn, Pawn(Color.BLACK, Square.D5))}
-        return pawn, piece_map, exp
+        return pawn, piece_map, ep_square, exp
 
     def case_white_promotes(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.WHITE, Square.D7)
         pawn.is_first_move = False
         piece_map = {Square.D7: pawn}
+        ep_square: Optional[Square] = None
         exp = {
             Move(pawn, Knight(Color.WHITE, Square.D8)),
             Move(pawn, Bishop(Color.WHITE, Square.D8)),
             Move(pawn, Rook(Color.WHITE, Square.D8)),
             Move(pawn, Queen(Color.WHITE, Square.D8)),
         }
-
-        return pawn, piece_map, exp
+        return pawn, piece_map, ep_square, exp
 
     def case_black_promotes(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.BLACK, Square.E2)
         pawn.is_first_move = False
         piece_map = {Square.E2: pawn}
+        ep_square: Optional[Square] = None
         exp = {
             Move(pawn, Knight(Color.BLACK, Square.E1)),
             Move(pawn, Bishop(Color.BLACK, Square.E1)),
             Move(pawn, Rook(Color.BLACK, Square.E1)),
             Move(pawn, Queen(Color.BLACK, Square.E1)),
         }
-        return pawn, piece_map, exp
+        return pawn, piece_map, ep_square, exp
+
+    def case_white_captures_en_passant(self) -> _TestPawnPsuedoLegalMovesCase:
+        pawn = Pawn(Color.WHITE, Square.A5)
+        pawn.is_first_move = False
+        target_pawn = Pawn(Color.BLACK, Square.B5)
+        piece_map = {Square.A5: pawn, Square.B5: target_pawn}
+        ep_square = Square.B6
+        exp = {
+            Move(pawn, Pawn(Color.WHITE, Square.A6)),
+            Move(pawn, Pawn(Color.WHITE, Square.B6), captures=target_pawn),
+        }
+        return pawn, piece_map, ep_square, exp
+
+    def case_black_captures_en_passant(self) -> _TestPawnPsuedoLegalMovesCase:
+        pawn = Pawn(Color.BLACK, Square.B4)
+        pawn.is_first_move = False
+        target_pawn = Pawn(Color.WHITE, Square.C4)
+        piece_map = {Square.B4: pawn, Square.C4: target_pawn}
+        ep_square = Square.C3
+        exp = {
+            Move(pawn, Pawn(Color.BLACK, Square.B3)),
+            Move(pawn, Pawn(Color.BLACK, Square.C3), captures=target_pawn),
+        }
+        return pawn, piece_map, ep_square, exp
 
 
 _TestKnightPsuedoLegalMovesCase = tuple[

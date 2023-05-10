@@ -111,19 +111,18 @@ class TestUnmakeMoveCases:
         exception = True
         return in_piece_map, in_move, out_piece_map, exception
 
-    def case_exc_no_piece_on_square_where_capture_occurred(self) -> _TestUnmakeMoveCase:
-        in_piece_map = {Square.D5: King(Color.WHITE, Square.D5)}
+    def case_exc_main_piece_was_not_found_on_end_square(self) -> _TestUnmakeMoveCase:
+        in_piece_map = {Square.D6: Pawn(Color.WHITE, Square.D6)}
         in_move = Move(
             start=King(Color.WHITE, Square.D5),
             end=King(Color.WHITE, Square.D6),
-            captures=Pawn(Color.BLACK, Square.D6),
         )
         out_piece_map: Mapping[Square, Piece] = {}
         exception = True
         return in_piece_map, in_move, out_piece_map, exception
 
-    def case_exc_unexpected_piece_found_on_capture_square(self) -> _TestUnmakeMoveCase:
-        in_piece_map = {Square.D6: Knight(Color.WHITE, Square.D6)}
+    def case_exc_no_piece_on_square_where_capture_occurred(self) -> _TestUnmakeMoveCase:
+        in_piece_map = {Square.D5: King(Color.WHITE, Square.D5)}
         in_move = Move(
             start=King(Color.WHITE, Square.D5),
             end=King(Color.WHITE, Square.D6),
@@ -156,6 +155,39 @@ class TestUnmakeMoveCases:
         }
         exception = False
         return in_piece_map, in_move, out_piece_map, exception
+
+
+_TestMakeAndUnmakeMoveCases = tuple[
+    Mapping[Square, Piece],
+    Move,
+]
+
+
+class TestMakeAndUnmakeMoveCases:
+    def case_single_king_move(self) -> _TestMakeAndUnmakeMoveCases:
+        start_map = {
+            Square.E4: King(Color.BLACK, Square.E4),
+            Square.E5: Pawn(Color.WHITE, Square.E5),
+        }
+        move = Move(
+            start=King(Color.BLACK, Square.E4),
+            end=King(Color.BLACK, Square.E5),
+        )
+        return start_map, move
+
+    def case_en_passant(self) -> _TestMakeAndUnmakeMoveCases:
+        pawn = Pawn(Color.WHITE, Square.B5)
+        start_map = {
+            Square.C5: Pawn(Color.BLACK, Square.C5),
+            Square.B4: King(Color.WHITE, Square.B4),
+            Square.B5: pawn,
+        }
+        move = Move(
+            start=pawn,
+            end=Pawn(Color.WHITE, Square.C6),
+            captures=Pawn(Color.BLACK, Square.C5),
+        )
+        return start_map, move
 
 
 _TestGenerateCastlingMovesCase = tuple[

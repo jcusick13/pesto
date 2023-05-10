@@ -1,4 +1,4 @@
-from typing import Mapping
+from typing import Mapping, Optional
 from pytest_cases import parametrize_with_cases
 
 from pesto.board.square import Square
@@ -15,20 +15,19 @@ from pesto.board.tests.test_piece_cases import (
 
 class TestPawn:
     @parametrize_with_cases(
-        (
-            "pawn",
-            "piece_map",
-            "exp",
-        ),
+        ("pawn", "piece_map", "en_passant_sq", "exp"),
         TestPawnPsuedoLegalMovesCases,
     )
     def test_generate_psuedo_legal_moves(
         self,
         pawn: Pawn,
         piece_map: Mapping[Square, Piece],
+        en_passant_sq: Optional[Square],
         exp: set[Move],
     ):
-        obs = pawn.generate_psuedo_legal_moves(piece_map=piece_map)
+        obs = pawn.generate_psuedo_legal_moves(
+            piece_map=piece_map, en_passant_sq=en_passant_sq
+        )
         assert obs == exp
 
 

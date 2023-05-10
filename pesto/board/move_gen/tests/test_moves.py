@@ -13,10 +13,11 @@ from pesto.board.move_gen.moves import (
 from pesto.board.move_gen.tests.test_moves_cases import (
     TestGenerateCastlingMovesCases,
     TestMakeMoveCases,
+    TestMakeAndUnmakeMoveCases,
     TestUnmakeMoveCases,
 )
 from pesto.board.square import Square
-from pesto.board.piece import King, Pawn, Piece
+from pesto.board.piece import Piece
 from pesto.core.enums import Color
 
 
@@ -60,18 +61,17 @@ def test_unmake_move(
         assert obs_piece_map == out_piece_map
 
 
-def test_make_and_unmake_move():
+@parametrize_with_cases(
+    ("starting_piece_map", "input_move"),
+    TestMakeAndUnmakeMoveCases,
+)
+def test_make_and_unmake_move(
+    starting_piece_map: Mapping[Square, Piece],
+    input_move: Move,
+):
     """Ensure `piece_map` is unchanged after making and
     reverting a move
     """
-    starting_piece_map = {
-        Square.E4: King(Color.BLACK, Square.E4),
-        Square.E5: Pawn(Color.WHITE, Square.E5),
-    }
-    input_move = Move(
-        start=King(Color.BLACK, Square.E4),
-        end=King(Color.BLACK, Square.E5),
-    )
     piece_map, move = make_move(starting_piece_map, input_move)
     ending_piece_map = unmake_move(piece_map, move)
 

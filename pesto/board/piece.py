@@ -45,7 +45,7 @@ class NonPawnPiece(BasePiece):
         of a piece's next move"""
 
     def generate_psuedo_legal_moves(
-        self, piece_map: Mapping[Square, BasePiece]
+        self, piece_map: Mapping[Square, BasePiece], **_kwargs
     ) -> set[Move]:
         """Create set of moves which only consider the movement
         rules of a piece along with the placement of other
@@ -105,6 +105,7 @@ class Pawn(BasePiece):
     def generate_psuedo_legal_moves(
         self,
         piece_map: Mapping[Square, BasePiece],
+        en_passant_sq: Optional[Square],
     ) -> set[Move]:
         """Create set of moves which only consider the movement
         rules of a pawn along with the placement of other
@@ -158,6 +159,23 @@ class Pawn(BasePiece):
                                 ),
                             )
                         )
+                elif Square(capture_idx) == en_passant_sq:
+                    # Capturing en passant is possible
+                    op_color = Color.WHITE if self.color == Color.BLACK else Color.BLACK
+                    captured_pawn_square = Square(capture_idx - 16 * direction)
+                    moves.add(
+                        Move(
+                            start=self.new(
+                                self.color, curr=start_square, is_first_move=False
+                            ),
+                            end=self.new(
+                                self.color, curr=en_passant_sq, is_first_move=False
+                            ),
+                            captures=self.new(
+                                op_color, curr=captured_pawn_square, is_first_move=False
+                            ),
+                        )
+                    )
 
         # Check for promotion possibilities
         color_offset: int = 0 if self.color == Color.BLACK else 112

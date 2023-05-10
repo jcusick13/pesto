@@ -55,7 +55,7 @@ class TestBoardFromFenCases:
                 Square.H8: Rook(Color.BLACK, Square.H8),
             },
             castle_rights=CastleRights.new(),
-            en_passant_targets=set(),
+            en_passant_target=None,
         )
         return fen, board
 
@@ -96,7 +96,7 @@ class TestBoardFromFenCases:
                     Color.BLACK: {CastleSide.SHORT: False, CastleSide.LONG: False},
                 }
             ),
-            en_passant_targets=set(),
+            en_passant_target=None,
         )
         return fen, board
 
@@ -121,6 +121,6 @@ class TestBoardFromFenCases:
                     Color.BLACK: {CastleSide.SHORT: False, CastleSide.LONG: False},
                 }
             ),
-            en_passant_targets=set(),
+            en_passant_target=None,
         )
         return fen, board

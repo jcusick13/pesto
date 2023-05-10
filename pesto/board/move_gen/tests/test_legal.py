@@ -1,4 +1,4 @@
-from typing import Mapping
+from typing import Mapping, Optional
 
 from pytest_cases import parametrize_with_cases
 
@@ -11,13 +11,16 @@ from pesto.core.enums import Color
 
 
 @parametrize_with_cases(
-    ("piece_map", "to_move", "exp"),
+    ("piece_map", "en_passant_sq", "to_move", "exp"),
     TestLegalMoveGeneratorCases,
 )
 def test_legal_move_generator(
     piece_map: Mapping[Square, Piece],
+    en_passant_sq: Optional[Square],
     to_move: Color,
     exp: list[Move],
 ):
-    obs = legal_move_generator(piece_map=piece_map, to_move=to_move)
+    obs = legal_move_generator(
+        piece_map=piece_map, en_passant_sq=en_passant_sq, to_move=to_move
+    )
     assert sorted(obs) == sorted(exp)
