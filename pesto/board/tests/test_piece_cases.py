@@ -104,6 +104,31 @@ class TestPawnPsuedoLegalMovesCases:
         exp = {Move(pawn, Pawn(Color.BLACK, Square.D5))}
         return pawn, piece_map, exp
 
+    def case_white_promotes(self) -> _TestPawnPsuedoLegalMovesCase:
+        pawn = Pawn(Color.WHITE, Square.D7)
+        pawn.is_first_move = False
+        piece_map = {Square.D7: pawn}
+        exp = {
+            Move(pawn, Knight(Color.WHITE, Square.D8)),
+            Move(pawn, Bishop(Color.WHITE, Square.D8)),
+            Move(pawn, Rook(Color.WHITE, Square.D8)),
+            Move(pawn, Queen(Color.WHITE, Square.D8)),
+        }
+
+        return pawn, piece_map, exp
+
+    def case_black_promotes(self) -> _TestPawnPsuedoLegalMovesCase:
+        pawn = Pawn(Color.BLACK, Square.E2)
+        pawn.is_first_move = False
+        piece_map = {Square.E2: pawn}
+        exp = {
+            Move(pawn, Knight(Color.BLACK, Square.E1)),
+            Move(pawn, Bishop(Color.BLACK, Square.E1)),
+            Move(pawn, Rook(Color.BLACK, Square.E1)),
+            Move(pawn, Queen(Color.BLACK, Square.E1)),
+        }
+        return pawn, piece_map, exp
+
 
 _TestKnightPsuedoLegalMovesCase = tuple[
     Knight,

@@ -17,7 +17,6 @@ def legal_move_generator(
     TODO:
         * castling
         * en passant
-        * promotion
     """
     moves: list[Move] = []
 

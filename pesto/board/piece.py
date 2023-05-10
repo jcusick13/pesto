@@ -116,26 +116,13 @@ class Pawn(BasePiece):
         next_idx: int
         capture_idx: int
 
-        # Check one square forward
-        next_idx = self.curr.value + (16 * direction)
-        if index_on_board(next_idx):
-            if Square(next_idx) not in piece_map:
-                moves.add(
-                    Move(
-                        start=self.new(
-                            self.color,
-                            curr=start_square,
-                            is_first_move=self.is_first_move,
-                        ),
-                        end=self.new(
-                            self.color, curr=Square(next_idx), is_first_move=False
-                        ),
-                    )
-                )
-
-        # Check two squares forward
+        # Check one and two squares forward
+        forward_squares: list[int] = [1]
         if self.is_first_move:
-            next_idx = self.curr.value + (2 * 16 * direction)
+            forward_squares.append(2)
+
+        for n_squares in forward_squares:
+            next_idx = self.curr.value + (n_squares * 16 * direction)
             if index_on_board(next_idx):
                 if Square(next_idx) not in piece_map:
                     moves.add(
@@ -151,47 +138,53 @@ class Pawn(BasePiece):
                         )
                     )
 
-        # Check capture left
-        capture_idx = self.curr.value + (15 * direction)
-        if index_on_board(capture_idx):
-            if (piece := piece_map.get(Square(capture_idx))) is not None:
-                if piece.color != self.color:
-                    moves.add(
-                        Move(
-                            start=self.new(
-                                self.color,
-                                curr=start_square,
-                                is_first_move=self.is_first_move,
-                            ),
-                            end=self.new(
-                                self.color,
-                                curr=Square(capture_idx),
-                                is_first_move=False,
-                            ),
+        # Check captures left and right
+        for capture_offset in [15, 17]:
+            capture_idx = self.curr.value + (capture_offset * direction)
+            if index_on_board(capture_idx):
+                if (piece := piece_map.get(Square(capture_idx))) is not None:
+                    if piece.color != self.color:
+                        moves.add(
+                            Move(
+                                start=self.new(
+                                    self.color,
+                                    curr=start_square,
+                                    is_first_move=self.is_first_move,
+                                ),
+                                end=self.new(
+                                    self.color,
+                                    curr=Square(capture_idx),
+                                    is_first_move=False,
+                                ),
+                            )
                         )
-                    )
 
-        # Check capture right
-        capture_idx = self.curr.value + (17 * direction)
-        if index_on_board(capture_idx):
-            if (piece := piece_map.get(Square(capture_idx))) is not None:
-                if piece.color != self.color:
-                    moves.add(
-                        Move(
-                            start=self.new(
-                                self.color,
-                                curr=start_square,
-                                is_first_move=self.is_first_move,
-                            ),
-                            end=self.new(
-                                self.color,
-                                curr=Square(capture_idx),
-                                is_first_move=False,
-                            ),
-                        )
-                    )
+        # Check for promotion possibilities
+        color_offset: int = 0 if self.color == Color.BLACK else 112
+        back_rank_squares: set[Square] = {
+            Square(idx + color_offset) for idx in list(range(8))
+        }
+        final_moves: set[Move] = set()
+        for move in moves:
+            if move.end.curr not in back_rank_squares:
+                final_moves.add(move)
+                continue
 
-        return moves
+            # Pawn promotes - disregard pawn move and add new
+            # moves for each possible promotion piece instead
+            for piece in [Knight, Bishop, Rook, Queen]:
+                final_moves.add(
+                    Move(
+                        start=self.new(
+                            self.color,
+                            curr=move.start.curr,
+                            is_first_move=False,
+                        ),
+                        end=piece(self.color, move.end.curr),
+                    )
+                )
+
+        return final_moves
 
 
 class Knight(NonPawnPiece):
