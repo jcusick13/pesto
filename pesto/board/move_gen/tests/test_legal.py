@@ -1,7 +1,8 @@
-from typing import Mapping, Optional
+from typing import Optional
 
 from pytest_cases import parametrize_with_cases
 
+from pesto.board.board import CastleRights
 from pesto.board.move_gen.legal import legal_move_generator
 from pesto.board.move_gen.moves import Move
 from pesto.board.move_gen.tests.test_legal_cases import TestLegalMoveGeneratorCases
@@ -11,16 +12,20 @@ from pesto.core.enums import Color
 
 
 @parametrize_with_cases(
-    ("piece_map", "en_passant_sq", "to_move", "exp"),
+    ("piece_map", "castle_rights", "en_passant_sq", "to_move", "exp"),
     TestLegalMoveGeneratorCases,
 )
 def test_legal_move_generator(
-    piece_map: Mapping[Square, Piece],
+    piece_map: dict[Square, Piece],
+    castle_rights: CastleRights,
     en_passant_sq: Optional[Square],
     to_move: Color,
     exp: set[Move],
 ):
     obs = legal_move_generator(
-        piece_map=piece_map, en_passant_sq=en_passant_sq, to_move=to_move
+        piece_map=piece_map,
+        to_move=to_move,
+        castle_rights=castle_rights,
+        en_passant_sq=en_passant_sq,
     )
     assert sorted(obs) == sorted(exp)

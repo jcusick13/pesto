@@ -27,6 +27,16 @@ class CastleRights:
             }
         )
 
+    @classmethod
+    def none(cls) -> CastleRights:
+        """Initialize a `CastleRights` object where no one has rights"""
+        return CastleRights(
+            _rights={
+                Color.WHITE: {CastleSide.SHORT: False, CastleSide.LONG: False},
+                Color.BLACK: {CastleSide.SHORT: False, CastleSide.LONG: False},
+            }
+        )
+
     def __call__(self, color: Color) -> dict[CastleSide, bool]:
         return self._rights[color]
 

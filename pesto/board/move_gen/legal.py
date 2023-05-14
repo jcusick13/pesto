@@ -1,24 +1,23 @@
-from typing import Mapping, Optional
+from typing import Optional
 
+from pesto.board.board import CastleRights
 from pesto.board.move_gen.attack import square_is_attacked
-from pesto.board.move_gen.moves import Move, make_move, unmake_move
+from pesto.board.move_gen.moves import generate_castling_moves, make_move, unmake_move
 from pesto.board.square import Square
-from pesto.board.piece import King, Piece
+from pesto.board.piece import King, Move, Piece, SinglePieceMove
 
 from pesto.core.enums import Color
 
 
 def legal_move_generator(
-    piece_map: Mapping[Square, Piece], en_passant_sq: Optional[Square], to_move: Color
+    piece_map: dict[Square, Piece],
+    to_move: Color,
+    castle_rights: CastleRights,
+    en_passant_sq: Optional[Square],
 ) -> set[Move]:
     """Creates a group of moves that are legal when considering the
     full scope of the board (i.e. do not leave the king in check)
-
-    TODO:
-        * castling
-        * en passant
     """
-    moves: set[Move] = set()
 
     # Find king of color to move
     king: King
@@ -27,6 +26,7 @@ def legal_move_generator(
             king = piece
             break
 
+    single_piece_moves: set[SinglePieceMove] = set()
     for piece in piece_map.values():
         if piece.color != to_move:
             continue
@@ -46,8 +46,12 @@ def legal_move_generator(
                 king_square = king.curr
 
             if not square_is_attacked(piece_map=tmp_piece_map, square=king_square):
-                moves.add(move)
+                single_piece_moves.add(move)
 
             _ = unmake_move(piece_map=tmp_piece_map, move=tmp_move)
 
-    return moves
+    castling_moves = generate_castling_moves(
+        piece_map=piece_map, castle_rights=castle_rights, to_move=to_move
+    )
+
+    return single_piece_moves | castling_moves

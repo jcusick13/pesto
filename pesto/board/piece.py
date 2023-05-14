@@ -26,7 +26,15 @@ class BasePiece:
 
     @classmethod
     @abstractmethod
-    def new(cls, color: Color, curr: Square) -> BasePiece:
+    def new(cls, color: Color, curr: Square) -> Piece:
+        pass
+
+    @abstractmethod
+    def generate_psuedo_legal_moves(
+        self,
+        piece_map: dict[Square, Piece],
+        en_passant_sq: Optional[Square],
+    ) -> set[SinglePieceMove]:
         pass
 
 
@@ -45,7 +53,9 @@ class NonPawnPiece(BasePiece):
         of a piece's next move"""
 
     def generate_psuedo_legal_moves(
-        self, piece_map: Mapping[Square, BasePiece], **_kwargs
+        self,
+        piece_map: Mapping[Square, BasePiece],
+        en_passant_sq: Optional[Square] = None,
     ) -> set[SinglePieceMove]:
         """Create set of moves which only consider the movement
         rules of a piece along with the placement of other
@@ -318,7 +328,7 @@ class SinglePieceMove(BaseMove):
 class CastlingMove(BaseMove):
     # Castling is mainly representated by the king move;
     # this slot holds the corresponding rook move
-    castled_rook: Optional[BaseMove] = None
+    castled_rook: BaseMove
 
 
 Move = Union[SinglePieceMove, CastlingMove]

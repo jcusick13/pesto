@@ -4,7 +4,6 @@ from pesto.board.piece import (
     Bishop,
     King,
     Knight,
-    Move,
     Rook,
     Pawn,
     Piece,
@@ -639,7 +638,7 @@ class TestKingPsuedoLegalMovesCases:
             Square.B7: Rook(Color.BLACK, Square.B7),
             Square.C7: Rook(Color.BLACK, Square.C7),
         }
-        exp: set[Move] = set()
+        exp: set[SinglePieceMove] = set()
         return king, piece_map, exp
 
     def case_limited_movement_in_corner(self) -> _TestKingPsuedoLegalMovesCase:
