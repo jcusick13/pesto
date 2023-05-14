@@ -1,6 +1,16 @@
 from typing import Mapping, Optional
 
-from pesto.board.piece import Bishop, King, Knight, Move, Rook, Pawn, Piece, Queen
+from pesto.board.piece import (
+    Bishop,
+    King,
+    Knight,
+    Move,
+    Rook,
+    Pawn,
+    Piece,
+    Queen,
+    SinglePieceMove,
+)
 from pesto.board.square import Square
 from pesto.core.enums import Color
 
@@ -8,7 +18,7 @@ _TestPawnPsuedoLegalMovesCase = tuple[
     Pawn,
     Mapping[Square, Piece],
     Optional[Square],
-    set[Move],
+    set[SinglePieceMove],
 ]
 
 
@@ -19,8 +29,8 @@ class TestPawnPsuedoLegalMovesCases:
         piece_map = {Square.D2: pawn}
         ep_square: Optional[Square] = None
         exp = {
-            Move(pawn, Pawn(Color.WHITE, Square.D3)),
-            Move(pawn, Pawn(Color.WHITE, Square.D4)),
+            SinglePieceMove(pawn, Pawn(Color.WHITE, Square.D3)),
+            SinglePieceMove(pawn, Pawn(Color.WHITE, Square.D4)),
         }
         return pawn, piece_map, ep_square, exp
 
@@ -30,8 +40,8 @@ class TestPawnPsuedoLegalMovesCases:
         piece_map = {Square.C7: pawn}
         ep_square: Optional[Square] = None
         exp = {
-            Move(pawn, Pawn(Color.BLACK, Square.C6)),
-            Move(pawn, Pawn(Color.BLACK, Square.C5)),
+            SinglePieceMove(pawn, Pawn(Color.BLACK, Square.C6)),
+            SinglePieceMove(pawn, Pawn(Color.BLACK, Square.C5)),
         }
         return pawn, piece_map, ep_square, exp
 
@@ -43,7 +53,7 @@ class TestPawnPsuedoLegalMovesCases:
             Square.D8: Rook(Color.BLACK, Square.D8),
         }
         ep_square: Optional[Square] = None
-        exp: set[Move] = set()
+        exp: set[SinglePieceMove] = set()
         return pawn, piece_map, ep_square, exp
 
     def case_black_blocked(self) -> _TestPawnPsuedoLegalMovesCase:
@@ -54,7 +64,7 @@ class TestPawnPsuedoLegalMovesCases:
             Square.A5: Rook(Color.WHITE, Square.A5),
         }
         ep_square: Optional[Square] = None
-        exp: set[Move] = set()
+        exp: set[SinglePieceMove] = set()
         return pawn, piece_map, ep_square, exp
 
     def case_white_capture(self) -> _TestPawnPsuedoLegalMovesCase:
@@ -67,9 +77,9 @@ class TestPawnPsuedoLegalMovesCases:
         }
         ep_square: Optional[Square] = None
         exp = {
-            Move(pawn, Pawn(Color.WHITE, Square.C6)),
-            Move(pawn, Pawn(Color.WHITE, Square.E6)),
-            Move(pawn, Pawn(Color.WHITE, Square.D6)),
+            SinglePieceMove(pawn, Pawn(Color.WHITE, Square.C6)),
+            SinglePieceMove(pawn, Pawn(Color.WHITE, Square.E6)),
+            SinglePieceMove(pawn, Pawn(Color.WHITE, Square.D6)),
         }
         return pawn, piece_map, ep_square, exp
 
@@ -83,9 +93,9 @@ class TestPawnPsuedoLegalMovesCases:
         }
         ep_square: Optional[Square] = None
         exp = {
-            Move(pawn, Pawn(Color.BLACK, Square.H3)),
-            Move(pawn, Pawn(Color.BLACK, Square.F3)),
-            Move(pawn, Pawn(Color.BLACK, Square.G3)),
+            SinglePieceMove(pawn, Pawn(Color.BLACK, Square.H3)),
+            SinglePieceMove(pawn, Pawn(Color.BLACK, Square.F3)),
+            SinglePieceMove(pawn, Pawn(Color.BLACK, Square.G3)),
         }
         return pawn, piece_map, ep_square, exp
 
@@ -98,7 +108,7 @@ class TestPawnPsuedoLegalMovesCases:
             Square.F5: Rook(Color.WHITE, Square.F5),
         }
         ep_square: Optional[Square] = None
-        exp = {Move(pawn, Pawn(Color.WHITE, Square.E5))}
+        exp = {SinglePieceMove(pawn, Pawn(Color.WHITE, Square.E5))}
         return pawn, piece_map, ep_square, exp
 
     def case_black_cant_capture_black(self) -> _TestPawnPsuedoLegalMovesCase:
@@ -110,7 +120,7 @@ class TestPawnPsuedoLegalMovesCases:
             Square.E5: Rook(Color.BLACK, Square.E5),
         }
         ep_square: Optional[Square] = None
-        exp = {Move(pawn, Pawn(Color.BLACK, Square.D5))}
+        exp = {SinglePieceMove(pawn, Pawn(Color.BLACK, Square.D5))}
         return pawn, piece_map, ep_square, exp
 
     def case_white_promotes(self) -> _TestPawnPsuedoLegalMovesCase:
@@ -119,10 +129,10 @@ class TestPawnPsuedoLegalMovesCases:
         piece_map = {Square.D7: pawn}
         ep_square: Optional[Square] = None
         exp = {
-            Move(pawn, Knight(Color.WHITE, Square.D8)),
-            Move(pawn, Bishop(Color.WHITE, Square.D8)),
-            Move(pawn, Rook(Color.WHITE, Square.D8)),
-            Move(pawn, Queen(Color.WHITE, Square.D8)),
+            SinglePieceMove(pawn, Knight(Color.WHITE, Square.D8)),
+            SinglePieceMove(pawn, Bishop(Color.WHITE, Square.D8)),
+            SinglePieceMove(pawn, Rook(Color.WHITE, Square.D8)),
+            SinglePieceMove(pawn, Queen(Color.WHITE, Square.D8)),
         }
         return pawn, piece_map, ep_square, exp
 
@@ -132,10 +142,10 @@ class TestPawnPsuedoLegalMovesCases:
         piece_map = {Square.E2: pawn}
         ep_square: Optional[Square] = None
         exp = {
-            Move(pawn, Knight(Color.BLACK, Square.E1)),
-            Move(pawn, Bishop(Color.BLACK, Square.E1)),
-            Move(pawn, Rook(Color.BLACK, Square.E1)),
-            Move(pawn, Queen(Color.BLACK, Square.E1)),
+            SinglePieceMove(pawn, Knight(Color.BLACK, Square.E1)),
+            SinglePieceMove(pawn, Bishop(Color.BLACK, Square.E1)),
+            SinglePieceMove(pawn, Rook(Color.BLACK, Square.E1)),
+            SinglePieceMove(pawn, Queen(Color.BLACK, Square.E1)),
         }
         return pawn, piece_map, ep_square, exp
 
@@ -146,8 +156,8 @@ class TestPawnPsuedoLegalMovesCases:
         piece_map = {Square.A5: pawn, Square.B5: target_pawn}
         ep_square = Square.B6
         exp = {
-            Move(pawn, Pawn(Color.WHITE, Square.A6)),
-            Move(pawn, Pawn(Color.WHITE, Square.B6), captures=target_pawn),
+            SinglePieceMove(pawn, Pawn(Color.WHITE, Square.A6)),
+            SinglePieceMove(pawn, Pawn(Color.WHITE, Square.B6), captures=target_pawn),
         }
         return pawn, piece_map, ep_square, exp
 
@@ -158,8 +168,8 @@ class TestPawnPsuedoLegalMovesCases:
         piece_map = {Square.B4: pawn, Square.C4: target_pawn}
         ep_square = Square.C3
         exp = {
-            Move(pawn, Pawn(Color.BLACK, Square.B3)),
-            Move(pawn, Pawn(Color.BLACK, Square.C3), captures=target_pawn),
+            SinglePieceMove(pawn, Pawn(Color.BLACK, Square.B3)),
+            SinglePieceMove(pawn, Pawn(Color.BLACK, Square.C3), captures=target_pawn),
         }
         return pawn, piece_map, ep_square, exp
 
@@ -167,7 +177,7 @@ class TestPawnPsuedoLegalMovesCases:
 _TestKnightPsuedoLegalMovesCase = tuple[
     Knight,
     Mapping[Square, Piece],
-    set[Move],
+    set[SinglePieceMove],
 ]
 
 
@@ -176,14 +186,14 @@ class TestKnightPsuedoLegalMovesCases:
         knight = Knight(Color.BLACK, Square.E4)
         piece_map = {Square.E4: knight}
         exp = {
-            Move(knight, Knight(Color.BLACK, Square.F6)),
-            Move(knight, Knight(Color.BLACK, Square.G5)),
-            Move(knight, Knight(Color.BLACK, Square.G3)),
-            Move(knight, Knight(Color.BLACK, Square.F2)),
-            Move(knight, Knight(Color.BLACK, Square.D2)),
-            Move(knight, Knight(Color.BLACK, Square.C3)),
-            Move(knight, Knight(Color.BLACK, Square.C5)),
-            Move(knight, Knight(Color.BLACK, Square.D6)),
+            SinglePieceMove(knight, Knight(Color.BLACK, Square.F6)),
+            SinglePieceMove(knight, Knight(Color.BLACK, Square.G5)),
+            SinglePieceMove(knight, Knight(Color.BLACK, Square.G3)),
+            SinglePieceMove(knight, Knight(Color.BLACK, Square.F2)),
+            SinglePieceMove(knight, Knight(Color.BLACK, Square.D2)),
+            SinglePieceMove(knight, Knight(Color.BLACK, Square.C3)),
+            SinglePieceMove(knight, Knight(Color.BLACK, Square.C5)),
+            SinglePieceMove(knight, Knight(Color.BLACK, Square.D6)),
         }
         return knight, piece_map, exp
 
@@ -191,9 +201,9 @@ class TestKnightPsuedoLegalMovesCases:
         knight = Knight(Color.WHITE, Square.B8)
         piece_map = {Square.B8: knight}
         exp = {
-            Move(knight, Knight(Color.WHITE, Square.A6)),
-            Move(knight, Knight(Color.WHITE, Square.C6)),
-            Move(knight, Knight(Color.WHITE, Square.D7)),
+            SinglePieceMove(knight, Knight(Color.WHITE, Square.A6)),
+            SinglePieceMove(knight, Knight(Color.WHITE, Square.C6)),
+            SinglePieceMove(knight, Knight(Color.WHITE, Square.D7)),
         }
         return knight, piece_map, exp
 
@@ -211,14 +221,14 @@ class TestKnightPsuedoLegalMovesCases:
             Square.F5: Rook(Color.WHITE, Square.F5),
         }
         exp = {
-            Move(knight, Knight(Color.BLACK, Square.F6)),
-            Move(knight, Knight(Color.BLACK, Square.G5)),
-            Move(knight, Knight(Color.BLACK, Square.G3)),
-            Move(knight, Knight(Color.BLACK, Square.F2)),
-            Move(knight, Knight(Color.BLACK, Square.D2)),
-            Move(knight, Knight(Color.BLACK, Square.C3)),
-            Move(knight, Knight(Color.BLACK, Square.C5)),
-            Move(knight, Knight(Color.BLACK, Square.D6)),
+            SinglePieceMove(knight, Knight(Color.BLACK, Square.F6)),
+            SinglePieceMove(knight, Knight(Color.BLACK, Square.G5)),
+            SinglePieceMove(knight, Knight(Color.BLACK, Square.G3)),
+            SinglePieceMove(knight, Knight(Color.BLACK, Square.F2)),
+            SinglePieceMove(knight, Knight(Color.BLACK, Square.D2)),
+            SinglePieceMove(knight, Knight(Color.BLACK, Square.C3)),
+            SinglePieceMove(knight, Knight(Color.BLACK, Square.C5)),
+            SinglePieceMove(knight, Knight(Color.BLACK, Square.D6)),
         }
         return knight, piece_map, exp
 
@@ -235,14 +245,14 @@ class TestKnightPsuedoLegalMovesCases:
             Square.C5: Rook(Color.WHITE, Square.C5),
             Square.D6: Rook(Color.WHITE, Square.D6),
         }
-        exp: set[Move] = set()
+        exp: set[SinglePieceMove] = set()
         return knight, piece_map, exp
 
 
 _TestBishopPsuedoLegalMovesCase = tuple[
     Bishop,
     Mapping[Square, Piece],
-    set[Move],
+    set[SinglePieceMove],
 ]
 
 
@@ -251,19 +261,19 @@ class TestBishopPsuedoLegalMovesCases:
         bishop = Bishop(Color.BLACK, Square.E5)
         piece_map = {Square.E5: bishop}
         exp = {
-            Move(bishop, Bishop(Color.BLACK, Square.A1)),
-            Move(bishop, Bishop(Color.BLACK, Square.B2)),
-            Move(bishop, Bishop(Color.BLACK, Square.C3)),
-            Move(bishop, Bishop(Color.BLACK, Square.D4)),
-            Move(bishop, Bishop(Color.BLACK, Square.F6)),
-            Move(bishop, Bishop(Color.BLACK, Square.G7)),
-            Move(bishop, Bishop(Color.BLACK, Square.H8)),
-            Move(bishop, Bishop(Color.BLACK, Square.B8)),
-            Move(bishop, Bishop(Color.BLACK, Square.C7)),
-            Move(bishop, Bishop(Color.BLACK, Square.D6)),
-            Move(bishop, Bishop(Color.BLACK, Square.F4)),
-            Move(bishop, Bishop(Color.BLACK, Square.G3)),
-            Move(bishop, Bishop(Color.BLACK, Square.H2)),
+            SinglePieceMove(bishop, Bishop(Color.BLACK, Square.A1)),
+            SinglePieceMove(bishop, Bishop(Color.BLACK, Square.B2)),
+            SinglePieceMove(bishop, Bishop(Color.BLACK, Square.C3)),
+            SinglePieceMove(bishop, Bishop(Color.BLACK, Square.D4)),
+            SinglePieceMove(bishop, Bishop(Color.BLACK, Square.F6)),
+            SinglePieceMove(bishop, Bishop(Color.BLACK, Square.G7)),
+            SinglePieceMove(bishop, Bishop(Color.BLACK, Square.H8)),
+            SinglePieceMove(bishop, Bishop(Color.BLACK, Square.B8)),
+            SinglePieceMove(bishop, Bishop(Color.BLACK, Square.C7)),
+            SinglePieceMove(bishop, Bishop(Color.BLACK, Square.D6)),
+            SinglePieceMove(bishop, Bishop(Color.BLACK, Square.F4)),
+            SinglePieceMove(bishop, Bishop(Color.BLACK, Square.G3)),
+            SinglePieceMove(bishop, Bishop(Color.BLACK, Square.H2)),
         }
         return bishop, piece_map, exp
 
@@ -271,15 +281,15 @@ class TestBishopPsuedoLegalMovesCases:
         bishop = Bishop(Color.WHITE, Square.B7)
         piece_map = {Square.B7: bishop}
         exp = {
-            Move(bishop, Bishop(Color.WHITE, Square.A6)),
-            Move(bishop, Bishop(Color.WHITE, Square.C8)),
-            Move(bishop, Bishop(Color.WHITE, Square.A8)),
-            Move(bishop, Bishop(Color.WHITE, Square.C6)),
-            Move(bishop, Bishop(Color.WHITE, Square.D5)),
-            Move(bishop, Bishop(Color.WHITE, Square.E4)),
-            Move(bishop, Bishop(Color.WHITE, Square.F3)),
-            Move(bishop, Bishop(Color.WHITE, Square.G2)),
-            Move(bishop, Bishop(Color.WHITE, Square.H1)),
+            SinglePieceMove(bishop, Bishop(Color.WHITE, Square.A6)),
+            SinglePieceMove(bishop, Bishop(Color.WHITE, Square.C8)),
+            SinglePieceMove(bishop, Bishop(Color.WHITE, Square.A8)),
+            SinglePieceMove(bishop, Bishop(Color.WHITE, Square.C6)),
+            SinglePieceMove(bishop, Bishop(Color.WHITE, Square.D5)),
+            SinglePieceMove(bishop, Bishop(Color.WHITE, Square.E4)),
+            SinglePieceMove(bishop, Bishop(Color.WHITE, Square.F3)),
+            SinglePieceMove(bishop, Bishop(Color.WHITE, Square.G2)),
+            SinglePieceMove(bishop, Bishop(Color.WHITE, Square.H1)),
         }
         return bishop, piece_map, exp
 
@@ -293,10 +303,10 @@ class TestBishopPsuedoLegalMovesCases:
             Square.F2: Rook(Color.BLACK, Square.F2),
         }
         exp = {
-            Move(bishop, Bishop(Color.WHITE, Square.D2)),
-            Move(bishop, Bishop(Color.WHITE, Square.D4)),
-            Move(bishop, Bishop(Color.WHITE, Square.F4)),
-            Move(bishop, Bishop(Color.WHITE, Square.F2)),
+            SinglePieceMove(bishop, Bishop(Color.WHITE, Square.D2)),
+            SinglePieceMove(bishop, Bishop(Color.WHITE, Square.D4)),
+            SinglePieceMove(bishop, Bishop(Color.WHITE, Square.F4)),
+            SinglePieceMove(bishop, Bishop(Color.WHITE, Square.F2)),
         }
         return bishop, piece_map, exp
 
@@ -309,7 +319,7 @@ class TestBishopPsuedoLegalMovesCases:
             Square.F4: Rook(Color.BLACK, Square.F4),
             Square.F2: Rook(Color.BLACK, Square.F2),
         }
-        exp: set[Move] = set()
+        exp: set[SinglePieceMove] = set()
         return bishop, piece_map, exp
 
     def case_limited_movement_in_corner(self) -> _TestBishopPsuedoLegalMovesCase:
@@ -319,10 +329,10 @@ class TestBishopPsuedoLegalMovesCases:
             Square.F3: Rook(Color.WHITE, Square.F3),
         }
         exp = {
-            Move(bishop, Bishop(Color.BLACK, Square.F1)),
-            Move(bishop, Bishop(Color.BLACK, Square.H1)),
-            Move(bishop, Bishop(Color.BLACK, Square.H3)),
-            Move(bishop, Bishop(Color.BLACK, Square.F3)),
+            SinglePieceMove(bishop, Bishop(Color.BLACK, Square.F1)),
+            SinglePieceMove(bishop, Bishop(Color.BLACK, Square.H1)),
+            SinglePieceMove(bishop, Bishop(Color.BLACK, Square.H3)),
+            SinglePieceMove(bishop, Bishop(Color.BLACK, Square.F3)),
         }
         return bishop, piece_map, exp
 
@@ -330,7 +340,7 @@ class TestBishopPsuedoLegalMovesCases:
 _TestRookPsuedoLegalMovesCase = tuple[
     Rook,
     Mapping[Square, Piece],
-    set[Move],
+    set[SinglePieceMove],
 ]
 
 
@@ -339,20 +349,20 @@ class TestRookPsuedoLegalMovesCases:
         rook = Rook(Color.WHITE, Square.D4)
         piece_map = {Square.D4: rook}
         exp = {
-            Move(rook, Rook(Color.WHITE, Square.D1)),
-            Move(rook, Rook(Color.WHITE, Square.D2)),
-            Move(rook, Rook(Color.WHITE, Square.D3)),
-            Move(rook, Rook(Color.WHITE, Square.D5)),
-            Move(rook, Rook(Color.WHITE, Square.D6)),
-            Move(rook, Rook(Color.WHITE, Square.D7)),
-            Move(rook, Rook(Color.WHITE, Square.D8)),
-            Move(rook, Rook(Color.WHITE, Square.A4)),
-            Move(rook, Rook(Color.WHITE, Square.B4)),
-            Move(rook, Rook(Color.WHITE, Square.C4)),
-            Move(rook, Rook(Color.WHITE, Square.E4)),
-            Move(rook, Rook(Color.WHITE, Square.F4)),
-            Move(rook, Rook(Color.WHITE, Square.G4)),
-            Move(rook, Rook(Color.WHITE, Square.H4)),
+            SinglePieceMove(rook, Rook(Color.WHITE, Square.D1)),
+            SinglePieceMove(rook, Rook(Color.WHITE, Square.D2)),
+            SinglePieceMove(rook, Rook(Color.WHITE, Square.D3)),
+            SinglePieceMove(rook, Rook(Color.WHITE, Square.D5)),
+            SinglePieceMove(rook, Rook(Color.WHITE, Square.D6)),
+            SinglePieceMove(rook, Rook(Color.WHITE, Square.D7)),
+            SinglePieceMove(rook, Rook(Color.WHITE, Square.D8)),
+            SinglePieceMove(rook, Rook(Color.WHITE, Square.A4)),
+            SinglePieceMove(rook, Rook(Color.WHITE, Square.B4)),
+            SinglePieceMove(rook, Rook(Color.WHITE, Square.C4)),
+            SinglePieceMove(rook, Rook(Color.WHITE, Square.E4)),
+            SinglePieceMove(rook, Rook(Color.WHITE, Square.F4)),
+            SinglePieceMove(rook, Rook(Color.WHITE, Square.G4)),
+            SinglePieceMove(rook, Rook(Color.WHITE, Square.H4)),
         }
         return rook, piece_map, exp
 
@@ -360,20 +370,20 @@ class TestRookPsuedoLegalMovesCases:
         rook = Rook(Color.BLACK, Square.H8)
         piece_map = {Square.H8: rook}
         exp = {
-            Move(rook, Rook(Color.BLACK, Square.H7)),
-            Move(rook, Rook(Color.BLACK, Square.H6)),
-            Move(rook, Rook(Color.BLACK, Square.H5)),
-            Move(rook, Rook(Color.BLACK, Square.H4)),
-            Move(rook, Rook(Color.BLACK, Square.H3)),
-            Move(rook, Rook(Color.BLACK, Square.H2)),
-            Move(rook, Rook(Color.BLACK, Square.H1)),
-            Move(rook, Rook(Color.BLACK, Square.A8)),
-            Move(rook, Rook(Color.BLACK, Square.B8)),
-            Move(rook, Rook(Color.BLACK, Square.C8)),
-            Move(rook, Rook(Color.BLACK, Square.D8)),
-            Move(rook, Rook(Color.BLACK, Square.E8)),
-            Move(rook, Rook(Color.BLACK, Square.F8)),
-            Move(rook, Rook(Color.BLACK, Square.G8)),
+            SinglePieceMove(rook, Rook(Color.BLACK, Square.H7)),
+            SinglePieceMove(rook, Rook(Color.BLACK, Square.H6)),
+            SinglePieceMove(rook, Rook(Color.BLACK, Square.H5)),
+            SinglePieceMove(rook, Rook(Color.BLACK, Square.H4)),
+            SinglePieceMove(rook, Rook(Color.BLACK, Square.H3)),
+            SinglePieceMove(rook, Rook(Color.BLACK, Square.H2)),
+            SinglePieceMove(rook, Rook(Color.BLACK, Square.H1)),
+            SinglePieceMove(rook, Rook(Color.BLACK, Square.A8)),
+            SinglePieceMove(rook, Rook(Color.BLACK, Square.B8)),
+            SinglePieceMove(rook, Rook(Color.BLACK, Square.C8)),
+            SinglePieceMove(rook, Rook(Color.BLACK, Square.D8)),
+            SinglePieceMove(rook, Rook(Color.BLACK, Square.E8)),
+            SinglePieceMove(rook, Rook(Color.BLACK, Square.F8)),
+            SinglePieceMove(rook, Rook(Color.BLACK, Square.G8)),
         }
         return rook, piece_map, exp
 
@@ -387,10 +397,10 @@ class TestRookPsuedoLegalMovesCases:
             Square.C4: Rook(Color.WHITE, Square.C4),
         }
         exp = {
-            Move(rook, Rook(Color.BLACK, Square.D5)),
-            Move(rook, Rook(Color.BLACK, Square.E4)),
-            Move(rook, Rook(Color.BLACK, Square.D3)),
-            Move(rook, Rook(Color.BLACK, Square.C4)),
+            SinglePieceMove(rook, Rook(Color.BLACK, Square.D5)),
+            SinglePieceMove(rook, Rook(Color.BLACK, Square.E4)),
+            SinglePieceMove(rook, Rook(Color.BLACK, Square.D3)),
+            SinglePieceMove(rook, Rook(Color.BLACK, Square.C4)),
         }
         return rook, piece_map, exp
 
@@ -403,7 +413,7 @@ class TestRookPsuedoLegalMovesCases:
             Square.D3: Rook(Color.WHITE, Square.D3),
             Square.C4: Rook(Color.WHITE, Square.C4),
         }
-        exp: set[Move] = set()
+        exp: set[SinglePieceMove] = set()
         return rook, piece_map, exp
 
     def case_limited_movement_in_corner(self) -> _TestRookPsuedoLegalMovesCase:
@@ -414,10 +424,10 @@ class TestRookPsuedoLegalMovesCases:
             Square.G6: Rook(Color.BLACK, Square.G6),
         }
         exp = {
-            Move(rook, Rook(Color.WHITE, Square.G8)),
-            Move(rook, Rook(Color.WHITE, Square.H7)),
-            Move(rook, Rook(Color.WHITE, Square.F7)),
-            Move(rook, Rook(Color.WHITE, Square.G6)),
+            SinglePieceMove(rook, Rook(Color.WHITE, Square.G8)),
+            SinglePieceMove(rook, Rook(Color.WHITE, Square.H7)),
+            SinglePieceMove(rook, Rook(Color.WHITE, Square.F7)),
+            SinglePieceMove(rook, Rook(Color.WHITE, Square.G6)),
         }
         return rook, piece_map, exp
 
@@ -425,7 +435,7 @@ class TestRookPsuedoLegalMovesCases:
 _TestQueenPsuedoLegalMovesCase = tuple[
     Queen,
     Mapping[Square, Piece],
-    set[Move],
+    set[SinglePieceMove],
 ]
 
 
@@ -434,33 +444,33 @@ class TestQueenPsuedoLegalMovesCases:
         queen = Queen(Color.WHITE, Square.D5)
         piece_map = {Square.D5: queen}
         exp = {
-            Move(queen, Queen(Color.WHITE, Square.D1)),
-            Move(queen, Queen(Color.WHITE, Square.D2)),
-            Move(queen, Queen(Color.WHITE, Square.D3)),
-            Move(queen, Queen(Color.WHITE, Square.D4)),
-            Move(queen, Queen(Color.WHITE, Square.D6)),
-            Move(queen, Queen(Color.WHITE, Square.D7)),
-            Move(queen, Queen(Color.WHITE, Square.D8)),
-            Move(queen, Queen(Color.WHITE, Square.A5)),
-            Move(queen, Queen(Color.WHITE, Square.B5)),
-            Move(queen, Queen(Color.WHITE, Square.C5)),
-            Move(queen, Queen(Color.WHITE, Square.E5)),
-            Move(queen, Queen(Color.WHITE, Square.F5)),
-            Move(queen, Queen(Color.WHITE, Square.G5)),
-            Move(queen, Queen(Color.WHITE, Square.H5)),
-            Move(queen, Queen(Color.WHITE, Square.A2)),
-            Move(queen, Queen(Color.WHITE, Square.B3)),
-            Move(queen, Queen(Color.WHITE, Square.C4)),
-            Move(queen, Queen(Color.WHITE, Square.E6)),
-            Move(queen, Queen(Color.WHITE, Square.F7)),
-            Move(queen, Queen(Color.WHITE, Square.G8)),
-            Move(queen, Queen(Color.WHITE, Square.A8)),
-            Move(queen, Queen(Color.WHITE, Square.B7)),
-            Move(queen, Queen(Color.WHITE, Square.C6)),
-            Move(queen, Queen(Color.WHITE, Square.E4)),
-            Move(queen, Queen(Color.WHITE, Square.F3)),
-            Move(queen, Queen(Color.WHITE, Square.G2)),
-            Move(queen, Queen(Color.WHITE, Square.H1)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.D1)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.D2)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.D3)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.D4)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.D6)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.D7)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.D8)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.A5)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.B5)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.C5)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.E5)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.F5)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.G5)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.H5)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.A2)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.B3)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.C4)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.E6)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.F7)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.G8)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.A8)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.B7)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.C6)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.E4)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.F3)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.G2)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.H1)),
         }
         return queen, piece_map, exp
 
@@ -468,29 +478,29 @@ class TestQueenPsuedoLegalMovesCases:
         queen = Queen(Color.WHITE, Square.G2)
         piece_map = {Square.G2: queen}
         exp = {
-            Move(queen, Queen(Color.WHITE, Square.A2)),
-            Move(queen, Queen(Color.WHITE, Square.B2)),
-            Move(queen, Queen(Color.WHITE, Square.C2)),
-            Move(queen, Queen(Color.WHITE, Square.D2)),
-            Move(queen, Queen(Color.WHITE, Square.E2)),
-            Move(queen, Queen(Color.WHITE, Square.F2)),
-            Move(queen, Queen(Color.WHITE, Square.H2)),
-            Move(queen, Queen(Color.WHITE, Square.G1)),
-            Move(queen, Queen(Color.WHITE, Square.G3)),
-            Move(queen, Queen(Color.WHITE, Square.G4)),
-            Move(queen, Queen(Color.WHITE, Square.G5)),
-            Move(queen, Queen(Color.WHITE, Square.G6)),
-            Move(queen, Queen(Color.WHITE, Square.G7)),
-            Move(queen, Queen(Color.WHITE, Square.G8)),
-            Move(queen, Queen(Color.WHITE, Square.A8)),
-            Move(queen, Queen(Color.WHITE, Square.B7)),
-            Move(queen, Queen(Color.WHITE, Square.C6)),
-            Move(queen, Queen(Color.WHITE, Square.D5)),
-            Move(queen, Queen(Color.WHITE, Square.E4)),
-            Move(queen, Queen(Color.WHITE, Square.F3)),
-            Move(queen, Queen(Color.WHITE, Square.H1)),
-            Move(queen, Queen(Color.WHITE, Square.F1)),
-            Move(queen, Queen(Color.WHITE, Square.H3)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.A2)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.B2)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.C2)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.D2)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.E2)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.F2)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.H2)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.G1)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.G3)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.G4)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.G5)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.G6)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.G7)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.G8)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.A8)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.B7)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.C6)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.D5)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.E4)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.F3)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.H1)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.F1)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.H3)),
         }
         return queen, piece_map, exp
 
@@ -508,14 +518,14 @@ class TestQueenPsuedoLegalMovesCases:
             Square.B5: Rook(Color.BLACK, Square.B5),
         }
         exp = {
-            Move(queen, Queen(Color.WHITE, Square.C5)),
-            Move(queen, Queen(Color.WHITE, Square.D5)),
-            Move(queen, Queen(Color.WHITE, Square.D4)),
-            Move(queen, Queen(Color.WHITE, Square.D3)),
-            Move(queen, Queen(Color.WHITE, Square.C3)),
-            Move(queen, Queen(Color.WHITE, Square.B3)),
-            Move(queen, Queen(Color.WHITE, Square.B4)),
-            Move(queen, Queen(Color.WHITE, Square.B5)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.C5)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.D5)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.D4)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.D3)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.C3)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.B3)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.B4)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.B5)),
         }
         return queen, piece_map, exp
 
@@ -532,7 +542,7 @@ class TestQueenPsuedoLegalMovesCases:
             Square.B4: Rook(Color.BLACK, Square.B4),
             Square.B5: Rook(Color.BLACK, Square.B5),
         }
-        exp: set[Move] = set()
+        exp: set[SinglePieceMove] = set()
         return queen, piece_map, exp
 
     def case_limited_movement_in_corner(self) -> _TestQueenPsuedoLegalMovesCase:
@@ -546,14 +556,14 @@ class TestQueenPsuedoLegalMovesCases:
             Square.C7: Rook(Color.BLACK, Square.C7),
         }
         exp = {
-            Move(queen, Queen(Color.WHITE, Square.A8)),
-            Move(queen, Queen(Color.WHITE, Square.A7)),
-            Move(queen, Queen(Color.WHITE, Square.B8)),
-            Move(queen, Queen(Color.WHITE, Square.A6)),
-            Move(queen, Queen(Color.WHITE, Square.C8)),
-            Move(queen, Queen(Color.WHITE, Square.B6)),
-            Move(queen, Queen(Color.WHITE, Square.C6)),
-            Move(queen, Queen(Color.WHITE, Square.C7)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.A8)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.A7)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.B8)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.A6)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.C8)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.B6)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.C6)),
+            SinglePieceMove(queen, Queen(Color.WHITE, Square.C7)),
         }
         return queen, piece_map, exp
 
@@ -561,7 +571,7 @@ class TestQueenPsuedoLegalMovesCases:
 _TestKingPsuedoLegalMovesCase = tuple[
     King,
     Mapping[Square, Piece],
-    set[Move],
+    set[SinglePieceMove],
 ]
 
 
@@ -570,14 +580,14 @@ class TestKingPsuedoLegalMovesCases:
         king = King(Color.BLACK, Square.D5)
         piece_map = {Square.D5: king}
         exp = {
-            Move(king, King(Color.BLACK, Square.C4)),
-            Move(king, King(Color.BLACK, Square.D4)),
-            Move(king, King(Color.BLACK, Square.E4)),
-            Move(king, King(Color.BLACK, Square.C5)),
-            Move(king, King(Color.BLACK, Square.E5)),
-            Move(king, King(Color.BLACK, Square.C6)),
-            Move(king, King(Color.BLACK, Square.D6)),
-            Move(king, King(Color.BLACK, Square.E6)),
+            SinglePieceMove(king, King(Color.BLACK, Square.C4)),
+            SinglePieceMove(king, King(Color.BLACK, Square.D4)),
+            SinglePieceMove(king, King(Color.BLACK, Square.E4)),
+            SinglePieceMove(king, King(Color.BLACK, Square.C5)),
+            SinglePieceMove(king, King(Color.BLACK, Square.E5)),
+            SinglePieceMove(king, King(Color.BLACK, Square.C6)),
+            SinglePieceMove(king, King(Color.BLACK, Square.D6)),
+            SinglePieceMove(king, King(Color.BLACK, Square.E6)),
         }
         return king, piece_map, exp
 
@@ -585,9 +595,9 @@ class TestKingPsuedoLegalMovesCases:
         king = King(Color.WHITE, Square.H1)
         piece_map = {Square.H1: king}
         exp = {
-            Move(king, King(Color.WHITE, Square.G1)),
-            Move(king, King(Color.WHITE, Square.G2)),
-            Move(king, King(Color.WHITE, Square.H2)),
+            SinglePieceMove(king, King(Color.WHITE, Square.G1)),
+            SinglePieceMove(king, King(Color.WHITE, Square.G2)),
+            SinglePieceMove(king, King(Color.WHITE, Square.H2)),
         }
         return king, piece_map, exp
 
@@ -605,14 +615,14 @@ class TestKingPsuedoLegalMovesCases:
             Square.C7: Rook(Color.BLACK, Square.C7),
         }
         exp = {
-            Move(king, King(Color.WHITE, Square.A5)),
-            Move(king, King(Color.WHITE, Square.B5)),
-            Move(king, King(Color.WHITE, Square.C5)),
-            Move(king, King(Color.WHITE, Square.A6)),
-            Move(king, King(Color.WHITE, Square.C6)),
-            Move(king, King(Color.WHITE, Square.A7)),
-            Move(king, King(Color.WHITE, Square.B7)),
-            Move(king, King(Color.WHITE, Square.C7)),
+            SinglePieceMove(king, King(Color.WHITE, Square.A5)),
+            SinglePieceMove(king, King(Color.WHITE, Square.B5)),
+            SinglePieceMove(king, King(Color.WHITE, Square.C5)),
+            SinglePieceMove(king, King(Color.WHITE, Square.A6)),
+            SinglePieceMove(king, King(Color.WHITE, Square.C6)),
+            SinglePieceMove(king, King(Color.WHITE, Square.A7)),
+            SinglePieceMove(king, King(Color.WHITE, Square.B7)),
+            SinglePieceMove(king, King(Color.WHITE, Square.C7)),
         }
         return king, piece_map, exp
 
@@ -640,8 +650,8 @@ class TestKingPsuedoLegalMovesCases:
             Square.H7: Rook(Color.WHITE, Square.H7),
         }
         exp = {
-            Move(king, King(Color.BLACK, Square.G8)),
-            Move(king, King(Color.BLACK, Square.G7)),
-            Move(king, King(Color.BLACK, Square.H7)),
+            SinglePieceMove(king, King(Color.BLACK, Square.G8)),
+            SinglePieceMove(king, King(Color.BLACK, Square.G7)),
+            SinglePieceMove(king, King(Color.BLACK, Square.H7)),
         }
         return king, piece_map, exp

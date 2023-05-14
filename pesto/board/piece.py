@@ -46,12 +46,12 @@ class NonPawnPiece(BasePiece):
 
     def generate_psuedo_legal_moves(
         self, piece_map: Mapping[Square, BasePiece], **_kwargs
-    ) -> set[Move]:
+    ) -> set[SinglePieceMove]:
         """Create set of moves which only consider the movement
         rules of a piece along with the placement of other
         pieces on the board.
         """
-        moves: set[Square] = set()
+        moves: set[SinglePieceMove] = set()
         start_square: Square = self.curr
 
         for offset in self._offsets:
@@ -66,7 +66,7 @@ class NonPawnPiece(BasePiece):
                 if (piece := piece_map.get(square)) is not None:
                     if piece.color != self.color:
                         moves.add(
-                            Move(
+                            SinglePieceMove(
                                 start=self.new(self.color, start_square),
                                 end=self.new(self.color, square),
                             )
@@ -74,7 +74,7 @@ class NonPawnPiece(BasePiece):
                     break
 
                 moves.add(
-                    Move(
+                    SinglePieceMove(
                         start=self.new(self.color, start_square),
                         end=self.new(self.color, square),
                     )
@@ -106,14 +106,14 @@ class Pawn(BasePiece):
         self,
         piece_map: Mapping[Square, BasePiece],
         en_passant_sq: Optional[Square],
-    ) -> set[Move]:
+    ) -> set[SinglePieceMove]:
         """Create set of moves which only consider the movement
         rules of a pawn along with the placement of other
         pieces on the board.
         """
         direction = 1 if self.color == Color.WHITE else -1
         start_square: Square = self.curr
-        moves: set[Move] = set()
+        moves: set[SinglePieceMove] = set()
         next_idx: int
         capture_idx: int
 
@@ -127,7 +127,7 @@ class Pawn(BasePiece):
             if index_on_board(next_idx):
                 if Square(next_idx) not in piece_map:
                     moves.add(
-                        Move(
+                        SinglePieceMove(
                             start=self.new(
                                 self.color,
                                 curr=start_square,
@@ -146,7 +146,7 @@ class Pawn(BasePiece):
                 if (piece := piece_map.get(Square(capture_idx))) is not None:
                     if piece.color != self.color:
                         moves.add(
-                            Move(
+                            SinglePieceMove(
                                 start=self.new(
                                     self.color,
                                     curr=start_square,
@@ -164,7 +164,7 @@ class Pawn(BasePiece):
                     op_color = Color.WHITE if self.color == Color.BLACK else Color.BLACK
                     captured_pawn_square = Square(capture_idx - 16 * direction)
                     moves.add(
-                        Move(
+                        SinglePieceMove(
                             start=self.new(
                                 self.color, curr=start_square, is_first_move=False
                             ),
@@ -182,7 +182,7 @@ class Pawn(BasePiece):
         back_rank_squares: set[Square] = {
             Square(idx + color_offset) for idx in list(range(8))
         }
-        final_moves: set[Move] = set()
+        final_moves: set[SinglePieceMove] = set()
         for move in moves:
             if move.end.curr not in back_rank_squares:
                 final_moves.add(move)
@@ -192,7 +192,7 @@ class Pawn(BasePiece):
             # moves for each possible promotion piece instead
             for piece in [Knight, Bishop, Rook, Queen]:
                 final_moves.add(
-                    Move(
+                    SinglePieceMove(
                         start=self.new(
                             self.color,
                             curr=move.start.curr,
@@ -299,12 +299,26 @@ Piece = Union[Pawn, Knight, Bishop, Rook, Queen, King]
 
 
 @dataclass(eq=True, frozen=True)
-class Move:
+class BaseMove:
     start: Piece
     end: Piece
-    captures: Optional[Piece] = None
 
-    def __lt__(self, other: Move) -> bool:
+    def __lt__(self, other: BaseMove) -> bool:
         return (self.start.curr.value + self.end.curr.value) < (
             other.start.curr.value + other.end.curr.value
         )
+
+
+@dataclass(eq=True, frozen=True)
+class SinglePieceMove(BaseMove):
+    captures: Optional[Piece] = None
+
+
+@dataclass(eq=True, frozen=True)
+class CastlingMove(BaseMove):
+    # Castling is mainly representated by the king move;
+    # this slot holds the corresponding rook move
+    castled_rook: Optional[BaseMove] = None
+
+
+Move = Union[SinglePieceMove, CastlingMove]

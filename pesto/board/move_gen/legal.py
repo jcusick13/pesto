@@ -10,7 +10,7 @@ from pesto.core.enums import Color
 
 def legal_move_generator(
     piece_map: Mapping[Square, Piece], en_passant_sq: Optional[Square], to_move: Color
-) -> list[Move]:
+) -> set[Move]:
     """Creates a group of moves that are legal when considering the
     full scope of the board (i.e. do not leave the king in check)
 
@@ -18,7 +18,7 @@ def legal_move_generator(
         * castling
         * en passant
     """
-    moves: list[Move] = []
+    moves: set[Move] = set()
 
     # Find king of color to move
     king: King
@@ -46,7 +46,7 @@ def legal_move_generator(
                 king_square = king.curr
 
             if not square_is_attacked(piece_map=tmp_piece_map, square=king_square):
-                moves.append(move)
+                moves.add(move)
 
             _ = unmake_move(piece_map=tmp_piece_map, move=tmp_move)
 

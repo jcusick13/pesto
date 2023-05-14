@@ -1,12 +1,12 @@
 from typing import Mapping, Optional
 
-from pesto.board.move_gen.moves import Move
 from pesto.board.piece import Bishop, King, Knight, Pawn, Piece, Rook, Queen
 from pesto.board.square import Square
+from pesto.board.piece import Move, SinglePieceMove
 from pesto.core.enums import Color
 
 _TestLegalMoveGeneratorCase = tuple[
-    Mapping[Square, Piece], Optional[Square], Color, list[Move]
+    Mapping[Square, Piece], Optional[Square], Color, set[Move]
 ]
 
 
@@ -20,7 +20,7 @@ class TestLegalMoveGeneratorCases:
         }
         ep_square: Optional[Square] = None
         to_move = Color.WHITE
-        exp: list[Move] = []
+        exp: set[Move] = set()
         return piece_map, ep_square, to_move, exp
 
     def case_no_legal_moves_piece_is_pinned(self) -> _TestLegalMoveGeneratorCase:
@@ -33,7 +33,7 @@ class TestLegalMoveGeneratorCases:
         }
         ep_square: Optional[Square] = None
         to_move = Color.BLACK
-        exp: list[Move] = []
+        exp: set[Move] = set()
         return piece_map, ep_square, to_move, exp
 
     def case_single_legal_non_king_move(self) -> _TestLegalMoveGeneratorCase:
@@ -49,9 +49,11 @@ class TestLegalMoveGeneratorCases:
         }
         ep_square: Optional[Square] = None
         to_move = Color.WHITE
-        exp = [
-            Move(start=Pawn(Color.WHITE, Square.E4), end=Pawn(Color.WHITE, Square.E5))
-        ]
+        exp = {
+            SinglePieceMove(
+                start=Pawn(Color.WHITE, Square.E4), end=Pawn(Color.WHITE, Square.E5)
+            )
+        }
         return piece_map, ep_square, to_move, exp
 
     def case_single_legal_king_move(self) -> _TestLegalMoveGeneratorCase:
@@ -62,9 +64,11 @@ class TestLegalMoveGeneratorCases:
         }
         ep_square: Optional[Square] = None
         to_move = Color.BLACK
-        exp = [
-            Move(start=King(Color.BLACK, Square.A8), end=King(Color.BLACK, Square.A7))
-        ]
+        exp = {
+            SinglePieceMove(
+                start=King(Color.BLACK, Square.A8), end=King(Color.BLACK, Square.A7)
+            )
+        }
         return piece_map, ep_square, to_move, exp
 
     def case_single_legal_en_passant_move(self) -> _TestLegalMoveGeneratorCase:
@@ -84,13 +88,13 @@ class TestLegalMoveGeneratorCases:
         }
         ep_square = Square.C6
         to_move = Color.WHITE
-        exp = [
-            Move(
+        exp = {
+            SinglePieceMove(
                 start=pawn,
                 end=Pawn(Color.WHITE, Square.C6),
                 captures=Pawn(Color.BLACK, Square.C5),
             )
-        ]
+        }
         return piece_map, ep_square, to_move, exp
 
     def case_multiple_legal_moves(self) -> _TestLegalMoveGeneratorCase:
@@ -103,9 +107,15 @@ class TestLegalMoveGeneratorCases:
         }
         ep_square: Optional[Square] = None
         to_move = Color.WHITE
-        exp = [
-            Move(start=King(Color.WHITE, Square.A8), end=King(Color.WHITE, Square.A7)),
-            Move(start=King(Color.WHITE, Square.A8), end=King(Color.WHITE, Square.B7)),
-            Move(start=Pawn(Color.WHITE, Square.B6), end=Pawn(Color.WHITE, Square.B7)),
-        ]
+        exp = {
+            SinglePieceMove(
+                start=King(Color.WHITE, Square.A8), end=King(Color.WHITE, Square.A7)
+            ),
+            SinglePieceMove(
+                start=King(Color.WHITE, Square.A8), end=King(Color.WHITE, Square.B7)
+            ),
+            SinglePieceMove(
+                start=Pawn(Color.WHITE, Square.B6), end=Pawn(Color.WHITE, Square.B7)
+            ),
+        }
         return piece_map, ep_square, to_move, exp

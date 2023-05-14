@@ -5,7 +5,15 @@ from typing import Mapping, Optional
 from pesto.board.board import CastleRights, CastleSide
 from pesto.board.move_gen.attack import square_is_attacked
 from pesto.board.square import Square
-from pesto.board.piece import King, Move, Piece, Rook
+from pesto.board.piece import (
+    BaseMove,
+    CastlingMove,
+    King,
+    Move,
+    Piece,
+    Rook,
+    SinglePieceMove,
+)
 from pesto.core.enums import Color
 
 
@@ -44,7 +52,7 @@ def make_move(
             )
         captured_piece = provided_capture
 
-    _move = Move(start=move.start, end=move.end, captures=captured_piece)
+    _move = SinglePieceMove(start=move.start, end=move.end, captures=captured_piece)
 
     # Update piece map to reflect having moved the piece
     _piece_map[_move.end.curr] = _move.end
@@ -135,11 +143,11 @@ def generate_castling_moves(
     piece_map: Mapping[Square, Piece],
     castle_rights: CastleRights,
     to_move: Color,
-) -> list[Move]:
-    """Return a list of castling move objects if the side `to_move`
+) -> set[CastlingMove]:
+    """Return a collection of castling move objects if the side `to_move`
     is legally allowed to castle in either direction
     """
-    moves: list[Move] = []
+    moves: set[CastlingMove] = set()
     opposite_color: Color = Color.WHITE if to_move == Color.BLACK else Color.BLACK
     rights: dict[CastleSide, bool] = castle_rights(color=to_move)
 
@@ -169,17 +177,15 @@ def generate_castling_moves(
             if not able_to_castle:
                 continue
 
-            # Able to castle! Add king and rook moves to return list
-            moves.append(
-                Move(
+            # Able to castle!
+            moves.add(
+                CastlingMove(
                     start=King(color=to_move, curr=squares.king_start),
                     end=King(color=to_move, curr=squares.king_end),
-                )
-            )
-            moves.append(
-                Move(
-                    start=Rook(color=to_move, curr=squares.rook_start),
-                    end=Rook(color=to_move, curr=squares.rook_end),
+                    castled_rook=BaseMove(
+                        start=Rook(color=to_move, curr=squares.rook_start),
+                        end=Rook(color=to_move, curr=squares.rook_end),
+                    ),
                 )
             )
 

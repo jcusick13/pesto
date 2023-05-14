@@ -17,7 +17,7 @@ from pesto.board.move_gen.tests.test_moves_cases import (
     TestUnmakeMoveCases,
 )
 from pesto.board.square import Square
-from pesto.board.piece import Piece
+from pesto.board.piece import CastlingMove, Piece
 from pesto.core.enums import Color
 
 
@@ -86,7 +86,7 @@ def test_generate_castling_moves(
     piece_map: Mapping[Square, Piece],
     castle_rights: CastleRights,
     to_move: Color,
-    exp_moves: list[Move],
+    exp_moves: set[CastlingMove],
 ):
     obs_moves = generate_castling_moves(
         piece_map=piece_map, castle_rights=castle_rights, to_move=to_move

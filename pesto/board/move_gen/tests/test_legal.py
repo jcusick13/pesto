@@ -18,7 +18,7 @@ def test_legal_move_generator(
     piece_map: Mapping[Square, Piece],
     en_passant_sq: Optional[Square],
     to_move: Color,
-    exp: list[Move],
+    exp: set[Move],
 ):
     obs = legal_move_generator(
         piece_map=piece_map, en_passant_sq=en_passant_sq, to_move=to_move
