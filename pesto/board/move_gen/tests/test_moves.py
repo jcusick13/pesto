@@ -1,5 +1,3 @@
-from typing import Mapping
-
 import pytest
 from pytest_cases import parametrize_with_cases
 
@@ -26,9 +24,9 @@ from pesto.core.enums import Color
     TestMakeMoveCases,
 )
 def test_make_move(
-    in_piece_map: Mapping[Square, Piece],
+    in_piece_map: dict[Square, Piece],
     in_move: Move,
-    out_piece_map: Mapping[Square, Piece],
+    out_piece_map: dict[Square, Piece],
     out_move: Move,
     exception: bool,
 ):
@@ -47,9 +45,9 @@ def test_make_move(
     TestUnmakeMoveCases,
 )
 def test_unmake_move(
-    in_piece_map: Mapping[Square, Piece],
+    in_piece_map: dict[Square, Piece],
     in_move: Move,
-    out_piece_map: Mapping[Square, Piece],
+    out_piece_map: dict[Square, Piece],
     exception: bool,
 ):
     if exception:
@@ -66,7 +64,7 @@ def test_unmake_move(
     TestMakeAndUnmakeMoveCases,
 )
 def test_make_and_unmake_move(
-    starting_piece_map: Mapping[Square, Piece],
+    starting_piece_map: dict[Square, Piece],
     input_move: Move,
 ):
     """Ensure `piece_map` is unchanged after making and
@@ -83,7 +81,7 @@ def test_make_and_unmake_move(
     TestGenerateCastlingMovesCases,
 )
 def test_generate_castling_moves(
-    piece_map: Mapping[Square, Piece],
+    piece_map: dict[Square, Piece],
     castle_rights: CastleRights,
     to_move: Color,
     exp_moves: set[CastlingMove],

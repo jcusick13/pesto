@@ -98,7 +98,7 @@ def _parse_fen_piece_map(string: str) -> dict[Square, Piece]:
     into a piece map
     """
     piece_map: dict[Square, Piece] = {}
-    letter_map: dict[str, Piece] = {
+    letter_map = {
         "B": Bishop,
         "K": King,
         "N": Knight,
@@ -108,8 +108,11 @@ def _parse_fen_piece_map(string: str) -> dict[Square, Piece]:
     }
 
     ranks = string.split("/")
+    rank_idx: int
+    pieces: str
     for rank_idx, pieces in enumerate(reversed(ranks)):
         file_idx = 0
+        piece: str
         for piece in pieces:
             if piece.isdigit():
                 file_idx += int(piece)
@@ -117,7 +120,7 @@ def _parse_fen_piece_map(string: str) -> dict[Square, Piece]:
 
             color = Color.WHITE if piece.isupper() else Color.BLACK
             square = Square((rank_idx * 16) + file_idx)
-            piece_map[square] = letter_map[piece.upper()](
+            piece_map[square] = letter_map[piece.upper()].new(
                 color=color,
                 curr=square,
             )

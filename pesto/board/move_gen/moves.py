@@ -1,6 +1,6 @@
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Mapping, Optional
+from typing import Optional
 
 from pesto.board.board import CastleRights, CastleSide
 from pesto.board.move_gen.attack import square_is_attacked
@@ -18,12 +18,12 @@ from pesto.core.enums import Color
 
 
 def make_move(
-    piece_map: Mapping[Square, Piece], move: Move
-) -> tuple[Mapping[Square, Piece], Move]:
+    piece_map: dict[Square, Piece], move: Move
+) -> tuple[dict[Square, Piece], Move]:
     """Creates and returns a new `piece_map` based on the
     given `move` to be played.
     """
-    _piece_map = deepcopy(piece_map)
+    _piece_map: dict[Square, Piece] = deepcopy(piece_map)
 
     if (start_piece := _piece_map.pop(move.start.curr, None)) is None:
         raise ValueError(f"Could not find piece on {move.start.curr} to move")
@@ -80,9 +80,7 @@ def make_move(
     return _piece_map, _move
 
 
-def unmake_move(
-    piece_map: Mapping[Square, Piece], move: Move
-) -> Mapping[Square, Piece]:
+def unmake_move(piece_map: dict[Square, Piece], move: Move) -> dict[Square, Piece]:
     """Creates and returns a new `piece_map` based on
     reverting the provided `move`.
 
@@ -132,7 +130,7 @@ class CastleSquare:
     color: Color
     castle_side: CastleSide
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self._color_adjust: int = 0 if self.color == Color.WHITE else 112
 
     @property
@@ -169,7 +167,7 @@ class CastleSquare:
 
 
 def generate_castling_moves(
-    piece_map: Mapping[Square, Piece],
+    piece_map: dict[Square, Piece],
     castle_rights: CastleRights,
     to_move: Color,
 ) -> set[CastlingMove]:

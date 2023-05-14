@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from abc import abstractmethod, abstractproperty
 from dataclasses import dataclass
-from typing import Optional, Mapping, Union
+from typing import Optional, Union
 
 from pesto.board.square import Square
 from pesto.board.utils import index_on_board
@@ -15,7 +15,7 @@ VERT_HORIZ_OFFSETS: set[int] = {-16, -1, 16, 1}
 
 
 @dataclass(eq=True, frozen=True)
-class BasePiece:
+class Piece:
     color: Color
     curr: Square
 
@@ -39,7 +39,7 @@ class BasePiece:
 
 
 @dataclass(eq=True, frozen=True)
-class NonPawnPiece(BasePiece):
+class NonPawnPiece(Piece):
     @property
     @abstractproperty
     def _slides(self) -> bool:
@@ -53,9 +53,7 @@ class NonPawnPiece(BasePiece):
         of a piece's next move"""
 
     def generate_psuedo_legal_moves(
-        self,
-        piece_map: Mapping[Square, BasePiece],
-        en_passant_sq: Optional[Square] = None,
+        self, piece_map: dict[Square, Piece], en_passant_sq: Optional[Square] = None
     ) -> set[SinglePieceMove]:
         """Create set of moves which only consider the movement
         rules of a piece along with the placement of other
@@ -95,7 +93,7 @@ class NonPawnPiece(BasePiece):
         return moves
 
 
-class Pawn(BasePiece):
+class Pawn(Piece):
     # To be set to False after having moved
     is_first_move: bool = True
 
@@ -114,7 +112,7 @@ class Pawn(BasePiece):
 
     def generate_psuedo_legal_moves(
         self,
-        piece_map: Mapping[Square, BasePiece],
+        piece_map: dict[Square, Piece],
         en_passant_sq: Optional[Square],
     ) -> set[SinglePieceMove]:
         """Create set of moves which only consider the movement
@@ -200,7 +198,7 @@ class Pawn(BasePiece):
 
             # Pawn promotes - disregard pawn move and add new
             # moves for each possible promotion piece instead
-            for piece in [Knight, Bishop, Rook, Queen]:
+            for promotion_piece in [Knight, Bishop, Rook, Queen]:
                 final_moves.add(
                     SinglePieceMove(
                         start=self.new(
@@ -208,7 +206,7 @@ class Pawn(BasePiece):
                             curr=move.start.curr,
                             is_first_move=False,
                         ),
-                        end=piece(self.color, move.end.curr),
+                        end=promotion_piece.new(self.color, move.end.curr),
                     )
                 )
 
@@ -303,9 +301,6 @@ class King(NonPawnPiece):
     @classmethod
     def new(cls, color: Color, curr: Square) -> King:
         return King(color, curr)
-
-
-Piece = Union[Pawn, Knight, Bishop, Rook, Queen, King]
 
 
 @dataclass(eq=True, frozen=True)

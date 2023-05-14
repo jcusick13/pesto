@@ -1,10 +1,10 @@
-from typing import Mapping, Optional
+from typing import Optional
 
 from pesto.board.square import Square
 from pesto.board.piece import Bishop, Pawn, Piece, Rook
 from pesto.core.enums import Color
 
-_TestSquareIsAttackedCase = tuple[Square, Mapping[Square, Piece], Optional[Color], bool]
+_TestSquareIsAttackedCase = tuple[Square, dict[Square, Piece], Optional[Color], bool]
 
 
 class TestSquareIsAttackedCases:
@@ -17,21 +17,21 @@ class TestSquareIsAttackedCases:
 
     def case_attacked_once(self) -> _TestSquareIsAttackedCase:
         square = Square.A5
-        piece_map = {Square.H5: Rook(Color.BLACK, Square.H5)}
+        piece_map: dict[Square, Piece] = {Square.H5: Rook(Color.BLACK, Square.H5)}
         by: Optional[Color] = None
         exp = True
         return square, piece_map, by, exp
 
     def case_attacked_once_by_wrong_color(self) -> _TestSquareIsAttackedCase:
         square = Square.C6
-        piece_map = {Square.C1: Rook(Color.WHITE, Square.C1)}
+        piece_map: dict[Square, Piece] = {Square.C1: Rook(Color.WHITE, Square.C1)}
         by = Color.BLACK
         exp = False
         return square, piece_map, by, exp
 
     def case_attacked_multiple_times(self) -> _TestSquareIsAttackedCase:
         square = Square.F2
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.H4: Bishop(Color.WHITE, Square.H4),
             Square.F6: Rook(Color.WHITE, Square.F6),
         }
@@ -41,7 +41,7 @@ class TestSquareIsAttackedCases:
 
     def case_attacker_is_blocked_by_piece(self) -> _TestSquareIsAttackedCase:
         square = Square.D8
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.D7: Pawn(Color.BLACK, Square.D7),
             Square.D3: Rook(Color.WHITE, Square.D3),
         }

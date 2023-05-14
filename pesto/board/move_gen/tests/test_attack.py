@@ -1,4 +1,4 @@
-from typing import Mapping, Optional
+from typing import Optional
 
 from pytest_cases import parametrize_with_cases
 
@@ -14,7 +14,7 @@ from pesto.board.move_gen.tests.test_attack_cases import TestSquareIsAttackedCas
     TestSquareIsAttackedCases,
 )
 def test_square_is_attacked(
-    square: Square, piece_map: Mapping[Square, Piece], by: Optional[Color], exp: bool
+    square: Square, piece_map: dict[Square, Piece], by: Optional[Color], exp: bool
 ):
     obs = square_is_attacked(piece_map=piece_map, square=square, by=by)
     assert exp == obs

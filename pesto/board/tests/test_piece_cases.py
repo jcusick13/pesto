@@ -1,4 +1,4 @@
-from typing import Mapping, Optional
+from typing import Optional
 
 from pesto.board.piece import (
     Bishop,
@@ -15,7 +15,7 @@ from pesto.core.enums import Color
 
 _TestPawnPsuedoLegalMovesCase = tuple[
     Pawn,
-    Mapping[Square, Piece],
+    dict[Square, Piece],
     Optional[Square],
     set[SinglePieceMove],
 ]
@@ -25,7 +25,7 @@ class TestPawnPsuedoLegalMovesCases:
     def case_white_first_move(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.WHITE, Square.D2)
         pawn.is_first_move = True
-        piece_map = {Square.D2: pawn}
+        piece_map: dict[Square, Piece] = {Square.D2: pawn}
         ep_square: Optional[Square] = None
         exp = {
             SinglePieceMove(pawn, Pawn(Color.WHITE, Square.D3)),
@@ -36,7 +36,7 @@ class TestPawnPsuedoLegalMovesCases:
     def case_black_first_move(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.BLACK, Square.C7)
         pawn.is_first_move = True
-        piece_map = {Square.C7: pawn}
+        piece_map: dict[Square, Piece] = {Square.C7: pawn}
         ep_square: Optional[Square] = None
         exp = {
             SinglePieceMove(pawn, Pawn(Color.BLACK, Square.C6)),
@@ -47,7 +47,7 @@ class TestPawnPsuedoLegalMovesCases:
     def case_white_blocked(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.WHITE, Square.D7)
         pawn.is_first_move = False
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.D7: pawn,
             Square.D8: Rook(Color.BLACK, Square.D8),
         }
@@ -58,7 +58,7 @@ class TestPawnPsuedoLegalMovesCases:
     def case_black_blocked(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.BLACK, Square.A6)
         pawn.is_first_move = False
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.A6: pawn,
             Square.A5: Rook(Color.WHITE, Square.A5),
         }
@@ -69,7 +69,7 @@ class TestPawnPsuedoLegalMovesCases:
     def case_white_capture(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.WHITE, Square.D5)
         pawn.is_first_move = False
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.D5: pawn,
             Square.C6: Rook(Color.BLACK, Square.C6),
             Square.E6: Rook(Color.BLACK, Square.E6),
@@ -85,7 +85,7 @@ class TestPawnPsuedoLegalMovesCases:
     def case_black_capture(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.BLACK, Square.G4)
         pawn.is_first_move = False
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.G4: pawn,
             Square.H3: Rook(Color.WHITE, Square.H3),
             Square.F3: Rook(Color.WHITE, Square.F3),
@@ -101,7 +101,7 @@ class TestPawnPsuedoLegalMovesCases:
     def case_white_cant_capture_white(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.WHITE, Square.E4)
         pawn.is_first_move = False
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.E4: pawn,
             Square.D5: Rook(Color.WHITE, Square.D5),
             Square.F5: Rook(Color.WHITE, Square.F5),
@@ -113,7 +113,7 @@ class TestPawnPsuedoLegalMovesCases:
     def case_black_cant_capture_black(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.BLACK, Square.D6)
         pawn.is_first_move = False
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.D6: pawn,
             Square.C5: Rook(Color.BLACK, Square.C5),
             Square.E5: Rook(Color.BLACK, Square.E5),
@@ -125,7 +125,7 @@ class TestPawnPsuedoLegalMovesCases:
     def case_white_promotes(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.WHITE, Square.D7)
         pawn.is_first_move = False
-        piece_map = {Square.D7: pawn}
+        piece_map: dict[Square, Piece] = {Square.D7: pawn}
         ep_square: Optional[Square] = None
         exp = {
             SinglePieceMove(pawn, Knight(Color.WHITE, Square.D8)),
@@ -138,7 +138,7 @@ class TestPawnPsuedoLegalMovesCases:
     def case_black_promotes(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.BLACK, Square.E2)
         pawn.is_first_move = False
-        piece_map = {Square.E2: pawn}
+        piece_map: dict[Square, Piece] = {Square.E2: pawn}
         ep_square: Optional[Square] = None
         exp = {
             SinglePieceMove(pawn, Knight(Color.BLACK, Square.E1)),
@@ -152,7 +152,7 @@ class TestPawnPsuedoLegalMovesCases:
         pawn = Pawn(Color.WHITE, Square.A5)
         pawn.is_first_move = False
         target_pawn = Pawn(Color.BLACK, Square.B5)
-        piece_map = {Square.A5: pawn, Square.B5: target_pawn}
+        piece_map: dict[Square, Piece] = {Square.A5: pawn, Square.B5: target_pawn}
         ep_square = Square.B6
         exp = {
             SinglePieceMove(pawn, Pawn(Color.WHITE, Square.A6)),
@@ -164,7 +164,7 @@ class TestPawnPsuedoLegalMovesCases:
         pawn = Pawn(Color.BLACK, Square.B4)
         pawn.is_first_move = False
         target_pawn = Pawn(Color.WHITE, Square.C4)
-        piece_map = {Square.B4: pawn, Square.C4: target_pawn}
+        piece_map: dict[Square, Piece] = {Square.B4: pawn, Square.C4: target_pawn}
         ep_square = Square.C3
         exp = {
             SinglePieceMove(pawn, Pawn(Color.BLACK, Square.B3)),
@@ -175,7 +175,7 @@ class TestPawnPsuedoLegalMovesCases:
 
 _TestKnightPsuedoLegalMovesCase = tuple[
     Knight,
-    Mapping[Square, Piece],
+    dict[Square, Piece],
     set[SinglePieceMove],
 ]
 
@@ -183,7 +183,7 @@ _TestKnightPsuedoLegalMovesCase = tuple[
 class TestKnightPsuedoLegalMovesCases:
     def case_center_of_empty_board(self) -> _TestKnightPsuedoLegalMovesCase:
         knight = Knight(Color.BLACK, Square.E4)
-        piece_map = {Square.E4: knight}
+        piece_map: dict[Square, Piece] = {Square.E4: knight}
         exp = {
             SinglePieceMove(knight, Knight(Color.BLACK, Square.F6)),
             SinglePieceMove(knight, Knight(Color.BLACK, Square.G5)),
@@ -198,7 +198,7 @@ class TestKnightPsuedoLegalMovesCases:
 
     def case_edge_of_empty_board(self) -> _TestKnightPsuedoLegalMovesCase:
         knight = Knight(Color.WHITE, Square.B8)
-        piece_map = {Square.B8: knight}
+        piece_map: dict[Square, Piece] = {Square.B8: knight}
         exp = {
             SinglePieceMove(knight, Knight(Color.WHITE, Square.A6)),
             SinglePieceMove(knight, Knight(Color.WHITE, Square.C6)),
@@ -208,7 +208,7 @@ class TestKnightPsuedoLegalMovesCases:
 
     def case_completely_surrounded(self) -> _TestKnightPsuedoLegalMovesCase:
         knight = Knight(Color.BLACK, Square.E4)
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.E4: knight,
             Square.D3: Rook(Color.WHITE, Square.D3),
             Square.E3: Rook(Color.WHITE, Square.E3),
@@ -233,7 +233,7 @@ class TestKnightPsuedoLegalMovesCases:
 
     def case_cant_capture_same_color(self) -> _TestKnightPsuedoLegalMovesCase:
         knight = Knight(Color.WHITE, Square.E4)
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.E4: knight,
             Square.F6: Rook(Color.WHITE, Square.F6),
             Square.G5: Rook(Color.WHITE, Square.G5),
@@ -250,7 +250,7 @@ class TestKnightPsuedoLegalMovesCases:
 
 _TestBishopPsuedoLegalMovesCase = tuple[
     Bishop,
-    Mapping[Square, Piece],
+    dict[Square, Piece],
     set[SinglePieceMove],
 ]
 
@@ -258,7 +258,7 @@ _TestBishopPsuedoLegalMovesCase = tuple[
 class TestBishopPsuedoLegalMovesCases:
     def case_center_of_empty_board(self) -> _TestBishopPsuedoLegalMovesCase:
         bishop = Bishop(Color.BLACK, Square.E5)
-        piece_map = {Square.E5: bishop}
+        piece_map: dict[Square, Piece] = {Square.E5: bishop}
         exp = {
             SinglePieceMove(bishop, Bishop(Color.BLACK, Square.A1)),
             SinglePieceMove(bishop, Bishop(Color.BLACK, Square.B2)),
@@ -278,7 +278,7 @@ class TestBishopPsuedoLegalMovesCases:
 
     def case_edge_of_empty_board(self) -> _TestBishopPsuedoLegalMovesCase:
         bishop = Bishop(Color.WHITE, Square.B7)
-        piece_map = {Square.B7: bishop}
+        piece_map: dict[Square, Piece] = {Square.B7: bishop}
         exp = {
             SinglePieceMove(bishop, Bishop(Color.WHITE, Square.A6)),
             SinglePieceMove(bishop, Bishop(Color.WHITE, Square.C8)),
@@ -294,7 +294,7 @@ class TestBishopPsuedoLegalMovesCases:
 
     def case_completely_surrounded(self) -> _TestBishopPsuedoLegalMovesCase:
         bishop = Bishop(Color.WHITE, Square.E3)
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.E3: bishop,
             Square.D2: Rook(Color.BLACK, Square.D2),
             Square.D4: Rook(Color.BLACK, Square.D4),
@@ -311,7 +311,7 @@ class TestBishopPsuedoLegalMovesCases:
 
     def case_cant_capture_same_color(self) -> _TestBishopPsuedoLegalMovesCase:
         bishop = Bishop(Color.BLACK, Square.E3)
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.E3: bishop,
             Square.D2: Rook(Color.BLACK, Square.D2),
             Square.D4: Rook(Color.BLACK, Square.D4),
@@ -323,7 +323,7 @@ class TestBishopPsuedoLegalMovesCases:
 
     def case_limited_movement_in_corner(self) -> _TestBishopPsuedoLegalMovesCase:
         bishop = Bishop(Color.BLACK, Square.G2)
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.G2: bishop,
             Square.F3: Rook(Color.WHITE, Square.F3),
         }
@@ -338,7 +338,7 @@ class TestBishopPsuedoLegalMovesCases:
 
 _TestRookPsuedoLegalMovesCase = tuple[
     Rook,
-    Mapping[Square, Piece],
+    dict[Square, Piece],
     set[SinglePieceMove],
 ]
 
@@ -346,7 +346,7 @@ _TestRookPsuedoLegalMovesCase = tuple[
 class TestRookPsuedoLegalMovesCases:
     def case_center_of_empty_board(self) -> _TestRookPsuedoLegalMovesCase:
         rook = Rook(Color.WHITE, Square.D4)
-        piece_map = {Square.D4: rook}
+        piece_map: dict[Square, Piece] = {Square.D4: rook}
         exp = {
             SinglePieceMove(rook, Rook(Color.WHITE, Square.D1)),
             SinglePieceMove(rook, Rook(Color.WHITE, Square.D2)),
@@ -367,7 +367,7 @@ class TestRookPsuedoLegalMovesCases:
 
     def case_edge_of_empty_board(self) -> _TestRookPsuedoLegalMovesCase:
         rook = Rook(Color.BLACK, Square.H8)
-        piece_map = {Square.H8: rook}
+        piece_map: dict[Square, Piece] = {Square.H8: rook}
         exp = {
             SinglePieceMove(rook, Rook(Color.BLACK, Square.H7)),
             SinglePieceMove(rook, Rook(Color.BLACK, Square.H6)),
@@ -388,7 +388,7 @@ class TestRookPsuedoLegalMovesCases:
 
     def case_completely_surrounded(self) -> _TestRookPsuedoLegalMovesCase:
         rook = Rook(Color.BLACK, Square.D4)
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.D4: rook,
             Square.D5: Rook(Color.WHITE, Square.D5),
             Square.E4: Rook(Color.WHITE, Square.E4),
@@ -405,7 +405,7 @@ class TestRookPsuedoLegalMovesCases:
 
     def case_cant_capture_same_color(self) -> _TestRookPsuedoLegalMovesCase:
         rook = Rook(Color.WHITE, Square.D4)
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.D4: rook,
             Square.D5: Rook(Color.WHITE, Square.D5),
             Square.E4: Rook(Color.WHITE, Square.E4),
@@ -417,7 +417,7 @@ class TestRookPsuedoLegalMovesCases:
 
     def case_limited_movement_in_corner(self) -> _TestRookPsuedoLegalMovesCase:
         rook = Rook(Color.WHITE, Square.G7)
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.G7: rook,
             Square.F7: Rook(Color.BLACK, Square.F7),
             Square.G6: Rook(Color.BLACK, Square.G6),
@@ -433,7 +433,7 @@ class TestRookPsuedoLegalMovesCases:
 
 _TestQueenPsuedoLegalMovesCase = tuple[
     Queen,
-    Mapping[Square, Piece],
+    dict[Square, Piece],
     set[SinglePieceMove],
 ]
 
@@ -441,7 +441,7 @@ _TestQueenPsuedoLegalMovesCase = tuple[
 class TestQueenPsuedoLegalMovesCases:
     def case_center_of_empty_board(self) -> _TestQueenPsuedoLegalMovesCase:
         queen = Queen(Color.WHITE, Square.D5)
-        piece_map = {Square.D5: queen}
+        piece_map: dict[Square, Piece] = {Square.D5: queen}
         exp = {
             SinglePieceMove(queen, Queen(Color.WHITE, Square.D1)),
             SinglePieceMove(queen, Queen(Color.WHITE, Square.D2)),
@@ -475,7 +475,7 @@ class TestQueenPsuedoLegalMovesCases:
 
     def case_edge_of_empty_board(self) -> _TestQueenPsuedoLegalMovesCase:
         queen = Queen(Color.WHITE, Square.G2)
-        piece_map = {Square.G2: queen}
+        piece_map: dict[Square, Piece] = {Square.G2: queen}
         exp = {
             SinglePieceMove(queen, Queen(Color.WHITE, Square.A2)),
             SinglePieceMove(queen, Queen(Color.WHITE, Square.B2)),
@@ -505,7 +505,7 @@ class TestQueenPsuedoLegalMovesCases:
 
     def case_completely_surrounded(self) -> _TestQueenPsuedoLegalMovesCase:
         queen = Queen(Color.WHITE, Square.C4)
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.C4: queen,
             Square.C5: Rook(Color.BLACK, Square.C5),
             Square.D5: Rook(Color.BLACK, Square.D5),
@@ -530,7 +530,7 @@ class TestQueenPsuedoLegalMovesCases:
 
     def case_cant_capture_same_color(self) -> _TestQueenPsuedoLegalMovesCase:
         queen = Queen(Color.BLACK, Square.C4)
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.C4: queen,
             Square.C5: Rook(Color.BLACK, Square.C5),
             Square.D5: Rook(Color.BLACK, Square.D5),
@@ -546,7 +546,7 @@ class TestQueenPsuedoLegalMovesCases:
 
     def case_limited_movement_in_corner(self) -> _TestQueenPsuedoLegalMovesCase:
         queen = Queen(Color.WHITE, Square.B7)
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.B7: queen,
             Square.A6: Rook(Color.BLACK, Square.A6),
             Square.C8: Rook(Color.BLACK, Square.C8),
@@ -569,7 +569,7 @@ class TestQueenPsuedoLegalMovesCases:
 
 _TestKingPsuedoLegalMovesCase = tuple[
     King,
-    Mapping[Square, Piece],
+    dict[Square, Piece],
     set[SinglePieceMove],
 ]
 
@@ -577,7 +577,7 @@ _TestKingPsuedoLegalMovesCase = tuple[
 class TestKingPsuedoLegalMovesCases:
     def case_center_of_empty_board(self) -> _TestKingPsuedoLegalMovesCase:
         king = King(Color.BLACK, Square.D5)
-        piece_map = {Square.D5: king}
+        piece_map: dict[Square, Piece] = {Square.D5: king}
         exp = {
             SinglePieceMove(king, King(Color.BLACK, Square.C4)),
             SinglePieceMove(king, King(Color.BLACK, Square.D4)),
@@ -592,7 +592,7 @@ class TestKingPsuedoLegalMovesCases:
 
     def case_edge_of_empty_board(self) -> _TestKingPsuedoLegalMovesCase:
         king = King(Color.WHITE, Square.H1)
-        piece_map = {Square.H1: king}
+        piece_map: dict[Square, Piece] = {Square.H1: king}
         exp = {
             SinglePieceMove(king, King(Color.WHITE, Square.G1)),
             SinglePieceMove(king, King(Color.WHITE, Square.G2)),
@@ -602,7 +602,7 @@ class TestKingPsuedoLegalMovesCases:
 
     def case_completely_surrounded(self) -> _TestKingPsuedoLegalMovesCase:
         king = King(Color.WHITE, Square.B6)
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.B6: king,
             Square.A5: Rook(Color.BLACK, Square.A5),
             Square.B5: Rook(Color.BLACK, Square.B5),
@@ -627,7 +627,7 @@ class TestKingPsuedoLegalMovesCases:
 
     def case_cant_capture_same_color(self) -> _TestKingPsuedoLegalMovesCase:
         king = King(Color.BLACK, Square.B6)
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.B6: king,
             Square.A5: Rook(Color.BLACK, Square.A5),
             Square.B5: Rook(Color.BLACK, Square.B5),
@@ -643,7 +643,7 @@ class TestKingPsuedoLegalMovesCases:
 
     def case_limited_movement_in_corner(self) -> _TestKingPsuedoLegalMovesCase:
         king = King(Color.BLACK, Square.H8)
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.H8: king,
             Square.G7: Rook(Color.WHITE, Square.G7),
             Square.H7: Rook(Color.WHITE, Square.H7),

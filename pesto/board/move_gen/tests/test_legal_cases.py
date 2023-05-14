@@ -14,7 +14,7 @@ _TestLegalMoveGeneratorCase = tuple[
 class TestLegalMoveGeneratorCases:
     def case_no_legal_moves(self) -> _TestLegalMoveGeneratorCase:
         """King is trapped in corner"""
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.A1: King(Color.WHITE, Square.A1),
             Square.H2: Rook(Color.BLACK, Square.H2),
             Square.B8: Rook(Color.BLACK, Square.B8),
@@ -27,7 +27,7 @@ class TestLegalMoveGeneratorCases:
 
     def case_no_legal_moves_piece_is_pinned(self) -> _TestLegalMoveGeneratorCase:
         """King is stalemated and lone piece in front of it is pinned"""
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.H8: King(Color.BLACK, Square.H8),
             Square.H7: Knight(Color.BLACK, Square.H7),
             Square.H1: Rook(Color.WHITE, Square.H1),
@@ -44,7 +44,7 @@ class TestLegalMoveGeneratorCases:
         pawn = Pawn(Color.WHITE, Square.E4)
         pawn.is_first_move = False
 
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.A1: King(Color.WHITE, Square.A1),
             Square.H2: Rook(Color.BLACK, Square.H2),
             Square.B8: Rook(Color.BLACK, Square.B8),
@@ -62,7 +62,7 @@ class TestLegalMoveGeneratorCases:
 
     def case_single_legal_king_move(self) -> _TestLegalMoveGeneratorCase:
         """King is trapped along the a-file"""
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.A8: King(Color.BLACK, Square.A8),
             Square.B1: Rook(Color.WHITE, Square.B1),
         }
@@ -83,7 +83,7 @@ class TestLegalMoveGeneratorCases:
         pawn = Pawn(Color.WHITE, Square.B5)
         pawn.is_first_move = False
 
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.A1: Rook(Color.BLACK, Square.A1),
             Square.C1: Rook(Color.BLACK, Square.C1),
             Square.C5: Pawn(Color.BLACK, Square.C5),
@@ -106,7 +106,7 @@ class TestLegalMoveGeneratorCases:
     def case_multiple_legal_moves(self) -> _TestLegalMoveGeneratorCase:
         pawn = Pawn(Color.WHITE, Square.B6)
         pawn.is_first_move = False
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.A8: King(Color.WHITE, Square.A8),
             Square.B6: pawn,
             Square.D6: Bishop(Color.BLACK, Square.D6),

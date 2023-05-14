@@ -1,4 +1,4 @@
-from typing import Mapping, Optional
+from typing import Optional
 
 from pesto.board.square import Square
 from pesto.board.piece import Piece
@@ -6,7 +6,7 @@ from pesto.core.enums import Color
 
 
 def square_is_attacked(
-    piece_map: Mapping[Square, Piece],
+    piece_map: dict[Square, Piece],
     square: Square,
     by: Optional[Color] = None,
 ) -> bool:

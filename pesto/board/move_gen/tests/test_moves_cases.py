@@ -1,5 +1,3 @@
-from typing import Mapping
-
 from pesto.board.board import CastleRights, CastleSide
 from pesto.board.square import Square
 from pesto.board.piece import (
@@ -17,9 +15,9 @@ from pesto.core.enums import Color
 
 
 _TestMakeMoveCase = tuple[
-    Mapping[Square, Piece],
+    dict[Square, Piece],
     Move,
-    Mapping[Square, Piece],
+    dict[Square, Piece],
     Move,
     bool,
 ]
@@ -27,12 +25,12 @@ _TestMakeMoveCase = tuple[
 
 class TestMakeMoveCases:
     def case_exc_no_piece_to_move(self) -> _TestMakeMoveCase:
-        in_piece_map: Mapping[Square, Piece] = {}
+        in_piece_map: dict[Square, Piece] = {}
         in_move = SinglePieceMove(
             start=King(Color.BLACK, Square.D5),
             end=King(Color.BLACK, Square.D6),
         )
-        out_piece_map: Mapping[Square, Piece] = {}
+        out_piece_map: dict[Square, Piece] = {}
         out_move = in_move  # unused
         exception = True
         return in_piece_map, in_move, out_piece_map, out_move, exception
@@ -52,12 +50,12 @@ class TestMakeMoveCases:
         return in_piece_map, in_move, out_piece_map, out_move, exception
 
     def case_exc_move_piece_is_different_than_board_piece(self) -> _TestMakeMoveCase:
-        in_piece_map = {Square.D5: King(Color.WHITE, Square.D5)}
+        in_piece_map: dict[Square, Piece] = {Square.D5: King(Color.WHITE, Square.D5)}
         in_move = SinglePieceMove(
             start=King(Color.BLACK, Square.D5),
             end=King(Color.BLACK, Square.D6),
         )
-        out_piece_map: Mapping[Square, Piece] = {}
+        out_piece_map: dict[Square, Piece] = {}
         out_move = in_move  # unused
         exception = True
         return in_piece_map, in_move, out_piece_map, out_move, exception
@@ -80,7 +78,7 @@ class TestMakeMoveCases:
         return in_piece_map, in_move, out_piece_map, out_move, exception
 
     def case_exc_attempted_to_capture_own_color_piece(self) -> _TestMakeMoveCase:
-        in_piece_map = {
+        in_piece_map: dict[Square, Piece] = {
             Square.D5: King(Color.WHITE, Square.D5),
             Square.D6: Pawn(Color.WHITE, Square.D6),
         }
@@ -88,18 +86,18 @@ class TestMakeMoveCases:
             start=King(Color.WHITE, Square.D5),
             end=King(Color.WHITE, Square.D6),
         )
-        out_piece_map: Mapping[Square, Piece] = {}
+        out_piece_map: dict[Square, Piece] = {}
         out_move = in_move  # unused
         exception = True
         return in_piece_map, in_move, out_piece_map, out_move, exception
 
     def case_move_to_unoccupied_square(self) -> _TestMakeMoveCase:
-        in_piece_map = {Square.D5: King(Color.WHITE, Square.D5)}
+        in_piece_map: dict[Square, Piece] = {Square.D5: King(Color.WHITE, Square.D5)}
         in_move = SinglePieceMove(
             start=King(Color.WHITE, Square.D5),
             end=King(Color.WHITE, Square.D6),
         )
-        out_piece_map = {Square.D6: King(Color.WHITE, Square.D6)}
+        out_piece_map: dict[Square, Piece] = {Square.D6: King(Color.WHITE, Square.D6)}
         out_move = SinglePieceMove(
             start=King(Color.WHITE, Square.D5),
             end=King(Color.WHITE, Square.D6),
@@ -108,7 +106,7 @@ class TestMakeMoveCases:
         return in_piece_map, in_move, out_piece_map, out_move, exception
 
     def case_move_to_occupied_square(self) -> _TestMakeMoveCase:
-        in_piece_map = {
+        in_piece_map: dict[Square, Piece] = {
             Square.D5: King(Color.WHITE, Square.D5),
             Square.D6: Pawn(Color.BLACK, Square.D6),
         }
@@ -117,7 +115,7 @@ class TestMakeMoveCases:
             end=King(Color.WHITE, Square.D6),
             captures=None,
         )
-        out_piece_map = {
+        out_piece_map: dict[Square, Piece] = {
             Square.D6: King(Color.WHITE, Square.D6),
         }
         out_move = SinglePieceMove(
@@ -150,16 +148,16 @@ class TestMakeMoveCases:
 
 
 _TestUnmakeMoveCase = tuple[
-    Mapping[Square, Piece],
+    dict[Square, Piece],
     Move,
-    Mapping[Square, Piece],
+    dict[Square, Piece],
     bool,
 ]
 
 
 class TestUnmakeMoveCases:
     def case_exc_piece_found_on_move_start_square(self) -> _TestUnmakeMoveCase:
-        in_piece_map = {
+        in_piece_map: dict[Square, Piece] = {
             Square.D5: Pawn(Color.WHITE, Square.D5),
             Square.D6: King(Color.WHITE, Square.D6),
         }
@@ -167,49 +165,49 @@ class TestUnmakeMoveCases:
             start=King(Color.WHITE, Square.D5),
             end=King(Color.WHITE, Square.D6),
         )
-        out_piece_map: Mapping[Square, Piece] = {}
+        out_piece_map: dict[Square, Piece] = {}
         exception = True
         return in_piece_map, in_move, out_piece_map, exception
 
     def case_exc_main_piece_was_not_found_on_end_square(self) -> _TestUnmakeMoveCase:
-        in_piece_map = {Square.D6: Pawn(Color.WHITE, Square.D6)}
+        in_piece_map: dict[Square, Piece] = {Square.D6: Pawn(Color.WHITE, Square.D6)}
         in_move = SinglePieceMove(
             start=King(Color.WHITE, Square.D5),
             end=King(Color.WHITE, Square.D6),
         )
-        out_piece_map: Mapping[Square, Piece] = {}
+        out_piece_map: dict[Square, Piece] = {}
         exception = True
         return in_piece_map, in_move, out_piece_map, exception
 
     def case_exc_no_piece_on_square_where_capture_occurred(self) -> _TestUnmakeMoveCase:
-        in_piece_map = {Square.D5: King(Color.WHITE, Square.D5)}
+        in_piece_map: dict[Square, Piece] = {Square.D5: King(Color.WHITE, Square.D5)}
         in_move = SinglePieceMove(
             start=King(Color.WHITE, Square.D5),
             end=King(Color.WHITE, Square.D6),
             captures=Pawn(Color.BLACK, Square.D6),
         )
-        out_piece_map: Mapping[Square, Piece] = {}
+        out_piece_map: dict[Square, Piece] = {}
         exception = True
         return in_piece_map, in_move, out_piece_map, exception
 
     def case_revert_move_without_a_capture(self) -> _TestUnmakeMoveCase:
-        in_piece_map = {Square.D6: King(Color.WHITE, Square.D6)}
+        in_piece_map: dict[Square, Piece] = {Square.D6: King(Color.WHITE, Square.D6)}
         in_move = SinglePieceMove(
             start=King(Color.WHITE, Square.D5),
             end=King(Color.WHITE, Square.D6),
         )
-        out_piece_map = {Square.D5: King(Color.WHITE, Square.D5)}
+        out_piece_map: dict[Square, Piece] = {Square.D5: King(Color.WHITE, Square.D5)}
         exception = False
         return in_piece_map, in_move, out_piece_map, exception
 
     def case_revert_move_with_a_capture(self) -> _TestUnmakeMoveCase:
-        in_piece_map = {Square.D6: King(Color.WHITE, Square.D6)}
+        in_piece_map: dict[Square, Piece] = {Square.D6: King(Color.WHITE, Square.D6)}
         in_move = SinglePieceMove(
             start=King(Color.WHITE, Square.D5),
             end=King(Color.WHITE, Square.D6),
             captures=Pawn(Color.BLACK, Square.D6),
         )
-        out_piece_map = {
+        out_piece_map: dict[Square, Piece] = {
             Square.D5: King(Color.WHITE, Square.D5),
             Square.D6: Pawn(Color.BLACK, Square.D6),
         }
@@ -237,14 +235,14 @@ class TestUnmakeMoveCases:
 
 
 _TestMakeAndUnmakeMoveCases = tuple[
-    Mapping[Square, Piece],
+    dict[Square, Piece],
     Move,
 ]
 
 
 class TestMakeAndUnmakeMoveCases:
     def case_single_king_move(self) -> _TestMakeAndUnmakeMoveCases:
-        start_map = {
+        start_map: dict[Square, Piece] = {
             Square.E4: King(Color.BLACK, Square.E4),
             Square.E5: Pawn(Color.WHITE, Square.E5),
         }
@@ -256,7 +254,7 @@ class TestMakeAndUnmakeMoveCases:
 
     def case_en_passant(self) -> _TestMakeAndUnmakeMoveCases:
         pawn = Pawn(Color.WHITE, Square.B5)
-        start_map = {
+        start_map: dict[Square, Piece] = {
             Square.C5: Pawn(Color.BLACK, Square.C5),
             Square.B4: King(Color.WHITE, Square.B4),
             Square.B5: pawn,
@@ -270,7 +268,7 @@ class TestMakeAndUnmakeMoveCases:
 
 
 _TestGenerateCastlingMovesCase = tuple[
-    Mapping[Square, Piece],
+    dict[Square, Piece],
     CastleRights,
     Color,
     set[CastlingMove],
@@ -279,7 +277,7 @@ _TestGenerateCastlingMovesCase = tuple[
 
 class TestGenerateCastlingMovesCases:
     def case_side_to_move_has_no_castle_rights(self) -> _TestGenerateCastlingMovesCase:
-        piece_map: Mapping[Square, Piece] = {}
+        piece_map: dict[Square, Piece] = {}
         castle_rights = CastleRights(
             _rights={
                 Color.WHITE: {CastleSide.SHORT: False, CastleSide.LONG: False},
@@ -292,7 +290,7 @@ class TestGenerateCastlingMovesCases:
         return piece_map, castle_rights, to_move, exp_moves
 
     def case_able_to_castle_short(self) -> _TestGenerateCastlingMovesCase:
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.E8: King(Color.BLACK, Square.E8),
             Square.H8: Rook(Color.BLACK, Square.H8),
         }
@@ -316,7 +314,7 @@ class TestGenerateCastlingMovesCases:
         return piece_map, castle_rights, to_move, exp_moves
 
     def case_able_to_castle_long(self) -> _TestGenerateCastlingMovesCase:
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.E8: King(Color.BLACK, Square.E8),
             Square.A8: Rook(Color.BLACK, Square.A8),
         }
@@ -339,7 +337,7 @@ class TestGenerateCastlingMovesCases:
         return piece_map, castle_rights, to_move, exp_moves
 
     def case_cant_castle_through_check(self) -> _TestGenerateCastlingMovesCase:
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.E1: King(Color.WHITE, Square.E1),
             Square.A1: Rook(Color.WHITE, Square.A1),
             Square.B8: Rook(Color.BLACK, Square.B8),
@@ -355,7 +353,7 @@ class TestGenerateCastlingMovesCases:
         return piece_map, castle_rights, to_move, exp_moves
 
     def case_cant_castle_ending_in_check(self) -> _TestGenerateCastlingMovesCase:
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.E1: King(Color.WHITE, Square.E1),
             Square.A1: Rook(Color.WHITE, Square.A1),
             Square.H1: Rook(Color.WHITE, Square.H1),
@@ -380,7 +378,7 @@ class TestGenerateCastlingMovesCases:
         return piece_map, castle_rights, to_move, exp_moves
 
     def case_cant_castle_through_another_piece(self) -> _TestGenerateCastlingMovesCase:
-        piece_map = {
+        piece_map: dict[Square, Piece] = {
             Square.E1: King(Color.WHITE, Square.E1),
             Square.A1: Rook(Color.WHITE, Square.A1),
             Square.B1: Knight(Color.WHITE, Square.B1),
