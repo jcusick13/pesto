@@ -1,48 +1,11 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from enum import Enum
 from typing import Optional
 
+from pesto.board.move.castle import CastleRights, CastleSide
 from pesto.board.square import Square, str_to_square
 from pesto.board.piece import Bishop, King, Knight, Rook, Pawn, Piece, Queen
 from pesto.core.enums import Color
-
-
-class CastleSide(Enum):
-    SHORT: str = "short"
-    LONG: str = "long"
-
-
-@dataclass
-class CastleRights:
-    _rights: dict[Color, dict[CastleSide, bool]]
-
-    @classmethod
-    def new(cls) -> CastleRights:
-        """Initialize a `CastleRights` object representing game start"""
-        return CastleRights(
-            _rights={
-                Color.WHITE: {CastleSide.SHORT: True, CastleSide.LONG: True},
-                Color.BLACK: {CastleSide.SHORT: True, CastleSide.LONG: True},
-            }
-        )
-
-    @classmethod
-    def none(cls) -> CastleRights:
-        """Initialize a `CastleRights` object where no one has rights"""
-        return CastleRights(
-            _rights={
-                Color.WHITE: {CastleSide.SHORT: False, CastleSide.LONG: False},
-                Color.BLACK: {CastleSide.SHORT: False, CastleSide.LONG: False},
-            }
-        )
-
-    def __call__(self, color: Color) -> dict[CastleSide, bool]:
-        return self._rights[color]
-
-    def flip(self, color: Color, castle_side: CastleSide) -> None:
-        """Flips the boolean flag for the given `color` and `castle`"""
-        self._rights[color][castle_side] = not self._rights[color][castle_side]
 
 
 @dataclass

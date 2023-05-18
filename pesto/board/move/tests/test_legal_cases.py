@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pesto.board.board import CastleRights, CastleSide
+from pesto.board.move.castle import CastleRights, CastleSide
 from pesto.board.piece import Bishop, King, Knight, Pawn, Piece, Rook, Queen
 from pesto.board.square import Square
 from pesto.board.piece import BaseMove, CastlingMove, Move, SinglePieceMove
