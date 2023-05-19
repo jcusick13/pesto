@@ -1,13 +1,8 @@
 from copy import deepcopy
 from typing import Optional
 
+from pesto.board.piece import CastlingMove, Move, Piece, SinglePieceMove
 from pesto.board.square import Square
-from pesto.board.piece import (
-    CastlingMove,
-    Move,
-    Piece,
-    SinglePieceMove,
-)
 
 
 def make_move(

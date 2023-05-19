@@ -9,7 +9,6 @@ from pesto.board.square import Square
 from pesto.board.utils import index_on_board
 from pesto.core.enums import Color, PieceType
 
-
 DIAG_OFFSETS: set[int] = {-15, -17, 15, 17}
 VERT_HORIZ_OFFSETS: set[int] = {-16, -1, 16, 1}
 

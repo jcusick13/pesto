@@ -1,9 +1,20 @@
 from typing import Optional
 
 from pesto.board.move.castle import CastleRights, CastleSide
-from pesto.board.piece import Bishop, King, Knight, Pawn, Piece, Rook, Queen
+from pesto.board.piece import (
+    BaseMove,
+    Bishop,
+    CastlingMove,
+    King,
+    Knight,
+    Move,
+    Pawn,
+    Piece,
+    Queen,
+    Rook,
+    SinglePieceMove,
+)
 from pesto.board.square import Square
-from pesto.board.piece import BaseMove, CastlingMove, Move, SinglePieceMove
 from pesto.core.enums import Color
 
 _TestLegalMoveGeneratorCase = tuple[

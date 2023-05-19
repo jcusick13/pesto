@@ -1,15 +1,16 @@
 from typing import Optional
+
 from pytest_cases import parametrize_with_cases
 
+from pesto.board.piece import Bishop, King, Knight, Move, Pawn, Piece, Queen, Rook
 from pesto.board.square import Square
-from pesto.board.piece import Bishop, King, Knight, Move, Pawn, Piece, Rook, Queen
 from pesto.board.tests.test_piece_cases import (
     TestBishopPsuedoLegalMovesCases,
     TestKingPsuedoLegalMovesCases,
     TestKnightPsuedoLegalMovesCases,
     TestPawnPsuedoLegalMovesCases,
-    TestRookPsuedoLegalMovesCases,
     TestQueenPsuedoLegalMovesCases,
+    TestRookPsuedoLegalMovesCases,
 )
 
 

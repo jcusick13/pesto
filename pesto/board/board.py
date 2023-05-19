@@ -1,10 +1,11 @@
 from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Optional
 
 from pesto.board.move.castle import CastleRights, CastleSide
+from pesto.board.piece import Bishop, King, Knight, Pawn, Piece, Queen, Rook
 from pesto.board.square import Square, str_to_square
-from pesto.board.piece import Bishop, King, Knight, Rook, Pawn, Piece, Queen
 from pesto.core.enums import Color
 
 

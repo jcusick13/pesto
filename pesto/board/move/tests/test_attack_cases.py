@@ -1,7 +1,7 @@
 from typing import Optional
 
-from pesto.board.square import Square
 from pesto.board.piece import Bishop, Pawn, Piece, Rook
+from pesto.board.square import Square
 from pesto.core.enums import Color
 
 _TestSquareIsAttackedCase = tuple[Square, dict[Square, Piece], Optional[Color], bool]

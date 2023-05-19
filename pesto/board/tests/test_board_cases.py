@@ -1,7 +1,7 @@
 # pylint: disable=duplicate-code
 
 from pesto.board.board import Board, CastleRights, CastleSide
-from pesto.board.piece import Bishop, King, Knight, Rook, Pawn, Queen
+from pesto.board.piece import Bishop, King, Knight, Pawn, Queen, Rook
 from pesto.board.square import Square
 from pesto.core.enums import Color
 

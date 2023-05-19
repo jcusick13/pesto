@@ -1,5 +1,5 @@
 from pesto.board.move.castle import CastleRights, CastleSide, CastlingMove
-from pesto.board.piece import BaseMove, Knight, King, Piece, Rook
+from pesto.board.piece import BaseMove, King, Knight, Piece, Rook
 from pesto.board.square import Square
 from pesto.core.enums import Color
 

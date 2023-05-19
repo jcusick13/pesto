@@ -4,10 +4,10 @@ from pesto.board.piece import (
     Bishop,
     King,
     Knight,
-    Rook,
     Pawn,
     Piece,
     Queen,
+    Rook,
     SinglePieceMove,
 )
 from pesto.board.square import Square

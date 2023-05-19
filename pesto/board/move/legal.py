@@ -1,11 +1,10 @@
 from typing import Optional
 
+from pesto.board.move.apply import make_move, unmake_move
 from pesto.board.move.attack import square_is_attacked
 from pesto.board.move.castle import CastleRights, generate_castling_moves
-from pesto.board.move.apply import make_move, unmake_move
-from pesto.board.square import Square
 from pesto.board.piece import King, Move, Piece, SinglePieceMove
-
+from pesto.board.square import Square
 from pesto.core.enums import Color
 
 

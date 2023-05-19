@@ -1,18 +1,14 @@
 import pytest
 from pytest_cases import parametrize_with_cases
 
-from pesto.board.move.apply import (
-    Move,
-    make_move,
-    unmake_move,
-)
+from pesto.board.move.apply import Move, make_move, unmake_move
 from pesto.board.move.tests.test_apply_cases import (
-    TestMakeMoveCases,
     TestMakeAndUnmakeMoveCases,
+    TestMakeMoveCases,
     TestUnmakeMoveCases,
 )
-from pesto.board.square import Square
 from pesto.board.piece import Piece
+from pesto.board.square import Square
 
 
 @parametrize_with_cases(

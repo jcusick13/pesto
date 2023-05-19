@@ -2,8 +2,8 @@ from pytest_cases import parametrize_with_cases
 
 from pesto.board.move.castle import CastleRights, generate_castling_moves
 from pesto.board.move.tests.test_castle_cases import TestGenerateCastlingMovesCases
-from pesto.board.square import Square
 from pesto.board.piece import CastlingMove, Piece
+from pesto.board.square import Square
 from pesto.core.enums import Color
 
 

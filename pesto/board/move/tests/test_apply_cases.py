@@ -1,4 +1,3 @@
-from pesto.board.square import Square
 from pesto.board.piece import (
     BaseMove,
     CastlingMove,
@@ -9,8 +8,8 @@ from pesto.board.piece import (
     Rook,
     SinglePieceMove,
 )
+from pesto.board.square import Square
 from pesto.core.enums import Color
-
 
 _TestMakeMoveCase = tuple[
     dict[Square, Piece],

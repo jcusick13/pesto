@@ -1,10 +1,11 @@
 from __future__ import annotations
+
 from dataclasses import dataclass
 from enum import Enum
 
 from pesto.board.move.attack import square_is_attacked
-from pesto.board.square import Square
 from pesto.board.piece import BaseMove, CastlingMove, King, Piece, Rook
+from pesto.board.square import Square
 from pesto.core.enums import Color
 
 

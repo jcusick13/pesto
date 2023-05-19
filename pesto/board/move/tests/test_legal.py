@@ -2,12 +2,12 @@ from typing import Optional
 
 from pytest_cases import parametrize_with_cases
 
+from pesto.board.move.apply import Move
 from pesto.board.move.castle import CastleRights
 from pesto.board.move.legal import legal_move_generator
-from pesto.board.move.apply import Move
 from pesto.board.move.tests.test_legal_cases import TestLegalMoveGeneratorCases
-from pesto.board.square import Square
 from pesto.board.piece import Piece
+from pesto.board.square import Square
 from pesto.core.enums import Color
 
 
