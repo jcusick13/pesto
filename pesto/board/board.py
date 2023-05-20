@@ -3,8 +3,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 
+from pesto.board.board_state import (
+    find_en_passant_target,
+    update_castle_rights,
+    update_halfmove_clock,
+)
 from pesto.board.move.castle import CastleRights, CastleSide
-from pesto.board.piece import Bishop, King, Knight, Pawn, Piece, Queen, Rook
+from pesto.board.piece import Bishop, King, Knight, Move, Pawn, Piece, Queen, Rook
 from pesto.board.square import Square, str_to_square
 from pesto.core.enums import Color
 
@@ -55,6 +60,23 @@ class Board:
             castle_rights=_parse_fen_castling_rights(castling),
             en_passant_target=_parse_fen_en_passant_target(en_passant),
         )
+
+    def apply_move(self, piece_map: dict[Square, Piece], move: Move) -> None:
+        """Update internal board state with the received
+        map and move
+        """
+        self.piece_map = piece_map
+        self.castle_rights = update_castle_rights(self.castle_rights, move=move)
+
+        # Update en passant
+        self.en_passant_target = find_en_passant_target(move=move)
+
+        # Update move counters
+        self.ply += 1
+        self.halfmove_clock = update_halfmove_clock(
+            clock=self.halfmove_clock, move=move
+        )
+        self.to_move = Color.WHITE if self.to_move == Color.BLACK else Color.BLACK
 
 
 def _parse_fen_piece_map(string: str) -> dict[Square, Piece]:
