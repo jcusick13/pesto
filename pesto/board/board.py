@@ -8,9 +8,17 @@ from pesto.board.board_state import (
     update_castle_rights,
     update_halfmove_clock,
 )
-from pesto.board.move.castle import CastleRights, CastleSide
+from pesto.board.fen import (
+    dump_castling_rights_to_fen,
+    dump_en_passant_target_to_fen,
+    dump_piece_map_to_fen,
+    parse_fen_castling_rights,
+    parse_fen_en_passant_target,
+    parse_fen_piece_map,
+)
+from pesto.board.move.castle import CastleRights
 from pesto.board.piece import Bishop, King, Knight, Move, Pawn, Piece, Queen, Rook
-from pesto.board.square import Square, str_to_square
+from pesto.board.square import Square
 from pesto.core.enums import Color
 
 
@@ -56,10 +64,23 @@ class Board:
             ply=ply,
             halfmove_clock=int(halfmove_clock),
             to_move=to_move,
-            piece_map=_parse_fen_piece_map(pieces),
-            castle_rights=_parse_fen_castling_rights(castling),
-            en_passant_target=_parse_fen_en_passant_target(en_passant),
+            piece_map=parse_fen_piece_map(pieces),
+            castle_rights=parse_fen_castling_rights(castling),
+            en_passant_target=parse_fen_en_passant_target(en_passant),
         )
+
+    def to_fen(self) -> str:
+        """Dumps the current board state to a FEN string"""
+        pieces = dump_piece_map_to_fen(self.piece_map)
+        color = "w" if self.to_move == Color.WHITE else "b"
+        castling = dump_castling_rights_to_fen(self.castle_rights)
+        en_passant = dump_en_passant_target_to_fen(self.en_passant_target)
+        halfmove = str(self.halfmove_clock)
+        _fullmove_extra = 1 if self.to_move == Color.WHITE else 0
+        fullmove = str((self.ply // 2) + _fullmove_extra)
+
+        fen_components = [pieces, color, castling, en_passant, halfmove, fullmove]
+        return " ".join(fen_components)
 
     def apply_move(self, piece_map: dict[Square, Piece], move: Move) -> None:
         """Update internal board state with the received
@@ -77,78 +98,6 @@ class Board:
             clock=self.halfmove_clock, move=move
         )
         self.to_move = Color.WHITE if self.to_move == Color.BLACK else Color.BLACK
-
-
-def _parse_fen_piece_map(string: str) -> dict[Square, Piece]:
-    """Maps the piece location string segment of a FEN string
-    into a piece map
-    """
-    piece_map: dict[Square, Piece] = {}
-    letter_map = {
-        "B": Bishop,
-        "K": King,
-        "N": Knight,
-        "P": Pawn,
-        "Q": Queen,
-        "R": Rook,
-    }
-
-    ranks = string.split("/")
-    rank_idx: int
-    pieces: str
-    for rank_idx, pieces in enumerate(reversed(ranks)):
-        file_idx = 0
-        piece: str
-        for piece in pieces:
-            if piece.isdigit():
-                file_idx += int(piece)
-                continue
-
-            color = Color.WHITE if piece.isupper() else Color.BLACK
-            square = Square((rank_idx * 16) + file_idx)
-            piece_map[square] = letter_map[piece.upper()].new(
-                color=color,
-                curr=square,
-            )
-            file_idx += 1
-
-    return piece_map
-
-
-def _parse_fen_en_passant_target(string: str) -> Optional[Square]:
-    """Maps the en passant string segment of a FEN string into
-    a `Square`, if one is present
-    """
-    if string == "-":
-        return None
-
-    return str_to_square(string)
-
-
-def _parse_fen_castling_rights(string: str) -> CastleRights:
-    """Maps the castling string segment of a FEN string into
-    a `CastleRights` object
-    """
-    castle_rights = CastleRights(
-        _rights={
-            Color.WHITE: {CastleSide.SHORT: False, CastleSide.LONG: False},
-            Color.BLACK: {CastleSide.SHORT: False, CastleSide.LONG: False},
-        }
-    )
-    if string == "-":
-        return castle_rights
-
-    char_map: dict[str, tuple[Color, CastleSide]] = {
-        "K": (Color.WHITE, CastleSide.SHORT),
-        "Q": (Color.WHITE, CastleSide.LONG),
-        "k": (Color.BLACK, CastleSide.SHORT),
-        "q": (Color.BLACK, CastleSide.LONG),
-    }
-    for char in string:
-        color, castle_side = char_map[char]
-        castle_rights.flip(color, castle_side)
-
-    return castle_rights
 
 
 def starting_piece_map() -> dict[Square, Piece]:
