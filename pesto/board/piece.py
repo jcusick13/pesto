@@ -145,6 +145,10 @@ class Pawn(Piece):
                             ),
                         )
                     )
+                else:
+                    # If moving a single space forward is blocked,
+                    # so is moving two spaces forward
+                    break
 
         # Check captures left and right
         for capture_offset in [15, 17]:
