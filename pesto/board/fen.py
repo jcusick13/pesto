@@ -17,7 +17,7 @@ def dump_castling_rights_to_fen(castle_rights: CastleRights) -> str:
         castle_string += "Q"
     if castle_rights(Color.BLACK)[CastleSide.SHORT]:
         castle_string += "k"
-    if castle_rights(Color.WHITE)[CastleSide.LONG]:
+    if castle_rights(Color.BLACK)[CastleSide.LONG]:
         castle_string += "q"
 
     if castle_string == "":
