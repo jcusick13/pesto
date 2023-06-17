@@ -123,6 +123,13 @@ def generate_castling_moves(
         if rights[castling_side] is True:
             squares = CastleSquare(color=to_move, castle_side=castling_side)
 
+            # Check if the king starts in check
+            if square_is_attacked(
+                piece_map=piece_map, square=squares.king_start, by=opposite_color
+            ):
+                able_to_castle = False
+                break
+
             # Check that no pieces are between king and rook
             for square in squares.passthrough_squares:
                 if piece_map.get(square) is not None:

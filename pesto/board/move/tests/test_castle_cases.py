@@ -88,6 +88,18 @@ class TestGenerateCastlingMovesCases:
         exp_moves: set[CastlingMove] = set()
         return piece_map, castle_rights, to_move, exp_moves
 
+    def case_cant_castle_starting_in_check(self) -> _TestGenerateCastlingMovesCase:
+        piece_map: dict[Square, Piece] = {
+            Square.H8: Rook(Color.BLACK, Square.H8),
+            Square.E8: King(Color.BLACK, Square.E8),
+            Square.A8: King(Color.BLACK, Square.A8),
+            Square.F6: Knight(Color.WHITE, Square.F6),
+        }
+        castle_rights = CastleRights.new()
+        to_move = Color.BLACK
+        exp_moves: set[CastlingMove] = set()
+        return piece_map, castle_rights, to_move, exp_moves
+
     def case_cant_castle_ending_in_check(self) -> _TestGenerateCastlingMovesCase:
         piece_map: dict[Square, Piece] = {
             Square.E1: King(Color.WHITE, Square.E1),
