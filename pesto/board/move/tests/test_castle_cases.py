@@ -76,7 +76,7 @@ class TestGenerateCastlingMovesCases:
         piece_map: dict[Square, Piece] = {
             Square.E1: King(Color.WHITE, Square.E1),
             Square.A1: Rook(Color.WHITE, Square.A1),
-            Square.B8: Rook(Color.BLACK, Square.B8),
+            Square.D8: Rook(Color.BLACK, Square.D8),
         }
         castle_rights = CastleRights(
             _rights={
@@ -127,4 +127,31 @@ class TestGenerateCastlingMovesCases:
         )
         to_move = Color.WHITE
         exp_moves: set[CastlingMove] = set()
+        return piece_map, castle_rights, to_move, exp_moves
+
+    def case_castle_when_rook_not_king_passes_through_check(
+        self,
+    ) -> _TestGenerateCastlingMovesCase:
+        piece_map: dict[Square, Piece] = {
+            Square.H8: Rook(Color.BLACK, Square.H8),
+            Square.E8: King(Color.BLACK, Square.E8),
+            Square.A8: Rook(Color.BLACK, Square.A8),
+            Square.D7: Knight(Color.WHITE, Square.D7),
+        }
+        castle_rights = CastleRights(
+            _rights={
+                Color.WHITE: {CastleSide.SHORT: False, CastleSide.LONG: False},
+                Color.BLACK: {CastleSide.SHORT: True, CastleSide.LONG: True},
+            }
+        )
+        to_move = Color.BLACK
+        exp_moves = {
+            CastlingMove(
+                start=King(Color.BLACK, Square.E8),
+                end=King(Color.BLACK, Square.C8),
+                castled_rook=BaseMove(
+                    start=Rook(Color.BLACK, Square.A8), end=Rook(Color.BLACK, Square.D8)
+                ),
+            )
+        }
         return piece_map, castle_rights, to_move, exp_moves

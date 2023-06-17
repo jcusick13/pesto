@@ -61,13 +61,25 @@ class CastleSquare:
         self._color_adjust: int = 0 if self.color == Color.WHITE else 112
 
     @property
-    def passthrough_squares(self) -> list[Square]:
-        """Squares the king and rook pass through"""
-        passthrough_idx_map = {CastleSide.SHORT: [5, 6], CastleSide.LONG: [1, 2, 3]}
-        squares: list[Square] = []
+    def king_passthrough_squares(self) -> set[Square]:
+        passthrough_idx_map = {CastleSide.SHORT: [5, 6], CastleSide.LONG: [2, 3]}
+        squares: set[Square] = set()
         for square_idx in passthrough_idx_map[self.castle_side]:
-            squares.append(Square(square_idx + self._color_adjust))
+            squares.add(Square(square_idx + self._color_adjust))
         return squares
+
+    @property
+    def rook_passthrough_squares(self) -> set[Square]:
+        passthrough_idx_map = {CastleSide.SHORT: [5, 6], CastleSide.LONG: [1, 2, 3]}
+        squares: set[Square] = set()
+        for square_idx in passthrough_idx_map[self.castle_side]:
+            squares.add(Square(square_idx + self._color_adjust))
+        return squares
+
+    @property
+    def passthrough_squares(self) -> set[Square]:
+        """Squares the king and rook pass through"""
+        return self.king_passthrough_squares | self.rook_passthrough_squares
 
     @property
     def rook_start(self) -> Square:
@@ -121,7 +133,7 @@ def generate_castling_moves(
                 continue
 
             # Check if the king passes through check
-            for square in squares.passthrough_squares:
+            for square in squares.king_passthrough_squares:
                 if square_is_attacked(
                     piece_map=piece_map, square=square, by=opposite_color
                 ):
