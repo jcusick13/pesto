@@ -53,7 +53,6 @@ class TestLegalMoveGeneratorCases:
     def case_single_legal_non_king_move(self) -> _TestLegalMoveGeneratorCase:
         """King is trapped in corner, though one pawn is free to move"""
         pawn = Pawn(Color.WHITE, Square.E4)
-        pawn.is_first_move = False
 
         piece_map: dict[Square, Piece] = {
             Square.A1: King(Color.WHITE, Square.A1),
@@ -92,8 +91,6 @@ class TestLegalMoveGeneratorCases:
         passant capture
         """
         pawn = Pawn(Color.WHITE, Square.B5)
-        pawn.is_first_move = False
-
         piece_map: dict[Square, Piece] = {
             Square.A1: Rook(Color.BLACK, Square.A1),
             Square.C1: Rook(Color.BLACK, Square.C1),
@@ -116,7 +113,6 @@ class TestLegalMoveGeneratorCases:
 
     def case_multiple_legal_moves(self) -> _TestLegalMoveGeneratorCase:
         pawn = Pawn(Color.WHITE, Square.B6)
-        pawn.is_first_move = False
         piece_map: dict[Square, Piece] = {
             Square.A8: King(Color.WHITE, Square.A8),
             Square.B6: pawn,

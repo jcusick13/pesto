@@ -24,7 +24,6 @@ _TestPawnPsuedoLegalMovesCase = tuple[
 class TestPawnPsuedoLegalMovesCases:
     def case_white_first_move(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.WHITE, Square.D2)
-        pawn.is_first_move = True
         piece_map: dict[Square, Piece] = {Square.D2: pawn}
         ep_square: Optional[Square] = None
         exp = {
@@ -35,7 +34,6 @@ class TestPawnPsuedoLegalMovesCases:
 
     def case_black_first_move(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.BLACK, Square.C7)
-        pawn.is_first_move = True
         piece_map: dict[Square, Piece] = {Square.C7: pawn}
         ep_square: Optional[Square] = None
         exp = {
@@ -46,7 +44,6 @@ class TestPawnPsuedoLegalMovesCases:
 
     def case_white_blocked_single_square_advance(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.WHITE, Square.D7)
-        pawn.is_first_move = False
         piece_map: dict[Square, Piece] = {
             Square.D7: pawn,
             Square.D8: Rook(Color.BLACK, Square.D8),
@@ -57,7 +54,6 @@ class TestPawnPsuedoLegalMovesCases:
 
     def case_white_blocked_two_square_advance(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.WHITE, Square.C2)
-        pawn.is_first_move = True
         piece_map: dict[Square, Piece] = {
             Square.C2: pawn,
             Square.C3: Knight(Color.WHITE, Square.C3),
@@ -68,7 +64,6 @@ class TestPawnPsuedoLegalMovesCases:
 
     def case_black_blocked_single_square_advance(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.BLACK, Square.A6)
-        pawn.is_first_move = False
         piece_map: dict[Square, Piece] = {
             Square.A6: pawn,
             Square.A5: Rook(Color.WHITE, Square.A5),
@@ -79,7 +74,6 @@ class TestPawnPsuedoLegalMovesCases:
 
     def case_black_blocked_two_square_advance(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.BLACK, Square.F7)
-        pawn.is_first_move = True
         piece_map: dict[Square, Piece] = {
             Square.F7: pawn,
             Square.F6: Knight(Color.BLACK, Square.F6),
@@ -90,7 +84,6 @@ class TestPawnPsuedoLegalMovesCases:
 
     def case_white_capture(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.WHITE, Square.D5)
-        pawn.is_first_move = False
         piece_map: dict[Square, Piece] = {
             Square.D5: pawn,
             Square.C6: Rook(Color.BLACK, Square.C6),
@@ -106,7 +99,6 @@ class TestPawnPsuedoLegalMovesCases:
 
     def case_black_capture(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.BLACK, Square.G4)
-        pawn.is_first_move = False
         piece_map: dict[Square, Piece] = {
             Square.G4: pawn,
             Square.H3: Rook(Color.WHITE, Square.H3),
@@ -122,7 +114,6 @@ class TestPawnPsuedoLegalMovesCases:
 
     def case_white_cant_capture_white(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.WHITE, Square.E4)
-        pawn.is_first_move = False
         piece_map: dict[Square, Piece] = {
             Square.E4: pawn,
             Square.D5: Rook(Color.WHITE, Square.D5),
@@ -134,7 +125,6 @@ class TestPawnPsuedoLegalMovesCases:
 
     def case_black_cant_capture_black(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.BLACK, Square.D6)
-        pawn.is_first_move = False
         piece_map: dict[Square, Piece] = {
             Square.D6: pawn,
             Square.C5: Rook(Color.BLACK, Square.C5),
@@ -146,7 +136,6 @@ class TestPawnPsuedoLegalMovesCases:
 
     def case_white_promotes(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.WHITE, Square.D7)
-        pawn.is_first_move = False
         piece_map: dict[Square, Piece] = {Square.D7: pawn}
         ep_square: Optional[Square] = None
         exp = {
@@ -159,7 +148,6 @@ class TestPawnPsuedoLegalMovesCases:
 
     def case_black_promotes(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.BLACK, Square.E2)
-        pawn.is_first_move = False
         piece_map: dict[Square, Piece] = {Square.E2: pawn}
         ep_square: Optional[Square] = None
         exp = {
@@ -172,7 +160,6 @@ class TestPawnPsuedoLegalMovesCases:
 
     def case_white_captures_en_passant(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.WHITE, Square.A5)
-        pawn.is_first_move = False
         target_pawn = Pawn(Color.BLACK, Square.B5)
         piece_map: dict[Square, Piece] = {Square.A5: pawn, Square.B5: target_pawn}
         ep_square = Square.B6
@@ -184,7 +171,6 @@ class TestPawnPsuedoLegalMovesCases:
 
     def case_black_captures_en_passant(self) -> _TestPawnPsuedoLegalMovesCase:
         pawn = Pawn(Color.BLACK, Square.B4)
-        pawn.is_first_move = False
         target_pawn = Pawn(Color.WHITE, Square.C4)
         piece_map: dict[Square, Piece] = {Square.B4: pawn, Square.C4: target_pawn}
         ep_square = Square.C3

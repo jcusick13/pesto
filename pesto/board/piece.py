@@ -93,21 +93,13 @@ class NonPawnPiece(Piece):
 
 
 class Pawn(Piece):
-    # To be set to False after having moved
-    is_first_move: bool = True
-
     @property
     def type(self) -> PieceType:
         return PieceType.PAWN
 
     @classmethod
-    def new(cls, color: Color, curr: Square, is_first_move: bool = True) -> Pawn:
-        pawn = Pawn(color, curr)
-        if is_first_move:
-            return pawn
-
-        pawn.is_first_move = False
-        return pawn
+    def new(cls, color: Color, curr: Square) -> Pawn:
+        return Pawn(color, curr)
 
     def generate_psuedo_legal_moves(
         self,
@@ -126,7 +118,11 @@ class Pawn(Piece):
 
         # Check one and two squares forward
         forward_squares: list[int] = [1]
-        if self.is_first_move:
+        if (
+            # Is the pawn on it's starting rank
+            (self.color == Color.WHITE and 15 < self.curr.value < 24)
+            or (self.color == Color.BLACK and 95 < self.curr.value < 104)
+        ):
             forward_squares.append(2)
 
         for n_squares in forward_squares:
@@ -135,14 +131,8 @@ class Pawn(Piece):
                 if Square(next_idx) not in piece_map:
                     moves.add(
                         SinglePieceMove(
-                            start=self.new(
-                                self.color,
-                                curr=start_square,
-                                is_first_move=self.is_first_move,
-                            ),
-                            end=self.new(
-                                self.color, curr=Square(next_idx), is_first_move=False
-                            ),
+                            start=self.new(self.color, curr=start_square),
+                            end=self.new(self.color, curr=Square(next_idx)),
                         )
                     )
                 else:
@@ -158,16 +148,8 @@ class Pawn(Piece):
                     if piece.color != self.color:
                         moves.add(
                             SinglePieceMove(
-                                start=self.new(
-                                    self.color,
-                                    curr=start_square,
-                                    is_first_move=self.is_first_move,
-                                ),
-                                end=self.new(
-                                    self.color,
-                                    curr=Square(capture_idx),
-                                    is_first_move=False,
-                                ),
+                                start=self.new(self.color, curr=start_square),
+                                end=self.new(self.color, curr=Square(capture_idx)),
                             )
                         )
                 elif Square(capture_idx) == en_passant_sq:
@@ -176,15 +158,9 @@ class Pawn(Piece):
                     captured_pawn_square = Square(capture_idx - 16 * direction)
                     moves.add(
                         SinglePieceMove(
-                            start=self.new(
-                                self.color, curr=start_square, is_first_move=False
-                            ),
-                            end=self.new(
-                                self.color, curr=en_passant_sq, is_first_move=False
-                            ),
-                            captures=self.new(
-                                op_color, curr=captured_pawn_square, is_first_move=False
-                            ),
+                            start=self.new(self.color, curr=start_square),
+                            end=self.new(self.color, curr=en_passant_sq),
+                            captures=self.new(op_color, curr=captured_pawn_square),
                         )
                     )
 
@@ -204,11 +180,7 @@ class Pawn(Piece):
             for promotion_piece in [Knight, Bishop, Rook, Queen]:
                 final_moves.add(
                     SinglePieceMove(
-                        start=self.new(
-                            self.color,
-                            curr=move.start.curr,
-                            is_first_move=False,
-                        ),
+                        start=self.new(self.color, curr=move.start.curr),
                         end=promotion_piece.new(self.color, move.end.curr),
                     )
                 )
