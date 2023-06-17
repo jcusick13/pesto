@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import Optional
 
 from pesto.board.move.castle import CastleRights, CastleSide
@@ -24,16 +25,17 @@ def find_en_passant_target(move: Move) -> Optional[Square]:
 
 
 def update_castle_rights(castle_rights: CastleRights, move: Move) -> CastleRights:
-    """Returns an updated CastlingRights object based upon
+    """Returns a new CastlingRights object based upon
     the provided move
     """
+    castle_rights_ = deepcopy(castle_rights)
     if isinstance(move, SinglePieceMove) and not isinstance(move.start, (Rook, King)):
-        return castle_rights
+        return castle_rights_
 
     if isinstance(move, SinglePieceMove) and isinstance(move.start, King):
-        castle_rights.set_false(color=move.start.color, castle_side=CastleSide.SHORT)
-        castle_rights.set_false(color=move.start.color, castle_side=CastleSide.LONG)
-        return castle_rights
+        castle_rights_.set_false(color=move.start.color, castle_side=CastleSide.SHORT)
+        castle_rights_.set_false(color=move.start.color, castle_side=CastleSide.LONG)
+        return castle_rights_
 
     side: CastleSide
     if isinstance(move, SinglePieceMove) and isinstance(move.start, Rook):
@@ -43,15 +45,15 @@ def update_castle_rights(castle_rights: CastleRights, move: Move) -> CastleRight
             Square.H1,
             Square.H8,
         }:
-            return castle_rights
+            return castle_rights_
 
         if move.start.curr in {Square.A1, Square.A8}:
             side = CastleSide.LONG
         else:
             side = CastleSide.SHORT
 
-        castle_rights.set_false(color=move.start.color, castle_side=side)
-        return castle_rights
+        castle_rights_.set_false(color=move.start.color, castle_side=side)
+        return castle_rights_
 
     if isinstance(move, CastlingMove):
         if move.start.curr in {Square.A1, Square.A8}:
@@ -60,14 +62,14 @@ def update_castle_rights(castle_rights: CastleRights, move: Move) -> CastleRight
             side = CastleSide.SHORT
 
         castling_color = move.start.color
-        if not castle_rights(castling_color)[side]:
+        if not castle_rights_(castling_color)[side]:
             raise ValueError(f"{castling_color} has no rights to castle {side.value}")
 
-        castle_rights(castling_color)[CastleSide.SHORT] = False
-        castle_rights(castling_color)[CastleSide.LONG] = False
-        return castle_rights
+        castle_rights_.set_false(castling_color, CastleSide.SHORT)
+        castle_rights_.set_false(castling_color, CastleSide.LONG)
+        return castle_rights_
 
-    return castle_rights
+    return castle_rights_
 
 
 def update_halfmove_clock(clock: int, move: Move) -> int:

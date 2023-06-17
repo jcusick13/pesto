@@ -1,5 +1,6 @@
 from typing import Optional
 
+import pytest
 from pytest_cases import parametrize_with_cases
 
 from pesto.board.piece import Bishop, King, Knight, Move, Pawn, Piece, Queen, Rook
@@ -15,6 +16,7 @@ from pesto.board.tests.test_piece_cases import (
 
 
 class TestPawn:
+    @pytest.mark.unit
     @parametrize_with_cases(
         ("pawn", "piece_map", "en_passant_sq", "exp"),
         TestPawnPsuedoLegalMovesCases,
@@ -33,6 +35,7 @@ class TestPawn:
 
 
 class TestKnight:
+    @pytest.mark.unit
     @parametrize_with_cases(
         ("knight", "piece_map", "exp"),
         TestKnightPsuedoLegalMovesCases,
@@ -45,6 +48,7 @@ class TestKnight:
 
 
 class TestBishop:
+    @pytest.mark.unit
     @parametrize_with_cases(
         ("bishop", "piece_map", "exp"),
         TestBishopPsuedoLegalMovesCases,
@@ -57,6 +61,7 @@ class TestBishop:
 
 
 class TestRook:
+    @pytest.mark.unit
     @parametrize_with_cases(
         ("rook", "piece_map", "exp"),
         TestRookPsuedoLegalMovesCases,
@@ -69,6 +74,7 @@ class TestRook:
 
 
 class TestQueen:
+    @pytest.mark.unit
     @parametrize_with_cases(
         ("queen", "piece_map", "exp"),
         TestQueenPsuedoLegalMovesCases,
@@ -81,6 +87,7 @@ class TestQueen:
 
 
 class TestKing:
+    @pytest.mark.unit
     @parametrize_with_cases(
         ("king", "piece_map", "exp"),
         TestKingPsuedoLegalMovesCases,

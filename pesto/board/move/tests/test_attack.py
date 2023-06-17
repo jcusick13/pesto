@@ -1,5 +1,6 @@
 from typing import Optional
 
+import pytest
 from pytest_cases import parametrize_with_cases
 
 from pesto.board.move.attack import square_is_attacked
@@ -9,6 +10,7 @@ from pesto.board.square import Square
 from pesto.core.enums import Color
 
 
+@pytest.mark.unit
 @parametrize_with_cases(
     ("square", "piece_map", "by", "exp"),
     TestSquareIsAttackedCases,

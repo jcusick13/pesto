@@ -1,5 +1,6 @@
 from typing import Optional
 
+import pytest
 from pytest_cases import parametrize_with_cases
 
 from pesto.board.board_state import (
@@ -17,6 +18,7 @@ from pesto.board.tests.test_board_state_cases import (
 )
 
 
+@pytest.mark.unit
 @parametrize_with_cases(
     ("move", "exp"),
     FindEnPassantTargetCases,
@@ -26,6 +28,7 @@ def test_find_en_passant_target(move: Move, exp: Optional[Square]):
     assert obs == exp
 
 
+@pytest.mark.unit
 @parametrize_with_cases(
     ("castle_rights", "move", "exp"),
     UpdateCastleRightsCases,
@@ -37,6 +40,7 @@ def test_update_castle_rights(
     assert obs == exp
 
 
+@pytest.mark.unit
 @parametrize_with_cases(
     ("clock", "move", "exp"),
     UpdateHalfmoveClockCases,

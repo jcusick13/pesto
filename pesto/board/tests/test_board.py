@@ -1,3 +1,4 @@
+import pytest
 from pytest_cases import parametrize_with_cases
 
 from pesto.board.board import Board
@@ -8,6 +9,7 @@ from pesto.board.tests.test_board_cases import (
 
 
 class TestBoard:
+    @pytest.mark.unit
     @parametrize_with_cases(
         ("fen", "exp"),
         TestBoardFromFenCases,
@@ -16,6 +18,7 @@ class TestBoard:
         obs = Board.from_fen(fen)
         assert obs == exp
 
+    @pytest.mark.unit
     @parametrize_with_cases(
         ("board", "exp"),
         TestBoardToFenCases,

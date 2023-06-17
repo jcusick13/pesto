@@ -1,5 +1,6 @@
 from typing import Optional
 
+import pytest
 from pytest_cases import parametrize_with_cases
 
 from pesto.board.move.apply import Move
@@ -11,6 +12,7 @@ from pesto.board.square import Square
 from pesto.core.enums import Color
 
 
+@pytest.mark.unit
 @parametrize_with_cases(
     ("piece_map", "castle_rights", "en_passant_sq", "to_move", "exp"),
     TestLegalMoveGeneratorCases,

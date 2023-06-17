@@ -126,6 +126,37 @@ class UpdateCastleRightsCases:
         exp = castle_rights
         return castle_rights, move, exp
 
+    def case_moved_queen_rook(self) -> _UpdateCastleRightsCase:
+        castle_rights = CastleRights.new()
+        move = SinglePieceMove(
+            start=Rook(Color.WHITE, Square.A1),
+            end=Rook(Color.WHITE, Square.C1),
+        )
+        exp = CastleRights.new()
+        exp.set_false(Color.WHITE, CastleSide.LONG)
+        return castle_rights, move, exp
+
+    def case_moved_king_rook(self) -> _UpdateCastleRightsCase:
+        castle_rights = CastleRights.new()
+        move = SinglePieceMove(
+            start=Rook(Color.BLACK, Square.H8),
+            end=Rook(Color.BLACK, Square.G8),
+        )
+        exp = CastleRights.new()
+        exp.set_false(Color.BLACK, CastleSide.SHORT)
+        return castle_rights, move, exp
+
+    def case_moved_king(self) -> _UpdateCastleRightsCase:
+        castle_rights = CastleRights.new()
+        move = SinglePieceMove(
+            start=King(Color.WHITE, Square.E1),
+            end=King(Color.WHITE, Square.F1),
+        )
+        exp = CastleRights.new()
+        exp.set_false(Color.WHITE, CastleSide.SHORT)
+        exp.set_false(Color.WHITE, CastleSide.LONG)
+        return castle_rights, move, exp
+
 
 _UpdateHalfmoveClockCase = tuple[int, Move, int]
 

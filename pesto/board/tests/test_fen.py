@@ -5,6 +5,7 @@ from pesto.board.move.castle import CastleRights, CastleSide
 from pesto.core.enums import Color
 
 
+@pytest.mark.unit
 @pytest.mark.parametrize(
     ("castle_rights", "fen"),
     [

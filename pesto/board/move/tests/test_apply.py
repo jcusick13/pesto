@@ -11,6 +11,7 @@ from pesto.board.piece import Piece
 from pesto.board.square import Square
 
 
+@pytest.mark.unit
 @parametrize_with_cases(
     ("in_piece_map", "in_move", "out_piece_map", "out_move", "exception"),
     TestMakeMoveCases,
@@ -32,6 +33,7 @@ def test_make_move(
         assert obs_move == out_move
 
 
+@pytest.mark.unit
 @parametrize_with_cases(
     ("in_piece_map", "in_move", "out_piece_map", "exception"),
     TestUnmakeMoveCases,
@@ -51,6 +53,7 @@ def test_unmake_move(
         assert obs_piece_map == out_piece_map
 
 
+@pytest.mark.unit
 @parametrize_with_cases(
     ("starting_piece_map", "input_move"),
     TestMakeAndUnmakeMoveCases,

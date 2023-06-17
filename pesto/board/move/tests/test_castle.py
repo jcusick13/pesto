@@ -1,3 +1,4 @@
+import pytest
 from pytest_cases import parametrize_with_cases
 
 from pesto.board.move.castle import CastleRights, generate_castling_moves
@@ -7,6 +8,7 @@ from pesto.board.square import Square
 from pesto.core.enums import Color
 
 
+@pytest.mark.unit
 @parametrize_with_cases(
     ("piece_map", "castle_rights", "to_move", "exp_moves"),
     TestGenerateCastlingMovesCases,

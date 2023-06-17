@@ -16,6 +16,7 @@ from pesto.board.fen import (
     parse_fen_en_passant_target,
     parse_fen_piece_map,
 )
+from pesto.board.move.apply import make_move
 from pesto.board.move.castle import CastleRights
 from pesto.board.piece import Bishop, King, Knight, Move, Pawn, Piece, Queen, Rook
 from pesto.board.square import Square
@@ -30,6 +31,14 @@ class Board:
     piece_map: dict[Square, Piece]
     castle_rights: CastleRights
     en_passant_target: Optional[Square]
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Board):
+            return NotImplemented
+        return self.to_fen() == other.to_fen()
+
+    def __hash__(self) -> int:
+        return hash(self.to_fen())
 
     @classmethod
     def new(cls) -> Board:
@@ -82,22 +91,18 @@ class Board:
         fen_components = [pieces, color, castling, en_passant, halfmove, fullmove]
         return " ".join(fen_components)
 
-    def apply_move(self, piece_map: dict[Square, Piece], move: Move) -> None:
-        """Update internal board state with the received
-        map and move
-        """
-        self.piece_map = piece_map
-        self.castle_rights = update_castle_rights(self.castle_rights, move=move)
+    def apply_move(self, move: Move) -> Board:
+        """Create new board state from the received move"""
+        new_piece_map, played_move = make_move(piece_map=self.piece_map, move=move)
 
-        # Update en passant
-        self.en_passant_target = find_en_passant_target(move=move)
-
-        # Update move counters
-        self.ply += 1
-        self.halfmove_clock = update_halfmove_clock(
-            clock=self.halfmove_clock, move=move
+        return Board(
+            ply=self.ply + 1,
+            halfmove_clock=update_halfmove_clock(clock=self.halfmove_clock, move=move),
+            to_move=(Color.WHITE if self.to_move == Color.BLACK else Color.BLACK),
+            piece_map=new_piece_map,
+            castle_rights=update_castle_rights(self.castle_rights, move=played_move),
+            en_passant_target=find_en_passant_target(move=played_move),
         )
-        self.to_move = Color.WHITE if self.to_move == Color.BLACK else Color.BLACK
 
 
 def starting_piece_map() -> dict[Square, Piece]:
