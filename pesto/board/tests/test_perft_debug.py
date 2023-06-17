@@ -59,12 +59,12 @@ def board_state_generator(board: Board, depth: int, max_depth: int):
 
 @pytest.fixture
 def fen():
-    return "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    return "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1"
 
 
 @pytest.fixture
 def max_depth():
-    return 2
+    return 4
 
 
 @pytest.mark.perft
@@ -72,6 +72,7 @@ def test_debug_perft_position(fen: str, max_depth: int):
     board = Board.from_fen(fen)
 
     for board_state in board_state_generator(board=board, depth=0, max_depth=max_depth):
+        print(board_state.to_fen())
         pesto_nodes = perft(board=board_state, depth=1)[1]
         stockfish_nodes = stockfish_node_count(board_state.to_fen())
 
@@ -103,5 +104,5 @@ def print_moves_from_single_ply(fen: str):
 
 if __name__ == "__main__":
     print_moves_from_single_ply(
-        "r3k3/p1pNqpb1/bn2pnpr/3P4/1p2P3/5Q1p/PPPBBPPP/RN2K2R b KQq - 3 2"
+        "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPPNN1PP/R1BQK2n w Q - 0 9"
     )
