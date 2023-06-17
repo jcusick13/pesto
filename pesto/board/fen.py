@@ -152,6 +152,6 @@ def parse_fen_castling_rights(string: str) -> CastleRights:
     }
     for char in string:
         color, castle_side = char_map[char]
-        castle_rights.flip(color, castle_side)
+        castle_rights.set_true(color, castle_side)
 
     return castle_rights

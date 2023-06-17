@@ -41,9 +41,11 @@ class CastleRights:
     def __call__(self, color: Color) -> dict[CastleSide, bool]:
         return self._rights[color]
 
-    def flip(self, color: Color, castle_side: CastleSide) -> None:
-        """Flips the boolean flag for the given `color` and `castle`"""
-        self._rights[color][castle_side] = not self._rights[color][castle_side]
+    def set_false(self, color: Color, castle_side: CastleSide) -> None:
+        self._rights[color][castle_side] = False
+
+    def set_true(self, color: Color, castle_side: CastleSide) -> None:
+        self._rights[color][castle_side] = True
 
 
 @dataclass

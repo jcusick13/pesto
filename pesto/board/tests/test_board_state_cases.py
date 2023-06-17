@@ -64,7 +64,8 @@ class UpdateCastleRightsCases:
             ),
         )
         exp = CastleRights.new()
-        exp.flip(Color.WHITE, CastleSide.SHORT)
+        exp.set_false(Color.WHITE, CastleSide.SHORT)
+        exp.set_false(Color.WHITE, CastleSide.LONG)
         return castle_rights, move, exp
 
     def case_castled_long(self) -> _UpdateCastleRightsCase:
@@ -77,7 +78,52 @@ class UpdateCastleRightsCases:
             ),
         )
         exp = CastleRights.new()
-        exp.flip(Color.WHITE, CastleSide.LONG)
+        exp.set_false(Color.WHITE, CastleSide.SHORT)
+        exp.set_false(Color.WHITE, CastleSide.LONG)
+        return castle_rights, move, exp
+
+    def case_moved_queen_rook(self) -> _UpdateCastleRightsCase:
+        castle_rights = CastleRights.new()
+        move = SinglePieceMove(
+            start=Rook(Color.WHITE, Square.A1),
+            end=Rook(Color.WHITE, Square.C1),
+        )
+        exp = CastleRights.new()
+        exp.set_false(Color.WHITE, CastleSide.LONG)
+        return castle_rights, move, exp
+
+    def case_moved_king_rook(self) -> _UpdateCastleRightsCase:
+        castle_rights = CastleRights.new()
+        move = SinglePieceMove(
+            start=Rook(Color.BLACK, Square.H8),
+            end=Rook(Color.BLACK, Square.G8),
+        )
+        exp = CastleRights.new()
+        exp.set_false(Color.BLACK, CastleSide.SHORT)
+        return castle_rights, move, exp
+
+    def case_moved_king(self) -> _UpdateCastleRightsCase:
+        castle_rights = CastleRights.new()
+        move = SinglePieceMove(
+            start=King(Color.WHITE, Square.E1),
+            end=King(Color.WHITE, Square.F1),
+        )
+        exp = CastleRights.new()
+        exp.set_false(Color.WHITE, CastleSide.SHORT)
+        exp.set_false(Color.WHITE, CastleSide.LONG)
+        return castle_rights, move, exp
+
+    def case_king_rook_moved_a_second_time(self) -> _UpdateCastleRightsCase:
+        castle_rights = CastleRights(
+            _rights={
+                Color.WHITE: {CastleSide.SHORT: False, CastleSide.LONG: True},
+                Color.BLACK: {CastleSide.SHORT: True, CastleSide.LONG: True},
+            }
+        )
+        move = SinglePieceMove(
+            start=Rook(Color.WHITE, Square.G1), end=Rook(Color.WHITE, Square.F1)
+        )
+        exp = castle_rights
         return castle_rights, move, exp
 
 
