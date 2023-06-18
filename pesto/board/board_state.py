@@ -1,3 +1,4 @@
+# pylint: disable=too-many-return-statements, too-many-branches
 from copy import deepcopy
 from typing import Optional
 
@@ -28,35 +29,49 @@ def update_castle_rights(castle_rights: CastleRights, move: Move) -> CastleRight
     """Returns a new CastlingRights object based upon
     the provided move
     """
-    castle_rights_ = deepcopy(castle_rights)
-    if isinstance(move, SinglePieceMove) and not isinstance(move.start, (Rook, King)):
-        return castle_rights_
-
-    if isinstance(move, SinglePieceMove) and isinstance(move.start, King):
-        castle_rights_.set_false(color=move.start.color, castle_side=CastleSide.SHORT)
-        castle_rights_.set_false(color=move.start.color, castle_side=CastleSide.LONG)
-        return castle_rights_
-
+    short_rook_sq = {Square.H1, Square.H8}
+    long_rook_sq = {Square.A1, Square.A8}
     side: CastleSide
-    if isinstance(move, SinglePieceMove) and isinstance(move.start, Rook):
-        if move.start.curr not in {
-            Square.A1,
-            Square.A8,
-            Square.H1,
-            Square.H8,
-        }:
+
+    castle_rights_ = deepcopy(castle_rights)
+
+    if isinstance(move, SinglePieceMove):
+        if isinstance(move.captures, Rook) and move.captures.curr in (
+            short_rook_sq | long_rook_sq
+        ):
+            if move.captures.curr in long_rook_sq:
+                side = CastleSide.LONG
+            else:
+                side = CastleSide.SHORT
+            castle_rights_.set_false(color=move.captures.color, castle_side=side)
             return castle_rights_
 
-        if move.start.curr in {Square.A1, Square.A8}:
-            side = CastleSide.LONG
-        else:
-            side = CastleSide.SHORT
+        if not isinstance(move.start, (Rook, King)):
+            return castle_rights_
 
-        castle_rights_.set_false(color=move.start.color, castle_side=side)
-        return castle_rights_
+        if isinstance(move.start, King):
+            castle_rights_.set_false(
+                color=move.start.color, castle_side=CastleSide.SHORT
+            )
+            castle_rights_.set_false(
+                color=move.start.color, castle_side=CastleSide.LONG
+            )
+            return castle_rights_
+
+        if isinstance(move.start, Rook):
+            if move.start.curr not in (short_rook_sq | long_rook_sq):
+                return castle_rights_
+
+            if move.start.curr in long_rook_sq:
+                side = CastleSide.LONG
+            else:
+                side = CastleSide.SHORT
+
+            castle_rights_.set_false(color=move.start.color, castle_side=side)
+            return castle_rights_
 
     if isinstance(move, CastlingMove):
-        if move.start.curr in {Square.A1, Square.A8}:
+        if move.start.curr in long_rook_sq:
             side = CastleSide.LONG
         else:
             side = CastleSide.SHORT

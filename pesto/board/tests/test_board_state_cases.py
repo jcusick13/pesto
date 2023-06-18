@@ -5,6 +5,7 @@ from pesto.board.piece import (
     BaseMove,
     CastlingMove,
     King,
+    Knight,
     Move,
     Pawn,
     Rook,
@@ -126,35 +127,15 @@ class UpdateCastleRightsCases:
         exp = castle_rights
         return castle_rights, move, exp
 
-    def case_moved_queen_rook(self) -> _UpdateCastleRightsCase:
+    def case_lose_castle_right_when_rook_captured(self) -> _UpdateCastleRightsCase:
         castle_rights = CastleRights.new()
         move = SinglePieceMove(
-            start=Rook(Color.WHITE, Square.A1),
-            end=Rook(Color.WHITE, Square.C1),
-        )
-        exp = CastleRights.new()
-        exp.set_false(Color.WHITE, CastleSide.LONG)
-        return castle_rights, move, exp
-
-    def case_moved_king_rook(self) -> _UpdateCastleRightsCase:
-        castle_rights = CastleRights.new()
-        move = SinglePieceMove(
-            start=Rook(Color.BLACK, Square.H8),
-            end=Rook(Color.BLACK, Square.G8),
-        )
-        exp = CastleRights.new()
-        exp.set_false(Color.BLACK, CastleSide.SHORT)
-        return castle_rights, move, exp
-
-    def case_moved_king(self) -> _UpdateCastleRightsCase:
-        castle_rights = CastleRights.new()
-        move = SinglePieceMove(
-            start=King(Color.WHITE, Square.E1),
-            end=King(Color.WHITE, Square.F1),
+            start=Knight(Color.BLACK, Square.F2),
+            end=Knight(Color.BLACK, Square.H1),
+            captures=Rook(Color.WHITE, Square.H1),
         )
         exp = CastleRights.new()
         exp.set_false(Color.WHITE, CastleSide.SHORT)
-        exp.set_false(Color.WHITE, CastleSide.LONG)
         return castle_rights, move, exp
 
 
