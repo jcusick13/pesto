@@ -71,7 +71,7 @@ def update_castle_rights(castle_rights: CastleRights, move: Move) -> CastleRight
             return castle_rights_
 
     if isinstance(move, CastlingMove):
-        if move.start.curr in long_rook_sq:
+        if move.castled_rook.start.curr in long_rook_sq:
             side = CastleSide.LONG
         else:
             side = CastleSide.SHORT

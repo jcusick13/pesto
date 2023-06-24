@@ -57,6 +57,7 @@ class UpdateCastleRightsCases:
 
     def case_castled_short(self) -> _UpdateCastleRightsCase:
         castle_rights = CastleRights.new()
+        castle_rights.set_false(Color.WHITE, CastleSide.LONG)
         move = CastlingMove(
             start=King(Color.WHITE, Square.E1),
             end=King(Color.WHITE, Square.G1),
@@ -71,6 +72,7 @@ class UpdateCastleRightsCases:
 
     def case_castled_long(self) -> _UpdateCastleRightsCase:
         castle_rights = CastleRights.new()
+        castle_rights.set_false(Color.WHITE, CastleSide.SHORT)
         move = CastlingMove(
             start=King(Color.WHITE, Square.E1),
             end=King(Color.WHITE, Square.C1),
