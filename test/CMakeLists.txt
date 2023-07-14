@@ -17,5 +17,16 @@ target_link_libraries(
   GTest::gtest_main
 )
 
+add_executable(
+  piece_test
+  piece_test.cpp
+)
+target_link_libraries(
+  piece_test
+  piece 
+  GTest::gtest_main
+)
+
 include(GoogleTest)
 gtest_discover_tests(board_test)
+gtest_discover_tests(piece_test)

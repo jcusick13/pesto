@@ -1,9 +1,10 @@
-#include <bit>
 #include <cstdint>
 
 #include "board.h"
 
-// Initialize board to the start of a new game
+/*
+  Initialize board to the start of a new game
+*/
 Board::Board()
 {
   U64 white_pawns = 0b11111111 << 8;
@@ -36,15 +37,3 @@ Board::Board()
   kings[WHITE] = white_king;
   kings[BLACK] = black_king;
 };
-
-
-// Find the least significant non-zero bit. Flip it and 
-// return it's index
-Square popLeastSigBit(U64 &piece_bb)
-{
-  int first_non_zero_idx = std::countr_zero(piece_bb);
-  piece_bb &= ~(1ULL << first_non_zero_idx);
-
-  return Square(first_non_zero_idx);
-};
-

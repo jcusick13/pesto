@@ -1,7 +1,6 @@
 #include <cstdint>
 #include <vector>
 
-#include "square.h"
 #include "types.h"
 
 using namespace std;
@@ -18,5 +17,3 @@ class Board {
     vector<U64> kings   = vector<U64>(2);
 
 };
-
-Square popLeastSigBit(U64 &piece_bb);
