@@ -212,7 +212,7 @@ TEST(NorthWestOneTest, CenterOfBoard)
   EXPECT_EQ(northWestOne(bb_multi_piece), 1ULL << a4 | 1ULL << c7);
 }
 
-TEST(NorthWestOne, TopLeftOfBoard)
+TEST(NorthWestOneTest, TopLeftOfBoard)
 {
   U64 bb_single_piece = 1ULL << a8;
   EXPECT_EQ(northWestOne(bb_single_piece), 0ULL);
@@ -223,9 +223,43 @@ TEST(NorthWestOne, TopLeftOfBoard)
 
 
 /*
+  Confirm Knight movement from center of the board
+*/
+TEST(GetKnightAttacksTest, CenterOfBoard)
+{
+  U64 knight_bb = 1ULL << d4;
+  U64 attacks = getKnightAttacks(knight_bb);
+
+  U64 exp_bb = (
+    1ULL << e6 | 1ULL << f5 | 1ULL << f3 | 1ULL << e2 |
+    1ULL << c2 | 1ULL << b3 | 1ULL << b5 | 1ULL << c6
+  );
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+TEST(GetKnightAttacksTest, TopRightOfBoard)
+{
+  U64 knight_bb = 1ULL << g7;
+  U64 attacks = getKnightAttacks(knight_bb);
+
+  U64 exp_bb = 1ULL << h5 | 1ULL << f5 | 1ULL << e6 | 1ULL << e8;
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+TEST(GetKnightAttacksTest, BottomLeftOfBoard)
+{
+  U64 knight_bb = 1ULL << a3;
+  U64 attacks = getKnightAttacks(knight_bb);
+
+  U64 exp_bb = 1ULL << b5 | 1ULL << c4 | 1ULL << c2 | 1ULL << b1;
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+
+/*
   Confirm King movement from the center of the board
 */
-TEST(GetKingAttacks, CenterOfBoard)
+TEST(GetKingAttacksTest, CenterOfBoard)
 {
   U64 king_bb = 1ULL << d4;
   U64 attacks = getKingAttacks(king_bb);
@@ -241,7 +275,7 @@ TEST(GetKingAttacks, CenterOfBoard)
 /*
   Confirm King movement from side of the board
 */
-TEST(GetKingAttacks, SideOfBoard)
+TEST(GetKingAttacksTest, SideOfBoard)
 {
   U64 king_bb = 1ULL << h5;
   U64 attacks = getKingAttacks(king_bb);

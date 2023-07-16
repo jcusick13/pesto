@@ -15,14 +15,57 @@ Square popLeastSigBit(U64 &piece_bb)
   return Square(first_non_zero_idx);
 };
 
-U64 northOne(U64 &piece_bb)    { return piece_bb << 8; }
-U64 southOne(U64 &piece_bb)    { return piece_bb >> 8; }
-U64 eastOne (U64 &piece_bb)    { return piece_bb << 1 & ~FileA; }
-U64 westOne (U64 &piece_bb)    { return piece_bb >> 1 & ~FileH; }
-U64 northEastOne(U64 &piece_bb){ return piece_bb << 9 & ~FileA & ~Rank1; }
-U64 southEastOne(U64 &piece_bb){ return piece_bb >> 7 & ~FileA & ~Rank8; }
-U64 southWestOne(U64 &piece_bb){ return piece_bb >> 9 & ~FileH & ~Rank8; }
-U64 northWestOne(U64 &piece_bb){ return piece_bb << 7 & ~FileH & ~Rank1; }
+
+/*
+  Single square movements
+*/
+
+U64 northOne    (U64 &piece_bb){ return piece_bb << 8; }
+U64 southOne    (U64 &piece_bb){ return piece_bb >> 8; }
+U64 eastOne     (U64 &piece_bb){ return piece_bb << 1 & ~FileA; }
+U64 westOne     (U64 &piece_bb){ return piece_bb >> 1 & ~FileH; }
+U64 northEastOne(U64 &piece_bb){ return piece_bb << 9 & ~FileA; }
+U64 southEastOne(U64 &piece_bb){ return piece_bb >> 7 & ~FileA; }
+U64 southWestOne(U64 &piece_bb){ return piece_bb >> 9 & ~FileH; }
+U64 northWestOne(U64 &piece_bb){ return piece_bb << 7 & ~FileH; }
+
+/*
+  Knight movements
+*/
+U64 knightNorthNorthEast(U64 &bb){ return bb << 17 & ~FileA; }
+U64 knightNorthEastEast (U64 &bb){ return bb << 10 & ~FileA & ~FileB; }
+U64 knightSouthEastEast (U64 &bb){ return bb >> 6  & ~FileA & ~FileB; }
+U64 knightSouthSouthEast(U64 &bb){ return bb >> 15 & ~FileA; }
+U64 knightSouthSouthWest(U64 &bb){ return bb >> 17 & ~FileH; }
+U64 knightSouthWestWest (U64 &bb){ return bb >> 10 & ~FileG & ~FileH; }
+U64 knightNorthWestWest (U64 &bb){ return bb << 6  & ~FileG & ~FileH; }
+U64 knightNorthNorthWest(U64 &bb){ return bb << 15 & ~FileH; }
+
+
+/*
+  Attack map generation
+*/
+
+
+/*
+  Return bitboard with squares attacked by a knight
+*/
+U64 getKnightAttacks(U64 &knight_bb)
+{
+  U64 no_no_ea = knightNorthNorthEast(knight_bb);
+  U64 no_ea_ea = knightNorthEastEast (knight_bb);
+  U64 so_ea_ea = knightSouthEastEast (knight_bb);
+  U64 so_so_ea = knightSouthSouthEast(knight_bb);
+  U64 so_so_we = knightSouthSouthWest(knight_bb);
+  U64 so_we_we = knightSouthWestWest (knight_bb);
+  U64 no_we_we = knightNorthWestWest (knight_bb);
+  U64 no_no_we = knightNorthNorthWest(knight_bb);
+
+  return (
+    no_no_ea | no_ea_ea | so_ea_ea | so_so_ea |
+    so_so_we | so_we_we | no_we_we | no_no_we
+  );
+}
 
 /*
   Return bitboard with sqaures attacked by a king
