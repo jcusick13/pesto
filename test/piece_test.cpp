@@ -257,6 +257,64 @@ TEST(GetKnightAttacksTest, BottomLeftOfBoard)
 
 
 /*
+  Test sliding attack patterns
+*/
+TEST(GetSlidingAttacks, SpotCheckTest)
+{
+  vector<vector<U64>> attacks = getSlidingAttacks();
+  EXPECT_EQ(attacks[0].size(), 64);
+
+  U64 exp_north_c5 = 0x404040000000000ULL;
+  EXPECT_EQ(attacks[N][c5], exp_north_c5);
+
+  U64 exp_north_h1 = 0x8080808080808000ULL;
+  EXPECT_EQ(attacks[N][h1], exp_north_h1);
+
+  U64 exp_north_east_c5 = 0x2010080000000000ULL;
+  EXPECT_EQ(attacks[NE][c5], exp_north_east_c5);
+
+  U64 exp_north_east_e2 = 0x8040200000ULL;
+  EXPECT_EQ(attacks[NE][e2], exp_north_east_e2);
+
+  U64 exp_east_b2 = 0xfc00ULL;
+  EXPECT_EQ(attacks[E][b2], exp_east_b2);
+
+  U64 exp_east_g7 = 1ULL << h7;
+  EXPECT_EQ(attacks[E][g7], exp_east_g7);
+
+  U64 exp_south_east_e6 = 0x2040800000ULL;
+  EXPECT_EQ(attacks[SE][e6], exp_south_east_e6);
+
+  U64 exp_south_east_a4 = 0x20408ULL;
+  EXPECT_EQ(attacks[SE][a4], exp_south_east_a4);
+
+  U64 exp_south_f2 = 0x20ULL;
+  EXPECT_EQ(attacks[S][f2], exp_south_f2);
+
+  U64 exp_south_e6 = 0x1010101010ULL;
+  EXPECT_EQ(attacks[S][e6], exp_south_e6);
+
+  U64 exp_south_west_e7 = 0x80402010000ULL;
+  EXPECT_EQ(attacks[SW][e7], exp_south_west_e7);
+
+  U64 exp_south_west_h2 = 0x40ULL;
+  EXPECT_EQ(attacks[SW][h2], exp_south_west_h2);
+
+  U64 exp_west_e5 = 0xf00000000ULL;
+  EXPECT_EQ(attacks[W][e5], exp_west_e5);
+
+  U64 exp_west_h8 = 0x7f00000000000000ULL;
+  EXPECT_EQ(attacks[W][h8], exp_west_h8);
+
+  U64 exp_north_west_d2 = 0x102040000ULL;
+  EXPECT_EQ(attacks[NW][d2], exp_north_west_d2);
+
+  U64 exp_north_west_h7 = 0x4000000000000000ULL;
+  EXPECT_EQ(attacks[NW][h7], exp_north_west_h7);
+}
+
+
+/*
   Confirm King movement from the center of the board
 */
 TEST(GetKingAttacksTest, CenterOfBoard)
