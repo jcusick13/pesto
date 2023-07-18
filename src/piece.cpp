@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <bit>
 
 #include "piece.h"
@@ -40,6 +41,35 @@ U64 knightSouthSouthWest(U64 &bb){ return bb >> 17 & ~FileH; }
 U64 knightSouthWestWest (U64 &bb){ return bb >> 10 & ~FileG & ~FileH; }
 U64 knightNorthWestWest (U64 &bb){ return bb << 6  & ~FileG & ~FileH; }
 U64 knightNorthNorthWest(U64 &bb){ return bb << 15 & ~FileH; }
+
+/*
+  Sliding piece movements
+*/
+
+vector<vector<U64>> getSlidingAttacks()
+{
+  // Build north attacks from a1, moving across
+  // files then up ranks. South attacks start
+  // from h8, moving across files, then down ranks.
+  // South vector is reversed before being returned
+  // in order to have a 0..63 square ordering
+  vector<U64> north; vector<U64> south;
+  U64 north_attack = 0x101010101010100ULL;
+  U64 south_attack = 0x80808080808080ULL;
+
+  for (int rank = 0; rank < 8; rank++){
+    for (int file = 0; file < 8; file++){
+      north.push_back(north_attack << file);
+      south.push_back(south_attack >> file);
+    }
+    north_attack = north_attack << 8;
+    south_attack = south_attack >> 8;
+  }
+  std::reverse(south.begin(), south.end());
+
+  vector<vector<U64>> sliding_attacks = {north, south};
+  return sliding_attacks;
+}
 
 
 /*

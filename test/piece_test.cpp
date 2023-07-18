@@ -257,6 +257,28 @@ TEST(GetKnightAttacksTest, BottomLeftOfBoard)
 
 
 /*
+  Test sliding attack patterns
+*/
+TEST(GetSlidingAttacks, SpotCheckTest)
+{
+  vector<vector<U64>> attacks = getSlidingAttacks();
+  EXPECT_EQ(attacks[0].size(), 64);
+
+  U64 exp_north_c5 = 0x404040000000000ULL;
+  EXPECT_EQ(attacks[0][c5], exp_north_c5);
+
+  U64 exp_north_h1 = 0x8080808080808000ULL;
+  EXPECT_EQ(attacks[0][h1], exp_north_h1);
+
+  U64 exp_south_f2 = 0x20ULL;
+  EXPECT_EQ(attacks[1][f2], exp_south_f2) << "Error south f2";
+
+  U64 exp_south_e6 = 0x1010101010ULL;
+  EXPECT_EQ(attacks[1][e6], exp_south_e6) << "Error south e6";
+}
+
+
+/*
   Confirm King movement from the center of the board
 */
 TEST(GetKingAttacksTest, CenterOfBoard)
