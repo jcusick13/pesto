@@ -271,10 +271,22 @@ TEST(GetSlidingAttacks, SpotCheckTest)
   EXPECT_EQ(attacks[0][h1], exp_north_h1);
 
   U64 exp_south_f2 = 0x20ULL;
-  EXPECT_EQ(attacks[1][f2], exp_south_f2) << "Error south f2";
+  EXPECT_EQ(attacks[1][f2], exp_south_f2);
 
   U64 exp_south_e6 = 0x1010101010ULL;
-  EXPECT_EQ(attacks[1][e6], exp_south_e6) << "Error south e6";
+  EXPECT_EQ(attacks[1][e6], exp_south_e6);
+
+  U64 exp_east_b2 = 0xfc00ULL;
+  EXPECT_EQ(attacks[2][b2], exp_east_b2);
+
+  U64 exp_east_g7 = 1ULL << h7;
+  EXPECT_EQ(attacks[2][g7], exp_east_g7);
+
+  U64 exp_west_e5 = 0xf00000000ULL;
+  EXPECT_EQ(attacks[3][e5], exp_west_e5);
+
+  U64 exp_west_h8 = 0x7f00000000000000ULL;
+  EXPECT_EQ(attacks[3][h8], exp_west_h8);
 }
 
 

@@ -39,8 +39,8 @@ U64 knightNorthNorthWest(U64 &bb);
 /*
   Sliding piece movements
 */
+
 vector<vector<U64>> getSlidingAttacks();
-//U64 slidingAttacks(Square square, Direction dir);
 
 
 /*

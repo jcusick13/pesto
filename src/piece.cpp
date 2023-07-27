@@ -46,29 +46,64 @@ U64 knightNorthNorthWest(U64 &bb){ return bb << 15 & ~FileH; }
   Sliding piece movements
 */
 
+
+/*
+  Computes and returns a length-4 vector of attack
+  bitboards for NORTH, SOUTH, EAST, WEST, where each
+  individual vector is arranged with squares a1..h8
+  in cells 0..63.
+
+  Builds north and east attacks from a1, moving
+  across files then up ranks. South and west attacks
+  start from h8, moving across files, then down ranks.
+
+  The south and west vectors are then reveresed
+  before being returned such that each directional
+  vector has a 0..63 square ordering.
+*/
 vector<vector<U64>> getSlidingAttacks()
 {
-  // Build north attacks from a1, moving across
-  // files then up ranks. South attacks start
-  // from h8, moving across files, then down ranks.
-  // South vector is reversed before being returned
-  // in order to have a 0..63 square ordering
-  vector<U64> north; vector<U64> south;
+  vector<U64> FileVec = {
+    FileA, FileB, FileC, FileD,
+    FileE, FileF, FileG, FileH,
+  };
+
+  vector<U64> north, south, east, west;
   U64 north_attack = 0x101010101010100ULL;
   U64 south_attack = 0x80808080808080ULL;
+  U64 east_attack = 0xfeULL;
+  U64 west_attack = 0x7f00000000000000ULL;
 
   for (int rank = 0; rank < 8; rank++){
     for (int file = 0; file < 8; file++){
+
       north.push_back(north_attack << file);
       south.push_back(south_attack >> file);
+
+      // Manually create 'exclude' bitboards for east/west
+      // attacks, as shifting bits across files can wrap
+      // bits around the board (north/south bitshifting
+      // instead just drops the bit at the end of the board)
+      U64 east_exclude_files = FileA;
+      U64 west_exclude_files = FileH;
+      for (int i = 0; i < file; i++){
+        east_exclude_files |= FileVec[i];
+        west_exclude_files |= FileVec[7 - i];
+      }
+      east.push_back((east_attack << file) & ~east_exclude_files);
+      west.push_back((west_attack >> file) & ~west_exclude_files);
+
     }
     north_attack = north_attack << 8;
     south_attack = south_attack >> 8;
+    east_attack = east_attack << 8;
+    west_attack = west_attack >> 8;
   }
-  std::reverse(south.begin(), south.end());
 
-  vector<vector<U64>> sliding_attacks = {north, south};
-  return sliding_attacks;
+  std::reverse(south.begin(), south.end());
+  std::reverse(west.begin(), west.end());
+
+  return vector<vector<U64>> {north, south, east, west};
 }
 
 
