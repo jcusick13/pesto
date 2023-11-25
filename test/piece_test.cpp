@@ -38,8 +38,22 @@ TEST(PopLeastSigBitTest, BitboardWithSingleSquare)
   Square exp_sq_4 = h8;
   EXPECT_EQ(obs_sq_4, exp_sq_4) << "Failed for square h8";
   EXPECT_EQ(bb_h8, 0ULL) << "Failed to flip h8 bit";
-};
+}
 
+TEST(PopMostSigBitTest, BitboardWithSingleSquare)
+{
+  U64 bb_d3 = 1ULL << d3;
+  Square obs_sq_1 = popMostSigBit(bb_d3);
+  Square exp_sq_1 = d3;
+  EXPECT_EQ(obs_sq_1, exp_sq_1);
+  EXPECT_EQ(bb_d3, 0ULL);
+
+  U64 bb_a8 = 1ULL << a8;
+  Square obs_sq_2 = popMostSigBit(bb_a8);
+  Square exp_sq_2 = a8;
+  EXPECT_EQ(obs_sq_1, exp_sq_1);
+  EXPECT_EQ(bb_a8, 0ULL);
+}
 
 /*
   Confirm a single bitboard with multiple bits
@@ -65,7 +79,7 @@ TEST(PopLeastSigBitTest, BitboardWithMultipleSquares)
   set<Square> exp_squares = set<Square>(squares.begin(), squares.end());
   set<Square> obs_squares = set<Square>(lsb_squares.begin(), lsb_squares.end());
   EXPECT_EQ(board, 0ULL);
-};
+}
 
 /*
   Confirm single square movement in all directions
@@ -223,7 +237,7 @@ TEST(NorthWestOneTest, TopLeftOfBoard)
 
 
 /*
-  Confirm Knight movement from center of the board
+  Confirm Knight movement
 */
 TEST(GetKnightAttacksTest, CenterOfBoard)
 {
@@ -313,9 +327,219 @@ TEST(GetSlidingAttacks, SpotCheckTest)
   EXPECT_EQ(attacks[NW][h7], exp_north_west_h7);
 }
 
+/*
+  Confirm Bishop movement
+*/
+TEST(GetLoneBishopAttacks, CenterOfEmptyBoard)
+{
+  Square square = e5;
+  U64 occupied = 1ULL << e5;
+  U64 same_color = 1ULL << e5;
+  U64 attacks = getLoneBishopAttacks(square, occupied, same_color);
+
+  U64 exp_bb = (
+    1ULL << a1 | 1ULL << b2 | 1ULL << c3 | 1ULL << d4 |
+    1ULL << f6 | 1ULL << g7 | 1ULL << h8 | 1ULL << b8 |
+    1ULL << c7 | 1ULL << d6 | 1ULL << f4 | 1ULL << g3 | 1ULL << h2
+  );
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLoneBishopAttacks, EdgeOfEmptyBoard)
+{
+  Square square = b7;
+  U64 occupied = 1ULL << b7;
+  U64 same_color = 1ULL << b7;
+  U64 attacks = getLoneBishopAttacks(square, occupied, same_color);
+
+  U64 exp_bb = (
+    1ULL << a6 | 1ULL << c8 | 1ULL << a8 | 1ULL << c6 |
+    1ULL << d5 | 1ULL << e4 | 1ULL << f3 | 1ULL << g2 | 1ULL << h1
+  );
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLoneBishopAttacks, CompletelySurrounded)
+{
+  Square square = e3;
+  U64 occupied = 0x28002800ULL;
+  U64 same_color = 1ULL << e3;
+  U64 attacks = getLoneBishopAttacks(square, occupied, same_color);
+
+  U64 exp_bb = 1ULL << d2 | 1ULL << d4 | 1ULL << f4 | 1ULL << f2;
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLoneBishopAttacks, CantCaptureSameColor)
+{
+  Square square = e3;
+  U64 occupied = 0x28002800ULL;
+  U64 same_color = 0x28002800ULL;
+  U64 attacks = getLoneBishopAttacks(square, occupied, same_color);
+
+  U64 exp_bb = 0ULL;
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLoneBishopAttacks, LimitedMovementInCorner)
+{
+  Square square = g2;
+  U64 occupied = 1ULL << f3;
+  U64 same_color = 1ULL << g2;
+  U64 attacks = getLoneBishopAttacks(square, occupied, same_color);
+
+  U64 exp_bb = 1ULL << f1 | 1ULL << h1 | 1ULL << h3 | 1ULL << f3;
+  EXPECT_EQ(attacks, exp_bb);
+}
 
 /*
-  Confirm King movement from the center of the board
+  Confirm Rook movement
+*/
+TEST(GetLoneRookAttacks, CenterOfEmptyBoard)
+{
+  Square square = d4;
+  U64 occupied = 1ULL << d4;
+  U64 same_color = 1ULL << d4;
+  U64 attacks = getLoneRookAttacks(square, occupied, same_color);
+
+  U64 exp_bb = (
+    1ULL << d1 | 1ULL << d2 | 1ULL << d3 | 1ULL << d5 |
+    1ULL << d6 | 1ULL << d7 | 1ULL << d8 | 1ULL << a4 |
+    1ULL << b4 | 1ULL << c4 | 1ULL << e4 | 1ULL << f4 |
+    1ULL << g4 | 1ULL << h4
+  );
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLoneRookAttacks, EdgeOfEmptyBoard)
+{
+  Square square = h8;
+  U64 occupied = 1ULL << h8;
+  U64 same_color = 1ULL << h8;
+  U64 attacks = getLoneRookAttacks(square, occupied, same_color);
+
+  U64 exp_bb = (
+    1ULL << h7 | 1ULL << h6 | 1ULL << h5 | 1ULL << h4 |
+    1ULL << h3 | 1ULL << h2 | 1ULL << h1 | 1ULL << a8 |
+    1ULL << b8 | 1ULL << c8 | 1ULL << d8 | 1ULL << e8 |
+    1ULL << f8 | 1ULL << g8
+  );
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLoneRookAttacks, CompletelySurrounded)
+{
+  Square square = d4;
+  U64 occupied = 0x814080000ULL;
+  U64 same_color = 1ULL << d4;
+  U64 attacks = getLoneRookAttacks(square, occupied, same_color);
+
+  U64 exp_bb = 1ULL << d5 | 1ULL << e4 | 1ULL << d3 | 1ULL << c4;
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLoneRookAttacks, CantCaptureSameColor)
+{
+  Square square = d4;
+  U64 occupied = 0x814080000ULL;
+  U64 same_color = 0x814080000ULL;
+  U64 attacks = getLoneRookAttacks(square, occupied, same_color);
+
+  U64 exp_bb = 0ULL;
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLoneRookAttacks, LimitedMovementInCorner)
+{
+  Square square = g7;
+  U64 occupied = 0x20400000000000ULL;
+  U64 same_color = 1ULL << g7;
+  U64 attacks = getLoneRookAttacks(square, occupied, same_color);
+
+  U64 exp_bb = 1ULL << g8 | 1ULL << h7 | 1ULL << f7 | 1ULL << g6;
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+/*
+  Confirm Queen movement
+*/
+TEST(GetLoneQueenAttacks, CenterOfEmptyBoard)
+{
+  Square square = d5;
+  U64 occupied = 1ULL << d5;
+  U64 same_color = 1ULL << d5;
+  U64 attacks = getLoneQueenAttacks(square, occupied, same_color);
+  
+  U64 exp_bb = (
+    1ULL << d1 | 1ULL << d2 | 1ULL << d3 | 1ULL << d4 | 1ULL << d6 |
+    1ULL << d7 | 1ULL << d8 | 1ULL << a5 | 1ULL << b5 | 1ULL << c5 |
+    1ULL << e5 | 1ULL << f5 | 1ULL << g5 | 1ULL << h5 | 1ULL << a2 |
+    1ULL << b3 | 1ULL << c4 | 1ULL << e6 | 1ULL << f7 | 1ULL << g8 |
+    1ULL << a8 | 1ULL << b7 | 1ULL << c6 | 1ULL << e4 | 1ULL << f3 |
+    1ULL << g2 | 1ULL << h1
+  );
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLoneQueenAttacks, EdgeOfEmptyBoard)
+{
+  Square square = g2;
+  U64 occupied = 1ULL << g2;
+  U64 same_color = 1ULL << g2;
+  U64 attacks = getLoneQueenAttacks(square, occupied, same_color);
+
+  U64 exp_bb = (
+    1ULL << a2 | 1ULL << b2 | 1ULL << c2 | 1ULL << d2 | 1ULL << e2 |
+    1ULL << f2 | 1ULL << h2 | 1ULL << g1 | 1ULL << g3 | 1ULL << g4 |
+    1ULL << g5 | 1ULL << g6 | 1ULL << g7 | 1ULL << g8 | 1ULL << a8 |
+    1ULL << b7 | 1ULL << c6 | 1ULL << d5 | 1ULL << e4 | 1ULL << f3 |
+    1ULL << h1 | 1ULL << f1 | 1ULL << h3
+  );
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLoneQueenAttacks, CompletelySurrounded)
+{
+  Square square = c4;
+  U64 occupied = 0xe0a0e0000ULL;
+  U64 same_color = 1ULL << c4;
+  U64 attacks = getLoneQueenAttacks(square, occupied, same_color);
+
+  U64 exp_bb = (
+    1ULL << c5 | 1ULL << d5 | 1ULL << d4 | 1ULL << d3 |
+    1ULL << c3 | 1ULL << b3 | 1ULL << b4 | 1ULL << b5
+  );
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLoneQueenAttacks, CantCaptureSameColor)
+{
+  Square square = c4;
+  U64 occupied = 0xe0a0e0000ULL;
+  U64 same_color = 0xe0a0e0000ULL;
+  U64 attacks = getLoneQueenAttacks(square, occupied, same_color);
+
+  U64 exp_bb = 0ULL;
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLoneQueenAttacks, LimitedMovementInCorner)
+{
+  Square square = b7;
+  U64 occupied = 0x404070000000000ULL;
+  U64 same_color = 1ULL << b7;
+  U64 attacks = getLoneQueenAttacks(square, occupied, same_color);
+
+  U64 exp_bb = (
+    1ULL << a8 | 1ULL << a7 | 1ULL << b8 | 1ULL << a6 |
+    1ULL << c8 | 1ULL << b6 | 1ULL << c6 | 1ULL << c7
+  );
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+
+/*
+  Confirm King movement
 */
 TEST(GetKingAttacksTest, CenterOfBoard)
 {
@@ -327,12 +551,8 @@ TEST(GetKingAttacksTest, CenterOfBoard)
     1ULL << e4 | 1ULL << e3 | 1ULL << d3 | 1ULL << c3
   );
   EXPECT_EQ(attacks, exp_bb);
-};
+}
 
-
-/*
-  Confirm King movement from side of the board
-*/
 TEST(GetKingAttacksTest, SideOfBoard)
 {
   U64 king_bb = 1ULL << h5;
@@ -340,4 +560,4 @@ TEST(GetKingAttacksTest, SideOfBoard)
 
   U64 exp_bb = 1ULL << h6 | 1ULL << g6 | 1ULL << g5 | 1ULL << g4 | 1ULL << h4;
   EXPECT_EQ(attacks, exp_bb);
-};
+}

@@ -16,6 +16,18 @@ Square popLeastSigBit(U64 &piece_bb)
   return Square(first_non_zero_idx);
 };
 
+/*
+  Find the most significant non-zero bit. Flip it
+  and return the `Square` it represents.
+*/
+Square popMostSigBit(U64 &piece_bb)
+{
+  int last_non_zero_idx = 63 - std::countl_zero(piece_bb);
+  piece_bb &= ~(1ULL << last_non_zero_idx);
+
+  return Square(last_non_zero_idx);
+}
+
 
 /*
   Single square movements
@@ -139,10 +151,108 @@ vector<vector<U64>> getSlidingAttacks()
   };
 }
 
+vector<vector<U64>> SLIDING_ATTACKS = getSlidingAttacks();
+
+/*
+  Generate an attack bitboard based on diagnoal
+  rays, starting from `square` and recognizing
+  squares that are occupied
+*/
+U64 getDiagAttacks(Square square, U64 &occupied)
+{
+  U64 northeast = SLIDING_ATTACKS[NE][square];
+  U64 northeast_blockers = northeast & occupied;
+  if (northeast_blockers){
+    Square ne_first_blocker = popLeastSigBit(northeast_blockers);
+    northeast &= ~SLIDING_ATTACKS[NE][ne_first_blocker];
+  }
+
+  U64 southeast = SLIDING_ATTACKS[SE][square];
+  U64 southeast_blockers = southeast & occupied;
+  if (southeast_blockers){
+    Square se_first_blocker = popMostSigBit(southeast_blockers);
+    southeast &= ~SLIDING_ATTACKS[SE][se_first_blocker];
+  }
+
+  U64 southwest = SLIDING_ATTACKS[SW][square];
+  U64 southwest_blockers = southwest & occupied;
+  if (southwest_blockers){
+    Square sw_first_blocker = popMostSigBit(southwest_blockers);
+    southwest &= ~SLIDING_ATTACKS[SW][sw_first_blocker];
+  }
+
+  U64 northwest = SLIDING_ATTACKS[NW][square];
+  U64 northwest_blockers = northwest & occupied;
+  if (northwest_blockers){
+    Square nw_first_blocker = popLeastSigBit(northwest_blockers);
+    northwest &= ~SLIDING_ATTACKS[NW][nw_first_blocker];
+  }
+
+  return northeast | southeast | southwest | northwest;
+}
+
+/*
+  Generate an attack bitboard based on vertical
+  and horizontal rays, starting from `square`
+  and recognizing squares that are occupied
+*/
+U64 getVertHorizAttacks(Square square, U64 &occupied)
+{
+  U64 north = SLIDING_ATTACKS[N][square];
+  U64 north_blockers = north & occupied;
+  if (north_blockers){
+    Square n_first_blocker = popLeastSigBit(north_blockers);
+    north &= ~SLIDING_ATTACKS[N][n_first_blocker];
+  }
+  
+  U64 east = SLIDING_ATTACKS[E][square];
+  U64 east_blockers = east & occupied;
+  if (east_blockers){
+    Square e_first_blocker = popLeastSigBit(east_blockers);
+    east &= ~SLIDING_ATTACKS[E][e_first_blocker];
+  }
+
+  U64 south = SLIDING_ATTACKS[S][square];
+  U64 south_blockers = south & occupied;
+  if (south_blockers){
+    Square s_first_blocker = popMostSigBit(south_blockers);
+    south &= ~SLIDING_ATTACKS[S][s_first_blocker];
+  }
+
+  U64 west = SLIDING_ATTACKS[W][square];
+  U64 west_blockers = west & occupied;
+  if (west_blockers){
+    Square w_first_blocker = popMostSigBit(west_blockers);
+    west &= ~SLIDING_ATTACKS[W][w_first_blocker];
+  }
+
+  return north | east | south | west;
+}
+
 
 /*
   Attack map generation
 */
+
+U64 getLoneBishopAttacks(Square square, U64 &occupied, U64 &same_color)
+{
+  U64 attack_squares = getDiagAttacks(square, occupied);
+  return attack_squares & ~same_color;
+}
+
+
+U64 getLoneRookAttacks(Square square, U64 &occupied, U64 &same_color)
+{
+  U64 attack_squares = getVertHorizAttacks(square, occupied);
+  return attack_squares & ~same_color;
+}
+
+U64 getLoneQueenAttacks(Square square, U64 &occupied, U64 &same_color)
+{
+  U64 attack_diag = getDiagAttacks(square, occupied);
+  U64 attack_vert_horiz = getVertHorizAttacks(square, occupied);
+  return (attack_diag | attack_vert_horiz) & ~same_color;
+}
 
 
 /*

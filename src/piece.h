@@ -7,6 +7,7 @@ using namespace std;
 
 
 Square popLeastSigBit(U64 &piece_bb);
+Square popMostSigBit (U64 &piece_bb);
 
 /* 
   Single square movements
@@ -42,10 +43,17 @@ U64 knightNorthNorthWest(U64 &bb);
 
 vector<vector<U64>> getSlidingAttacks();
 
+U64 getDiagAttacks(Square square, U64 &occupied);
+U64 getVertHorizAttacks(Square square, U64 &occupied);
 
 /*
   Attack map generation
 */
 
+U64 getLoneBishopAttacks(Square square, U64 &occupied, U64 &same_color);
+U64 getLoneRookAttacks  (Square square, U64 &occupied, U64 &same_color);
+U64 getLoneQueenAttacks (Square square, U64 &occupied, U64 &same_color);
+
 U64 getKnightAttacks(U64 &knight_bb);
+// U64 getRookAttacks  (U64 &rook_bb, U64 &occupied);
 U64 getKingAttacks  (U64 &king_bb);
