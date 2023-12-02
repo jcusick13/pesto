@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <bit>
 
+#include "exceptions.h"
 #include "piece.h"
 
 
@@ -11,8 +12,11 @@
 Square popLeastSigBit(U64 &piece_bb)
 {
   int first_non_zero_idx = std::countr_zero(piece_bb);
-  piece_bb &= ~(1ULL << first_non_zero_idx);
+  if (first_non_zero_idx == 64) {
+    throw EmptyBitboardException();
+  }
 
+  piece_bb &= ~(1ULL << first_non_zero_idx);
   return Square(first_non_zero_idx);
 };
 
@@ -23,8 +27,11 @@ Square popLeastSigBit(U64 &piece_bb)
 Square popMostSigBit(U64 &piece_bb)
 {
   int last_non_zero_idx = 63 - std::countl_zero(piece_bb);
-  piece_bb &= ~(1ULL << last_non_zero_idx);
+  if (last_non_zero_idx < 0) {
+    throw EmptyBitboardException();
+  }
 
+  piece_bb &= ~(1ULL << last_non_zero_idx);
   return Square(last_non_zero_idx);
 }
 
@@ -234,7 +241,7 @@ U64 getVertHorizAttacks(Square square, U64 &occupied)
   Attack map generation
 */
 
-U64 getLoneKnightAttacks(Square square, U64 &same_color)
+U64 getLoneKnightAttacks(Square square, U64 &occupied, U64 &same_color)
 {
   U64 knight_bb = 1ULL << square;
   U64 no_no_ea = knightNorthNorthEast(knight_bb);
@@ -273,13 +280,9 @@ U64 getLoneQueenAttacks(Square square, U64 &occupied, U64 &same_color)
   return (attack_diag | attack_vert_horiz) & ~same_color;
 }
 
-
-/*
-  Return bitboard with sqaures attacked by a king
-*/
-U64 getKingAttacks(U64 &king_bb)
+U64 getLoneKingAttacks(Square square, U64 &occupied, U64 &same_color)
 {
-  // TODO: Assert only one king
+  U64 king_bb = 1ULL << square;
   U64 north = northOne(king_bb);
   U64 south = southOne(king_bb);
   U64 east  = eastOne (king_bb);
@@ -290,8 +293,9 @@ U64 getKingAttacks(U64 &king_bb)
   U64 south_west = southWestOne(king_bb);
   U64 north_west = northWestOne(king_bb);
 
-  return (
+  U64 attack_squares = (
     north | south | east | west |
     north_east | south_east | south_west | north_west
   );
+  return attack_squares & ~same_color;
 }

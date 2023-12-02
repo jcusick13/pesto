@@ -3,6 +3,7 @@
 
 #include <gtest/gtest.h>
 
+#include "exceptions.h"
 #include "piece.h"
 
 using namespace std;
@@ -40,20 +41,6 @@ TEST(PopLeastSigBitTest, BitboardWithSingleSquare)
   EXPECT_EQ(bb_h8, 0ULL) << "Failed to flip h8 bit";
 }
 
-TEST(PopMostSigBitTest, BitboardWithSingleSquare)
-{
-  U64 bb_d3 = 1ULL << d3;
-  Square obs_sq_1 = popMostSigBit(bb_d3);
-  Square exp_sq_1 = d3;
-  EXPECT_EQ(obs_sq_1, exp_sq_1);
-  EXPECT_EQ(bb_d3, 0ULL);
-
-  U64 bb_a8 = 1ULL << a8;
-  Square obs_sq_2 = popMostSigBit(bb_a8);
-  Square exp_sq_2 = a8;
-  EXPECT_EQ(obs_sq_1, exp_sq_1);
-  EXPECT_EQ(bb_a8, 0ULL);
-}
 
 /*
   Confirm a single bitboard with multiple bits
@@ -80,6 +67,34 @@ TEST(PopLeastSigBitTest, BitboardWithMultipleSquares)
   set<Square> obs_squares = set<Square>(lsb_squares.begin(), lsb_squares.end());
   EXPECT_EQ(board, 0ULL);
 }
+
+TEST(PopMostSigBitTest, BitboardWithSingleSquare)
+{
+  U64 bb_d3 = 1ULL << d3;
+  Square obs_sq_1 = popMostSigBit(bb_d3);
+  Square exp_sq_1 = d3;
+  EXPECT_EQ(obs_sq_1, exp_sq_1);
+  EXPECT_EQ(bb_d3, 0ULL);
+
+  U64 bb_a8 = 1ULL << a8;
+  Square obs_sq_2 = popMostSigBit(bb_a8);
+  Square exp_sq_2 = a8;
+  EXPECT_EQ(obs_sq_1, exp_sq_1);
+  EXPECT_EQ(bb_a8, 0ULL);
+
+  U64 bb_h8 = 1ULL << h8;
+  Square obs_sq_3 = popMostSigBit(bb_h8);
+  Square exp_sq_3 = h8;
+  EXPECT_EQ(obs_sq_3, exp_sq_3);
+  EXPECT_EQ(bb_h8, 0ULL);
+}
+
+TEST(PopSigBitException, EmptyBitboardException){
+  U64 empty_bb = 0ULL;
+  EXPECT_THROW(popLeastSigBit(empty_bb), EmptyBitboardException);
+  EXPECT_THROW(popMostSigBit(empty_bb), EmptyBitboardException);
+}
+
 
 /*
   Confirm single square movement in all directions
@@ -299,8 +314,9 @@ TEST(GetSlidingAttacks, SpotCheckTest)
 TEST(GetLoneKnightAttacks, CenterOfEmptyBoard)
 {
   Square square = e4;
+  U64 occupied = 0ULL; // unused
   U64 same_color = 1ULL << e4;
-  U64 attacks = getLoneKnightAttacks(square, same_color);
+  U64 attacks = getLoneKnightAttacks(square, occupied, same_color);
 
   U64 exp_bb = (
     1ULL << f6 | 1ULL << g5 | 1ULL << g3 | 1ULL << f2 |
@@ -312,8 +328,9 @@ TEST(GetLoneKnightAttacks, CenterOfEmptyBoard)
 TEST(GetLoneKnightAttacks, EdgeOfEmptyBoard)
 {
   Square square = b8;
+  U64 occupied = 0ULL; // unused
   U64 same_color = 1ULL << b8;
-  U64 attacks = getLoneKnightAttacks(square, same_color);
+  U64 attacks = getLoneKnightAttacks(square, occupied, same_color);
 
   U64 exp_bb = 1ULL << a6 | 1ULL << c6 | 1ULL << d7;
   EXPECT_EQ(attacks, exp_bb);
@@ -323,8 +340,9 @@ TEST(GetLoneKnightAttacks, EdgeOfEmptyBoard)
 TEST(GetLoneKnightAttacks, CantCaptureSameColor)
 {
   Square square = e4;
+  U64 occupied = 0ULL; // unused
   U64 same_color = 0x284410442800ULL;
-  U64 attacks = getLoneKnightAttacks(square, same_color);
+  U64 attacks = getLoneKnightAttacks(square, occupied, same_color);
 
   U64 exp_bb = 0ULL;
   EXPECT_EQ(attacks, exp_bb);
@@ -544,10 +562,12 @@ TEST(GetLoneQueenAttacks, LimitedMovementInCorner)
 /*
   Confirm King movement
 */
-TEST(GetKingAttacksTest, CenterOfBoard)
+TEST(GetLoneKingAttacksTest, CenterOfBoard)
 {
-  U64 king_bb = 1ULL << d4;
-  U64 attacks = getKingAttacks(king_bb);
+  Square square = d4;
+  U64 occupied = 0ULL;
+  U64 same_color = 1ULL << d4;
+  U64 attacks = getLoneKingAttacks(square, occupied, same_color);
 
   U64 exp_bb = (
     1ULL << c4 | 1ULL << c5 | 1ULL << d5 | 1ULL << e5 |
@@ -556,10 +576,12 @@ TEST(GetKingAttacksTest, CenterOfBoard)
   EXPECT_EQ(attacks, exp_bb);
 }
 
-TEST(GetKingAttacksTest, SideOfBoard)
+TEST(GetLoneKingAttacksTest, SideOfBoard)
 {
-  U64 king_bb = 1ULL << h5;
-  U64 attacks = getKingAttacks(king_bb);
+  Square square = h5;
+  U64 occupied = 0ULL;
+  U64 same_color = 1ULL << h5;
+  U64 attacks = getLoneKingAttacks(square, occupied, same_color);
 
   U64 exp_bb = 1ULL << h6 | 1ULL << g6 | 1ULL << g5 | 1ULL << g4 | 1ULL << h4;
   EXPECT_EQ(attacks, exp_bb);

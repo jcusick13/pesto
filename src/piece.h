@@ -1,3 +1,6 @@
+#ifndef _PIECE_H_
+#define _PIECE_H_
+
 #include <vector>
 
 #include "square.h"
@@ -49,10 +52,11 @@ U64 getVertHorizAttacks(Square square, U64 &occupied);
 /*
   Attack map generation
 */
-
-U64 getLoneKnightAttacks(Square square, U64 &same_color);
+U64 getLoneKnightAttacks(Square square, U64 &occupied, U64 &same_color);
 U64 getLoneBishopAttacks(Square square, U64 &occupied, U64 &same_color);
 U64 getLoneRookAttacks  (Square square, U64 &occupied, U64 &same_color);
 U64 getLoneQueenAttacks (Square square, U64 &occupied, U64 &same_color);
+U64 getLoneKingAttacks  (Square square, U64 &occupied, U64 &same_color);
 
-U64 getKingAttacks  (U64 &king_bb);
+
+#endif  // _PIECE_H_

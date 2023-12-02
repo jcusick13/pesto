@@ -1,3 +1,6 @@
+#ifndef _SQUARE_H_
+#define _SQUARE_H_
+
 #include <cstdint>
 
 
@@ -11,3 +14,5 @@ enum Square: int {
   a7, b7, c7, d7, e7, f7, g7, h7,
   a8, b8, c8, d8, e8, f8, g8, h8
 };
+
+#endif  // _SQUARE_H_

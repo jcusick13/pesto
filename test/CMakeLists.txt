@@ -18,6 +18,17 @@ target_link_libraries(
 )
 
 add_executable(
+  move_test
+  move_test.cpp
+)
+target_link_libraries(
+  move_test
+  move
+  GTest::gtest_main
+  GTest::gmock_main
+)
+
+add_executable(
   piece_test
   piece_test.cpp
 )
@@ -29,4 +40,5 @@ target_link_libraries(
 
 include(GoogleTest)
 gtest_discover_tests(board_test)
+gtest_discover_tests(move_test)
 gtest_discover_tests(piece_test)
