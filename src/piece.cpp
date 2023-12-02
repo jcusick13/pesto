@@ -234,6 +234,25 @@ U64 getVertHorizAttacks(Square square, U64 &occupied)
   Attack map generation
 */
 
+U64 getLoneKnightAttacks(Square square, U64 &same_color)
+{
+  U64 knight_bb = 1ULL << square;
+  U64 no_no_ea = knightNorthNorthEast(knight_bb);
+  U64 no_ea_ea = knightNorthEastEast (knight_bb);
+  U64 so_ea_ea = knightSouthEastEast (knight_bb);
+  U64 so_so_ea = knightSouthSouthEast(knight_bb);
+  U64 so_so_we = knightSouthSouthWest(knight_bb);
+  U64 so_we_we = knightSouthWestWest (knight_bb);
+  U64 no_we_we = knightNorthWestWest (knight_bb);
+  U64 no_no_we = knightNorthNorthWest(knight_bb);
+
+  U64 attack_squares = (
+    no_no_ea | no_ea_ea | so_ea_ea | so_so_ea |
+    so_so_we | so_we_we | no_we_we | no_no_we
+  );
+  return attack_squares & ~same_color;
+}
+
 U64 getLoneBishopAttacks(Square square, U64 &occupied, U64 &same_color)
 {
   U64 attack_squares = getDiagAttacks(square, occupied);
@@ -254,26 +273,6 @@ U64 getLoneQueenAttacks(Square square, U64 &occupied, U64 &same_color)
   return (attack_diag | attack_vert_horiz) & ~same_color;
 }
 
-
-/*
-  Return bitboard with squares attacked by a knight
-*/
-U64 getKnightAttacks(U64 &knight_bb)
-{
-  U64 no_no_ea = knightNorthNorthEast(knight_bb);
-  U64 no_ea_ea = knightNorthEastEast (knight_bb);
-  U64 so_ea_ea = knightSouthEastEast (knight_bb);
-  U64 so_so_ea = knightSouthSouthEast(knight_bb);
-  U64 so_so_we = knightSouthSouthWest(knight_bb);
-  U64 so_we_we = knightSouthWestWest (knight_bb);
-  U64 no_we_we = knightNorthWestWest (knight_bb);
-  U64 no_no_we = knightNorthNorthWest(knight_bb);
-
-  return (
-    no_no_ea | no_ea_ea | so_ea_ea | so_so_ea |
-    so_so_we | so_we_we | no_we_we | no_no_we
-  );
-}
 
 /*
   Return bitboard with sqaures attacked by a king

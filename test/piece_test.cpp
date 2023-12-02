@@ -237,40 +237,6 @@ TEST(NorthWestOneTest, TopLeftOfBoard)
 
 
 /*
-  Confirm Knight movement
-*/
-TEST(GetKnightAttacksTest, CenterOfBoard)
-{
-  U64 knight_bb = 1ULL << d4;
-  U64 attacks = getKnightAttacks(knight_bb);
-
-  U64 exp_bb = (
-    1ULL << e6 | 1ULL << f5 | 1ULL << f3 | 1ULL << e2 |
-    1ULL << c2 | 1ULL << b3 | 1ULL << b5 | 1ULL << c6
-  );
-  EXPECT_EQ(attacks, exp_bb);
-}
-
-TEST(GetKnightAttacksTest, TopRightOfBoard)
-{
-  U64 knight_bb = 1ULL << g7;
-  U64 attacks = getKnightAttacks(knight_bb);
-
-  U64 exp_bb = 1ULL << h5 | 1ULL << f5 | 1ULL << e6 | 1ULL << e8;
-  EXPECT_EQ(attacks, exp_bb);
-}
-
-TEST(GetKnightAttacksTest, BottomLeftOfBoard)
-{
-  U64 knight_bb = 1ULL << a3;
-  U64 attacks = getKnightAttacks(knight_bb);
-
-  U64 exp_bb = 1ULL << b5 | 1ULL << c4 | 1ULL << c2 | 1ULL << b1;
-  EXPECT_EQ(attacks, exp_bb);
-}
-
-
-/*
   Test sliding attack patterns
 */
 TEST(GetSlidingAttacks, SpotCheckTest)
@@ -325,6 +291,43 @@ TEST(GetSlidingAttacks, SpotCheckTest)
 
   U64 exp_north_west_h7 = 0x4000000000000000ULL;
   EXPECT_EQ(attacks[NW][h7], exp_north_west_h7);
+}
+
+/*
+  Confirm Knight movement
+*/
+TEST(GetLoneKnightAttacks, CenterOfEmptyBoard)
+{
+  Square square = e4;
+  U64 same_color = 1ULL << e4;
+  U64 attacks = getLoneKnightAttacks(square, same_color);
+
+  U64 exp_bb = (
+    1ULL << f6 | 1ULL << g5 | 1ULL << g3 | 1ULL << f2 |
+    1ULL << d2 | 1ULL << c3 | 1ULL << c5 | 1ULL << d6
+  );
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLoneKnightAttacks, EdgeOfEmptyBoard)
+{
+  Square square = b8;
+  U64 same_color = 1ULL << b8;
+  U64 attacks = getLoneKnightAttacks(square, same_color);
+
+  U64 exp_bb = 1ULL << a6 | 1ULL << c6 | 1ULL << d7;
+  EXPECT_EQ(attacks, exp_bb);
+}
+
+
+TEST(GetLoneKnightAttacks, CantCaptureSameColor)
+{
+  Square square = e4;
+  U64 same_color = 0x284410442800ULL;
+  U64 attacks = getLoneKnightAttacks(square, same_color);
+
+  U64 exp_bb = 0ULL;
+  EXPECT_EQ(attacks, exp_bb);
 }
 
 /*
