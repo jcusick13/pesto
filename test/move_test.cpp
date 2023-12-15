@@ -6,6 +6,55 @@
 #include "move.h"
 
 
+TEST(AddPawnMovesTest, SinglePawnWithoutPromotion)
+{
+  std::vector<Move> obs_moves;
+  U64 pawns = 1ULL << b2;
+  U64 occupied = 1ULL << b2;
+  Color color = WHITE;
+  U64 same_color = 1ULL << b2;
+  Square ep = nullsq;
+
+  addPawnMoves(&obs_moves, pawns, occupied, color, same_color, ep);
+  ASSERT_THAT(obs_moves, ::testing::ElementsAre(Move{b2, b3}, Move{b2, b4}));
+}
+
+TEST(AddPawnMovesTest, TwoPawnsWithoutPromotion)
+{
+  std::vector<Move> obs_moves;
+  U64 pawns = 1ULL << b2 | 1ULL << c5;
+  U64 occupied = 1ULL << b2 | 1ULL << c5;
+  Color color = WHITE;
+  U64 same_color = 1ULL << b2 | 1ULL << c5;
+  Square ep = nullsq;
+
+  addPawnMoves(&obs_moves, pawns, occupied, color, same_color, ep);
+  ASSERT_THAT(
+    obs_moves,
+    ::testing::ElementsAre(Move{b2, b3}, Move{b2, b4}, Move{c5, c6})
+  );
+}
+
+TEST(AddPawnMovesTest, SinglePawnPromotes)
+{
+  std::vector<Move> obs_moves;
+  U64 pawns = 1ULL << d7;
+  U64 occupied = 1ULL << d7;
+  Color color = WHITE;
+  U64 same_color = 1ULL << d7;
+  Square ep = nullsq;
+
+  addPawnMoves(&obs_moves, pawns, occupied, color, same_color, ep);
+  ASSERT_THAT(
+    obs_moves,
+    ::testing::ElementsAre(
+      Move{d7, d8, KNIGHT}, Move{d7, d8, BISHOP}, Move{d7, d8, ROOK},
+      Move{d7, d8, QUEEN}
+    )
+  );
+}
+
+
 TEST(AddPieceTypeMovesTest, SingleBishop)
 {
   std::vector<Move> obs_moves;

@@ -309,6 +309,198 @@ TEST(GetSlidingAttacks, SpotCheckTest)
 }
 
 /*
+  Confirm Pawn movement
+*/
+TEST(GetLonePawnAttacks, WhiteFirstMove)
+{
+    Square square = d2;
+    U64 occupied = 1ULL << d2;
+    U64 same_color = 1ULL << d2;
+    Color color = WHITE;
+    bool promo = false;
+    U64 attacks = getLonePawnAttacks(square, occupied, same_color, color, promo);
+
+    U64 exp_bb = 1ULL << d3 | 1ULL << d4;
+    ASSERT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLonePawnAttacks, BlackFirstMove)
+{
+    Square square = f7;
+    U64 occupied = 1ULL << f7;
+    U64 same_color = 1ULL << f7;
+    Color color = BLACK;
+    bool promo = false;
+    U64 attacks = getLonePawnAttacks(square, occupied, same_color, color, promo);
+
+    U64 exp_bb = 1ULL << f6 | 1ULL << f5;
+    ASSERT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLonePawnAttacks, WhiteBlockedFromSingleSquareAdvance)
+{
+    Square square = a2;
+    U64 occupied = 1ULL << a2 | 1ULL << a3;
+    U64 same_color = 1ULL << a2;
+    Color color = WHITE;
+    bool promo = false;
+    U64 attacks = getLonePawnAttacks(square, occupied, same_color, color, promo);
+
+    U64 exp_bb = 0ULL;
+    ASSERT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLonePawnAttacks, BlackBlockedFromSingleSquareAdvance)
+{
+    Square square = c7;
+    U64 occupied = 1ULL << c7 | 1ULL << c6;
+    U64 same_color = 1ULL << c7;
+    Color color = BLACK;
+    bool promo = false;
+    U64 attacks = getLonePawnAttacks(square, occupied, same_color, color, promo);
+
+    U64 exp_bb = 0ULL;
+    ASSERT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLonePawnAttacks, WhiteBlockedFromTwoSquareAdvance)
+{
+    Square square = b2;
+    U64 occupied = 1ULL << b2 | 1ULL << b4;
+    U64 same_color = 1ULL << b2;
+    Color color = WHITE;
+    bool promo = false;
+    U64 attacks = getLonePawnAttacks(square, occupied, same_color, color, promo);
+
+    U64 exp_bb = 1ULL << b3;
+    ASSERT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLonePawnAttacks, BlackBlockedFromTwoSquareAdvance)
+{
+    Square square = h7;
+    U64 occupied = 1ULL << h7 | 1ULL << h5;
+    U64 same_color = 1ULL << h7;
+    Color color = BLACK;
+    bool promo = false;
+    U64 attacks = getLonePawnAttacks(square, occupied, same_color, color, promo);
+
+    U64 exp_bb = 1ULL << h6;
+    ASSERT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLonePawnAttacks, WhiteCapture)
+{
+    Square square = c4;
+    U64 occupied = 1ULL << c4 | 1ULL << b5 | 1ULL << c5 | 1ULL << d5;
+    U64 same_color = 1ULL << c4;
+    Color color = WHITE;
+    bool promo = false;
+    U64 attacks = getLonePawnAttacks(square, occupied, same_color, color, promo);
+
+    U64 exp_bb = 1ULL << b5 | 1ULL << d5;
+    ASSERT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLonePawnAttacks, BlackCapture)
+{
+    Square square = f4;
+    U64 occupied = 1ULL << f4 | 1ULL << e3 | 1ULL << f3 | 1ULL << g3;
+    U64 same_color = 1ULL << f4;
+    Color color = BLACK;
+    bool promo = false;
+    U64 attacks = getLonePawnAttacks(square, occupied, same_color, color, promo);
+
+    U64 exp_bb = 1ULL << e3 | 1ULL << g3;
+    ASSERT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLonePawnAttacks, WhiteCantCaptureWhite)
+{
+    Square square = c4;
+    U64 occupied = 1ULL << c4 | 1ULL << b5 | 1ULL << c5 | 1ULL << d5;
+    U64 same_color = 1ULL << c4 | 1ULL << b5 | 1ULL << c5 | 1ULL << d5;
+    Color color = WHITE;
+    bool promo = false;
+    U64 attacks = getLonePawnAttacks(square, occupied, same_color, color, promo);
+
+    U64 exp_bb = 0ULL;
+    ASSERT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLonePawnAttacks, BlackCantCaptureBlack)
+{
+    Square square = f4;
+    U64 occupied = 1ULL << f4 | 1ULL << e3 | 1ULL << f3 | 1ULL << g3;
+    U64 same_color = 1ULL << f4 | 1ULL << e3 | 1ULL << f3 | 1ULL << g3;
+    Color color = BLACK;
+    bool promo = false;
+    U64 attacks = getLonePawnAttacks(square, occupied, same_color, color, promo);
+
+    U64 exp_bb = 0ULL;
+    ASSERT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLonePawnAttacks, WhitePromotes)
+{
+  Square square = c7;
+  U64 occupied = 1ULL << c7 | 1ULL << d8;
+  U64 same_color = 1ULL << c7;
+  Color color = WHITE;
+  bool promo = false;
+  U64 attacks = getLonePawnAttacks(square, occupied, same_color, color, promo);
+
+  U64 exp_bb = 1ULL << c8 | 1ULL << d8;
+  ASSERT_EQ(attacks, exp_bb);
+  ASSERT_TRUE(promo);
+}
+
+TEST(GetLonePawnAttacks, BlackPromotes)
+{
+  Square square = a2;
+  U64 occupied = 1ULL << a2 | 1ULL << b1;
+  U64 same_color = 1ULL << a2;
+  Color color = BLACK;
+  bool promo = false;
+  U64 attacks = getLonePawnAttacks(square, occupied, same_color, color, promo);
+
+  U64 exp_bb = 1ULL << a1 | 1ULL << b1;
+  ASSERT_EQ(attacks, exp_bb);
+  ASSERT_TRUE(promo);
+}
+
+TEST(GetLonePawnAttacks, WhiteCapturesEnPassant)
+{
+    Square square = e5;
+    U64 occupied = 1ULL << e5 | 1ULL << f5;
+    U64 same_color = 1ULL << e5;
+    Color color = WHITE;
+    bool promo = false;
+    Square ep = f6;
+    U64 attacks = getLonePawnAttacks(square, occupied, same_color, color, 
+                                     promo, ep);
+
+    U64 exp_bb = 1ULL << e6 | 1ULL << f6;
+    ASSERT_EQ(attacks, exp_bb);
+}
+
+TEST(GetLonePawnAttacks, BlackCapturesEnPassant)
+{
+    Square square = g4;
+    U64 occupied = 1ULL << g4 | 1ULL << f4;
+    U64 same_color = 1ULL << g4;
+    Color color = BLACK;
+    bool promo = false;
+    Square ep = f3;
+    U64 attacks = getLonePawnAttacks(square, occupied, same_color, color,
+                                     promo, ep);
+
+    U64 exp_bb = 1ULL << g3 | 1ULL << f3;
+    ASSERT_EQ(attacks, exp_bb);
+}
+
+
+/*
   Confirm Knight movement
 */
 TEST(GetLoneKnightAttacks, CenterOfEmptyBoard)

@@ -14,7 +14,7 @@ enum Direction: int {
 };
 
 enum PieceType: int {
-  PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING
+  PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, NULL_PIECE
 };
 
 constexpr U64 FileA = 0x0101010101010101ULL;
@@ -26,4 +26,10 @@ constexpr U64 FileF = FileA << 5;
 constexpr U64 FileG = FileA << 6;
 constexpr U64 FileH = FileA << 7;
 
-#endif  // _MOVE_H_
+constexpr U64 Rank2 = 0xff00ULL;
+constexpr U64 Rank7 = 0xff000000000000ULL;
+
+constexpr U64 Rank1 = Rank2 >> 8;
+constexpr U64 Rank8 = Rank7 << 8;
+
+#endif  // _TYPES_H_

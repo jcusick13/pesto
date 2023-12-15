@@ -52,6 +52,8 @@ U64 getVertHorizAttacks(Square square, U64 &occupied);
 /*
   Attack map generation
 */
+U64 getLonePawnAttacks(Square square, U64 &occupied, U64 &same_color,
+                       Color color, bool &promotion, Square en_passant = nullsq);
 U64 getLoneKnightAttacks(Square square, U64 &occupied, U64 &same_color);
 U64 getLoneBishopAttacks(Square square, U64 &occupied, U64 &same_color);
 U64 getLoneRookAttacks  (Square square, U64 &occupied, U64 &same_color);

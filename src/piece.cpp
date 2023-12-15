@@ -241,6 +241,62 @@ U64 getVertHorizAttacks(Square square, U64 &occupied)
   Attack map generation
 */
 
+U64 getLonePawnAttacks(Square square, U64 &occupied, U64 &same_color,
+                       Color color, bool &promotion, Square en_passant){
+    
+    U64 pawn_bb = 1ULL << square;
+
+    U64 move_one_forward;
+    if (color == WHITE) {
+      move_one_forward = (pawn_bb << 8) & ~occupied;
+    } else {
+      move_one_forward = (pawn_bb >> 8) & ~occupied;
+    }
+
+    U64 move_two_forward = 0ULL;
+    if (move_one_forward) {
+      // If pawn is unable to move one square forward,
+      // it's not possible for it to move two forward
+      if ((color == WHITE) && (pawn_bb & Rank2)){
+        move_two_forward = (pawn_bb << 16) & ~occupied;
+      }
+      if ((color == BLACK) && (pawn_bb & Rank7)) {
+        move_two_forward = (pawn_bb >> 16) & ~occupied;
+      }
+    }
+
+    U64 capture_diag;
+    U64 capture_en_passant;
+    if (color == WHITE) {
+      capture_diag = pawn_bb << 7 | pawn_bb << 9;
+      capture_en_passant = pawn_bb << 7 | pawn_bb << 9;
+    } else {
+      capture_diag = pawn_bb >> 7 | pawn_bb >> 9;
+      capture_en_passant = pawn_bb >> 7 | pawn_bb >> 9;
+    }
+    if (!(capture_diag && occupied)) {
+       capture_diag = 0ULL; 
+    } else {
+      capture_diag &= occupied;
+    }
+    capture_en_passant &= (1ULL << en_passant);
+
+
+    U64 attacks = (
+      move_one_forward | move_two_forward | capture_diag | capture_en_passant
+    ) & ~same_color;
+
+    promotion = false;
+    if (
+      ((color == WHITE) && (attacks & Rank8)) |
+      ((color == BLACK) && (attacks & Rank1))
+    ) {
+      promotion = true;
+    }
+    
+    return attacks;
+}
+
 U64 getLoneKnightAttacks(Square square, U64 &occupied, U64 &same_color)
 {
   U64 knight_bb = 1ULL << square;
@@ -253,24 +309,24 @@ U64 getLoneKnightAttacks(Square square, U64 &occupied, U64 &same_color)
   U64 no_we_we = knightNorthWestWest (knight_bb);
   U64 no_no_we = knightNorthNorthWest(knight_bb);
 
-  U64 attack_squares = (
+  U64 attacks = (
     no_no_ea | no_ea_ea | so_ea_ea | so_so_ea |
     so_so_we | so_we_we | no_we_we | no_no_we
   );
-  return attack_squares & ~same_color;
+  return attacks & ~same_color;
 }
 
 U64 getLoneBishopAttacks(Square square, U64 &occupied, U64 &same_color)
 {
-  U64 attack_squares = getDiagAttacks(square, occupied);
-  return attack_squares & ~same_color;
+  U64 attacks = getDiagAttacks(square, occupied);
+  return attacks & ~same_color;
 }
 
 
 U64 getLoneRookAttacks(Square square, U64 &occupied, U64 &same_color)
 {
-  U64 attack_squares = getVertHorizAttacks(square, occupied);
-  return attack_squares & ~same_color;
+  U64 attacks = getVertHorizAttacks(square, occupied);
+  return attacks & ~same_color;
 }
 
 U64 getLoneQueenAttacks(Square square, U64 &occupied, U64 &same_color)
@@ -293,9 +349,9 @@ U64 getLoneKingAttacks(Square square, U64 &occupied, U64 &same_color)
   U64 south_west = southWestOne(king_bb);
   U64 north_west = northWestOne(king_bb);
 
-  U64 attack_squares = (
+  U64 attacks = (
     north | south | east | west |
     north_east | south_east | south_west | north_west
   );
-  return attack_squares & ~same_color;
+  return attacks & ~same_color;
 }
