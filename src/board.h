@@ -1,19 +1,21 @@
-#include <cstdint>
-#include <vector>
+#ifndef _BOARD_H_
+#define _BOARD_H_
 
+#include <vector>
 #include "types.h"
 
-using namespace std;
 
 class Board {
   public:
     Board();
 
-    vector<U64> pawns   = vector<U64>(2);
-    vector<U64> knights = vector<U64>(2);
-    vector<U64> bishops = vector<U64>(2);
-    vector<U64> rooks   = vector<U64>(2);
-    vector<U64> queens  = vector<U64>(2);
-    vector<U64> kings   = vector<U64>(2);
-
+    std::vector<U64> pawns   = std::vector<U64>(2);
+    std::vector<U64> knights = std::vector<U64>(2);
+    std::vector<U64> bishops = std::vector<U64>(2);
+    std::vector<U64> rooks   = std::vector<U64>(2);
+    std::vector<U64> queens  = std::vector<U64>(2);
+    std::vector<U64> kings   = std::vector<U64>(2);
 };
+
+#endif  // _BOARD_H_
+

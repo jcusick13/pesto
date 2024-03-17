@@ -1,10 +1,6 @@
-#include <cstdint>
-
 #include <gtest/gtest.h>
 
 #include "board.h"
-
-using namespace std;
 
 /*
   XORing bits of piece type for each color should
@@ -37,3 +33,4 @@ TEST(BoardConstructorTest, StartingPosition)
   U64 exp_black = exp_white << (8 * 6);
   EXPECT_EQ(black, exp_black) << board.pawns[BLACK]; 
 };
+

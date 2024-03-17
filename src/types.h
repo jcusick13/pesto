@@ -33,3 +33,4 @@ constexpr U64 Rank1 = Rank2 >> 8;
 constexpr U64 Rank8 = Rank7 << 8;
 
 #endif  // _TYPES_H_
+

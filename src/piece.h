@@ -6,8 +6,6 @@
 #include "square.h"
 #include "types.h"
 
-using namespace std;
-
 
 Square popLeastSigBit(U64 &piece_bb);
 Square popMostSigBit (U64 &piece_bb);
@@ -44,7 +42,7 @@ U64 knightNorthNorthWest(U64 &bb);
   Sliding piece movements
 */
 
-vector<vector<U64>> getSlidingAttacks();
+std::vector<std::vector<U64>> getSlidingAttacks();
 
 U64 getDiagAttacks(Square square, U64 &occupied);
 U64 getVertHorizAttacks(Square square, U64 &occupied);
@@ -62,3 +60,4 @@ U64 getLoneKingAttacks  (Square square, U64 &occupied, U64 &same_color);
 
 
 #endif  // _PIECE_H_
+

@@ -1,4 +1,5 @@
 #include "board.h"
+#include "types.h"
 
 /*
   Initialize board to the start of a new game

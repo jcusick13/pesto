@@ -4,6 +4,7 @@
 #include "exceptions.h"
 #include "move.h"
 #include "piece.h"
+#include "types.h"
 
 
 std::vector<PieceType> promotionPieces {KNIGHT, BISHOP, ROOK, QUEEN};
@@ -83,3 +84,4 @@ void addPieceTypeMoves(PieceType &piece_type, std::vector<Move> *moves,
     } catch(EmptyBitboardException){ break; }
   }
 }
+

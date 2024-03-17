@@ -80,15 +80,15 @@ U64 knightNorthNorthWest(U64 &bb){ return bb << 15 & ~FileH; }
   before being returned such that each directional
   vector has a 0..63 square ordering.
 */
-vector<vector<U64>> getSlidingAttacks()
+std::vector<std::vector<U64>> getSlidingAttacks()
 {
-  vector<U64> FileVec = {
+  std::vector<U64> FileVec = {
     FileA, FileB, FileC, FileD,
     FileE, FileF, FileG, FileH,
   };
 
-  vector<U64> north, south, east, west;
-  vector<U64> neast, nwest, seast, swest;
+  std::vector<U64> north, south, east, west;
+  std::vector<U64> neast, nwest, seast, swest;
   U64 north_attack = 0x101010101010100ULL;
   U64 south_attack = 0x80808080808080ULL;
   U64 east_attack = 0xfeULL;
@@ -103,8 +103,8 @@ vector<vector<U64>> getSlidingAttacks()
     // Each row of 8 entries for northwest, southeast need
     // to be reversed before added in correct order to the
     // full length-64 vector
-    vector<U64> nwest_tmp;
-    vector<U64> seast_tmp;
+    std::vector<U64> nwest_tmp;
+    std::vector<U64> seast_tmp;
 
     for (int file = 0; file < 8; file++){
 
@@ -153,12 +153,12 @@ vector<vector<U64>> getSlidingAttacks()
   std::reverse(swest.begin(), swest.end());
   std::reverse(seast.begin(), seast.end());
 
-  return vector<vector<U64>> {
+  return std::vector<std::vector<U64>> {
     north, neast, east, seast, south, swest, west, nwest
   };
 }
 
-vector<vector<U64>> SLIDING_ATTACKS = getSlidingAttacks();
+std::vector<std::vector<U64>> SLIDING_ATTACKS = getSlidingAttacks();
 
 /*
   Generate an attack bitboard based on diagnoal
@@ -355,3 +355,4 @@ U64 getLoneKingAttacks(Square square, U64 &occupied, U64 &same_color)
   );
   return attacks & ~same_color;
 }
+

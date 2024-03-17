@@ -1,12 +1,9 @@
-#include <string>
 #include <vector>
 
 #include <gtest/gtest.h>
 
 #include "exceptions.h"
 #include "piece.h"
-
-using namespace std;
 
 
 /*
@@ -51,20 +48,20 @@ TEST(PopLeastSigBitTest, BitboardWithMultipleSquares)
 {
   // Create bitboard with three bits flipped
   U64 board = 0ULL;
-  vector<Square> squares = {a5, c2, f6};
+  std::vector<Square> squares = {a5, c2, f6};
   for (Square s : squares){
     U64 bb_sq = 1ULL << s;
     board |= bb_sq;
   }
 
-  vector<Square> lsb_squares;
+  std::vector<Square> lsb_squares;
   for (Square s : squares){
     Square sq = popLeastSigBit(board);
     lsb_squares.push_back(sq);
   }
 
-  set<Square> exp_squares = set<Square>(squares.begin(), squares.end());
-  set<Square> obs_squares = set<Square>(lsb_squares.begin(), lsb_squares.end());
+  std::set<Square> exp_squares = std::set<Square>(squares.begin(), squares.end());
+  std::set<Square> obs_squares = std::set<Square>(lsb_squares.begin(), lsb_squares.end());
   EXPECT_EQ(board, 0ULL);
 }
 
@@ -256,7 +253,7 @@ TEST(NorthWestOneTest, TopLeftOfBoard)
 */
 TEST(GetSlidingAttacks, SpotCheckTest)
 {
-  vector<vector<U64>> attacks = getSlidingAttacks();
+  std::vector<std::vector<U64>> attacks = getSlidingAttacks();
   EXPECT_EQ(attacks[0].size(), 64);
 
   U64 exp_north_c5 = 0x404040000000000ULL;
@@ -778,3 +775,4 @@ TEST(GetLoneKingAttacksTest, SideOfBoard)
   U64 exp_bb = 1ULL << h6 | 1ULL << g6 | 1ULL << g5 | 1ULL << g4 | 1ULL << h4;
   EXPECT_EQ(attacks, exp_bb);
 }
+

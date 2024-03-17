@@ -28,3 +28,4 @@ void addPieceTypeMoves(PieceType &piece_type, std::vector<Move> *moves,
                        U64 pieces, U64 &occupied, U64 &same_color);
 
 #endif  // _MOVE_H_
+

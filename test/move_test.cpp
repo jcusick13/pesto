@@ -96,3 +96,4 @@ TEST(AddPieceTypeMovesTest, SingleRookInCorner)
     ::testing::ElementsAre(Move{h1, f1}, Move{h1, g1}, Move{h1, h2})
   );
 }
+
