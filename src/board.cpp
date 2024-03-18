@@ -1,38 +1,47 @@
 #include "board.h"
-#include "types.h"
+#include "fen.h"
+#include "square.h"
 
 /*
   Initialize board to the start of a new game
 */
 Board::Board()
 {
-  U64 white_pawns = 0b11111111 << 8;
-  U64 black_pawns = white_pawns << (8 * 5);
-  pawns[WHITE] = white_pawns;
-  pawns[BLACK] = black_pawns;
-
-  U64 white_knights = 0b01000010;
-  U64 black_knights = white_knights << (8 * 7);
-  knights[WHITE] = white_knights;
-  knights[BLACK] = black_knights;
-
-  U64 white_bishops = 0b00100100;
-  U64 black_bishops = white_bishops << (8 * 7);
-  bishops[WHITE] = white_bishops;
-  bishops[BLACK] = black_bishops;
-
-  U64 white_rooks = 0b10000001;
-  U64 black_rooks = white_rooks << (8 * 7);
-  rooks[WHITE] = white_rooks;
-  rooks[BLACK] = black_rooks;
-
-  U64 white_queen = 0b00010000;
-  U64 black_queen = white_queen << (8 * 7);
-  queens[WHITE] = white_queen;
-  queens[BLACK] = black_queen;
-
-  U64 white_king = 0b00001000;
-  U64 black_king = white_king << (8 * 7);
-  kings[WHITE] = white_king;
-  kings[BLACK] = black_king;
+  pieces.initStartingPosition();
+  to_move = WHITE;
+  ply = 1;
+  halfmove_clock = 0;
+  en_passant_target = nullsq;
 };
+
+void Board::fromFen(std::string fen) {
+  std::vector<std::string> fen_sections = splitString(fen, " ");
+
+  pieces = parseFenPieces(fen_sections[0]);
+  to_move = (fen_sections[1] == "w") ? WHITE : BLACK;
+  auto [white, black] = parseFenCastlingRights(fen_sections[2]);
+  castle_white = white;
+  castle_black = black;
+  en_passant_target = parseFenEnPassantTarget(fen_sections[3]);
+  halfmove_clock = std::stoi(fen_sections[4]);
+  ply = ((std::stoi(fen_sections[5]) * 2) - 1);
+  if (to_move == BLACK) { ply++; }
+}
+
+std::string Board::toFen() {
+  std::string piece_str = dumpPiecesToFen(pieces);
+  std::string color = (to_move == WHITE) ? "w" : "b";
+
+  std::string castling = dumpCastlingRightsToFen(castle_white, castle_black);
+  std::string en_passant = dumpEnPassantTargetToFen(en_passant_target);
+
+  std::string halfmove = std::to_string(halfmove_clock);
+  int fullmove_extra = (to_move == WHITE) ? 1 : 0;
+  std::string fullmove = std::to_string((ply / 2) + fullmove_extra);
+
+  return (
+    piece_str + " " + color + " " + castling + " " + 
+    en_passant + " " + halfmove + " " + fullmove
+  );
+}
+

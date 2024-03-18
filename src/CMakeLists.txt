@@ -1,9 +1,21 @@
 add_library(
     board 
     board.cpp
+    collections.cpp
+    fen.cpp
 )
 target_include_directories(
     board PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_library(
+    fen
+    fen.cpp
+    collections.cpp
+)
+target_include_directories(
+    fen PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 

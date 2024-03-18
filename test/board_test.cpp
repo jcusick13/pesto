@@ -1,36 +1,36 @@
 #include <gtest/gtest.h>
-
 #include "board.h"
 
-/*
-  XORing bits of piece type for each color should
-  be the 16 bits of the first/last two ranks for
-  a starting game position
-*/
-TEST(BoardConstructorTest, StartingPosition)
-{
-  Board board = Board();
+TEST(BoardFromFen, DeepBlueKasparov1997Game6) {
+  std::string fen = "r1k4r/p2nb1p1/2b4p/1p1n1p2/2PP4/3Q1NB1/1P3PPP/R5K1 b - - 0 19";
+  Board board;
+  board.fromFen(fen);
 
-  U64 white = (
-    board.pawns  [WHITE] ^=
-    board.knights[WHITE] ^=
-    board.bishops[WHITE] ^=
-    board.rooks  [WHITE] ^=
-    board.queens [WHITE] ^=
-    board.kings  [WHITE]
-  );
-  U64 exp_white = 0b1111111111111111;
-  EXPECT_EQ(white, exp_white);
+  EXPECT_EQ(board.to_move, BLACK);
+  EXPECT_EQ(board.ply, 38);
+  EXPECT_EQ(board.halfmove_clock, 0);
+  EXPECT_EQ(board.en_passant_target, nullsq);
+  EXPECT_EQ(board.castle_white, CastleRights(false, false));
+  EXPECT_EQ(board.castle_black, CastleRights(false, false));
 
-  U64 black = (
-    board.pawns  [BLACK] ^=
-    board.knights[BLACK] ^=
-    board.bishops[BLACK] ^=
-    board.rooks  [BLACK] ^=
-    board.queens [BLACK] ^=
-    board.kings  [BLACK]
-  );
-  U64 exp_black = exp_white << (8 * 6);
-  EXPECT_EQ(black, exp_black) << board.pawns[BLACK]; 
-};
+  EXPECT_EQ(board.pieces.rooks[WHITE], 1ULL);
+  EXPECT_EQ(board.pieces.queens[WHITE], 1ULL << d3);
+  EXPECT_EQ(board.pieces.kings[BLACK], 1ULL << c8);
+  EXPECT_EQ(board.pieces.bishops[BLACK], (1ULL << c6 | 1ULL << e7));
+}
+
+TEST(BoardToFen, StartingPosition) {
+  Board board;
+  std::string obs_fen = board.toFen();
+  std::string exp_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+  EXPECT_EQ(obs_fen, exp_fen);
+}
+
+TEST(BoardFromAndToFen, StartingPosition) {
+  Board board;
+  std::string start_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+  board.fromFen(start_fen);
+  std::string end_fen = board.toFen();
+  EXPECT_EQ(start_fen, end_fen);
+}
 

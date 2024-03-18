@@ -18,6 +18,16 @@ target_link_libraries(
 )
 
 add_executable(
+  fen_test
+  fen_test.cpp
+)
+target_link_libraries(
+  fen_test
+  fen 
+  GTest::gtest_main
+)
+
+add_executable(
   move_test
   move_test.cpp
 )
@@ -40,5 +50,6 @@ target_link_libraries(
 
 include(GoogleTest)
 gtest_discover_tests(board_test)
+gtest_discover_tests(fen_test)
 gtest_discover_tests(move_test)
 gtest_discover_tests(piece_test)
