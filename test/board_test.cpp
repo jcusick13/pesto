@@ -13,10 +13,10 @@ TEST(BoardFromFen, DeepBlueKasparov1997Game6) {
   EXPECT_EQ(board.castle_white, CastleRights(false, false));
   EXPECT_EQ(board.castle_black, CastleRights(false, false));
 
-  EXPECT_EQ(board.pieces.rooks[WHITE], 1ULL);
-  EXPECT_EQ(board.pieces.queens[WHITE], 1ULL << d3);
-  EXPECT_EQ(board.pieces.kings[BLACK], 1ULL << c8);
-  EXPECT_EQ(board.pieces.bishops[BLACK], (1ULL << c6 | 1ULL << e7));
+  EXPECT_EQ(board.pieces.get(ROOK)->at(WHITE), 1ULL);
+  EXPECT_EQ(board.pieces.get(QUEEN)->at(WHITE), 1ULL << d3);
+  EXPECT_EQ(board.pieces.get(KING)->at(BLACK), 1ULL << c8);
+  EXPECT_EQ(board.pieces.get(BISHOP)->at(BLACK), (1ULL << c6 | 1ULL << e7));
 }
 
 TEST(BoardToFen, StartingPosition) {

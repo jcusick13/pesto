@@ -2,8 +2,10 @@
 #define _TYPES_H_
 
 #include <cstdint>
+#include <memory>
 
 typedef uint64_t U64;
+typedef std::vector<U64> bb_vec;
 
 enum Color: int {
   WHITE, BLACK

@@ -12,7 +12,7 @@ bool isDigit(const std::string s);
 
 std::string dumpCastlingRightsToFen(CastleRights white, CastleRights black);
 std::string dumpEnPassantTargetToFen(Square square);
-std::string dumpPiecesToFen(Pieces pieces);
+std::string dumpPiecesToFen(Pieces& pieces);
 
 std::tuple<CastleRights, CastleRights> parseFenCastlingRights(std::string fen);
 Square parseFenEnPassantTarget(std::string fen);

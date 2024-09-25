@@ -22,6 +22,7 @@ target_include_directories(
 add_library(
     move 
     move.cpp
+    collections.cpp
     piece.cpp
 )
 target_include_directories(

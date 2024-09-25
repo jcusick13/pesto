@@ -1,6 +1,7 @@
 #ifndef _COLLECTIONS_H_
 #define _COLLECTIONS_H_
 
+#include <memory>
 #include <vector>
 #include "types.h"
 
@@ -21,12 +22,15 @@ class Pieces {
 
     void initStartingPosition();
 
-    std::vector<U64> pawns; 
-    std::vector<U64> knights;
-    std::vector<U64> bishops;
-    std::vector<U64> rooks;
-    std::vector<U64> queens;
-    std::vector<U64> kings;
+    std::vector<U64>* get(PieceType piece_type);
+
+  private:
+    std::unique_ptr<std::vector<U64>> _pawns;
+    std::unique_ptr<std::vector<U64>> _knights;
+    std::unique_ptr<std::vector<U64>> _bishops;
+    std::unique_ptr<std::vector<U64>> _rooks;
+    std::unique_ptr<std::vector<U64>> _queens;
+    std::unique_ptr<std::vector<U64>> _kings;
 };
 
 #endif  // _COLLECTIONS_H_

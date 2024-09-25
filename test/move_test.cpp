@@ -3,6 +3,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "exceptions.h"
 #include "move.h"
 
 
@@ -97,3 +98,95 @@ TEST(AddPieceTypeMovesTest, SingleRookInCorner)
   );
 }
 
+
+TEST(ApplyMoveTest, UnobstructedMove)
+{
+  Pieces pieces;
+  pieces.initStartingPosition();
+  Move move{d2, d4};
+
+  applyMove(&pieces, move, WHITE);
+  EXPECT_EQ(pieces.get(PAWN)->at(WHITE) & 1ULL << d2, 0ULL);
+  EXPECT_EQ(pieces.get(PAWN)->at(WHITE) & 1ULL << d4, 1ULL << d4);
+}
+
+TEST(ApplyMoveTest, CapturingMove)
+{
+  Pieces pieces;
+  pieces.get(PAWN)->at(WHITE) = (1ULL << d5);
+  pieces.get(KNIGHT)->at(BLACK) = (1ULL << c6);
+  Move move{d5, c6};
+
+  applyMove(&pieces, move, WHITE);
+  EXPECT_EQ(pieces.get(PAWN)->at(WHITE), 1ULL << c6);
+  EXPECT_EQ(pieces.get(KNIGHT)->at(BLACK), 0ULL);
+  EXPECT_EQ(move.captured, KNIGHT);
+}
+
+TEST(ApplyMoveTest, PromotionMove)
+{
+  Pieces pieces;
+  pieces.get(PAWN)->at(BLACK) = (1ULL << b2);
+  Move move{b2, b1, QUEEN};
+
+  applyMove(&pieces, move, BLACK);
+  EXPECT_EQ(pieces.get(PAWN)->at(BLACK), 0ULL);
+  EXPECT_EQ(pieces.get(QUEEN)->at(BLACK), 1ULL << b1);
+}
+
+TEST(ApplyMoveTest, NonPawnMove)
+{
+  Pieces pieces;
+  pieces.get(KING)->at(WHITE) = 1ULL << c6;
+  Move move{c6, b6};
+
+  applyMove(&pieces, move, WHITE);
+  EXPECT_EQ(pieces.get(KING)->at(WHITE), 1ULL << b6);
+}
+
+TEST(ApplyMoveTest, NoPieceExistsToMove)
+{
+  Pieces pieces;
+  Move move{d2, d4};
+  EXPECT_THROW(applyMove(&pieces, move, WHITE), InvalidPieceException);
+}
+
+
+TEST(RevertMoveTest, UnobstructedMove)
+{
+  Pieces pieces;
+  pieces.get(BISHOP)->at(BLACK) = 1ULL << f6;
+  Move move{a1, f6};
+
+  revertMove(&pieces, move, BLACK);
+  EXPECT_EQ(pieces.get(BISHOP)->at(BLACK), 1ULL << a1);
+}
+
+TEST(RevertMoveTest, CapturingMove)
+{
+  Pieces pieces;
+  pieces.get(ROOK)->at(WHITE) = 1ULL << b6;
+  Move move(b1, b6, NULL_PIECE, QUEEN);
+
+  revertMove(&pieces, move, WHITE);
+  EXPECT_EQ(pieces.get(ROOK)->at(WHITE), 1ULL << b1);
+  EXPECT_EQ(pieces.get(QUEEN)->at(BLACK), 1ULL << b6);
+}
+
+TEST(RevertMoveTest, PromotionMove)
+{
+  Pieces pieces;
+  pieces.get(KNIGHT)->at(BLACK) = 1ULL << e1;
+  Move move{e2, e1, KNIGHT};
+
+  revertMove(&pieces, move, BLACK);
+  EXPECT_EQ(pieces.get(KNIGHT)->at(BLACK), 0ULL);
+  EXPECT_EQ(pieces.get(PAWN)->at(BLACK), 1ULL << e2);
+}
+
+TEST(RevertMoveTest, NoPieceExistsToMove)
+{
+  Pieces pieces;
+  Move move{d2, d4};
+  EXPECT_THROW(revertMove(&pieces, move, WHITE), InvalidPieceException);
+}

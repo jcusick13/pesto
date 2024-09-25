@@ -63,7 +63,7 @@ std::string dumpEnPassantTargetToFen(Square square){
 }
 
 
-std::string dumpPiecesToFen(Pieces pieces){
+std::string dumpPiecesToFen(Pieces& pieces){
   std::string board_str;
 
   for (int rank_idx = 7; rank_idx >= 0; rank_idx--) {
@@ -76,23 +76,23 @@ std::string dumpPiecesToFen(Pieces pieces){
 
       while (true) {
         U64 square_bb = 1ULL << square_idx;
-        if (pieces.pawns[WHITE] & square_bb) { symbol = "P"; break; }
-        if (pieces.pawns[BLACK] & square_bb) { symbol = "p"; break; }
+        if (pieces.get(PAWN)->at(WHITE) & square_bb) { symbol = "P"; break; }
+        if (pieces.get(PAWN)->at(BLACK) & square_bb) { symbol = "p"; break; }
 
-        if (pieces.knights[WHITE] & square_bb) { symbol = "N"; break; }
-        if (pieces.knights[BLACK] & square_bb) { symbol = "n"; break; }
+        if (pieces.get(KNIGHT)->at(WHITE) & square_bb) { symbol = "N"; break; }
+        if (pieces.get(KNIGHT)->at(BLACK) & square_bb) { symbol = "n"; break; }
 
-        if (pieces.bishops[WHITE] & square_bb) { symbol = "B"; break; }
-        if (pieces.bishops[BLACK] & square_bb) { symbol = "b"; break; }
+        if (pieces.get(BISHOP)->at(WHITE) & square_bb) { symbol = "B"; break; }
+        if (pieces.get(BISHOP)->at(BLACK) & square_bb) { symbol = "b"; break; }
 
-        if (pieces.rooks[WHITE] & square_bb) { symbol = "R"; break; }
-        if (pieces.rooks[BLACK] & square_bb) { symbol = "r"; break; }
+        if (pieces.get(ROOK)->at(WHITE) & square_bb) { symbol = "R"; break; }
+        if (pieces.get(ROOK)->at(BLACK) & square_bb) { symbol = "r"; break; }
 
-        if (pieces.queens[WHITE] & square_bb) { symbol = "Q"; break; }
-        if (pieces.queens[BLACK] & square_bb) { symbol = "q"; break; }
+        if (pieces.get(QUEEN)->at(WHITE) & square_bb) { symbol = "Q"; break; }
+        if (pieces.get(QUEEN)->at(BLACK) & square_bb) { symbol = "q"; break; }
 
-        if (pieces.kings[WHITE] & square_bb) { symbol = "K"; break; }
-        if (pieces.kings[BLACK] & square_bb) { symbol = "k"; break; }
+        if (pieces.get(KING)->at(WHITE) & square_bb) { symbol = "K"; break; }
+        if (pieces.get(KING)->at(BLACK) & square_bb) { symbol = "k"; break; }
 
         break;
       }
@@ -163,18 +163,18 @@ Pieces parseFenPieces(std::string fen) {
   Pieces pieces;
 
   std::map<char, U64*> piece_map = {
-    {'P', &pieces.pawns[WHITE]},
-    {'N', &pieces.knights[WHITE]},
-    {'B', &pieces.bishops[WHITE]},
-    {'R', &pieces.rooks[WHITE]},
-    {'Q', &pieces.queens[WHITE]},
-    {'K', &pieces.kings[WHITE]},
-    {'p', &pieces.pawns[BLACK]},
-    {'n', &pieces.knights[BLACK]},
-    {'b', &pieces.bishops[BLACK]},
-    {'r', &pieces.rooks[BLACK]},
-    {'q', &pieces.queens[BLACK]},
-    {'k', &pieces.kings[BLACK]}
+    {'P', &pieces.get(PAWN)->at(WHITE)},
+    {'N', &pieces.get(KNIGHT)->at(WHITE)},
+    {'B', &pieces.get(BISHOP)->at(WHITE)},
+    {'R', &pieces.get(ROOK)->at(WHITE)},
+    {'Q', &pieces.get(QUEEN)->at(WHITE)},
+    {'K', &pieces.get(KING)->at(WHITE)},
+    {'p', &pieces.get(PAWN)->at(BLACK)},
+    {'n', &pieces.get(KNIGHT)->at(BLACK)},
+    {'b', &pieces.get(BISHOP)->at(BLACK)},
+    {'r', &pieces.get(ROOK)->at(BLACK)},
+    {'q', &pieces.get(QUEEN)->at(BLACK)},
+    {'k', &pieces.get(KING)->at(BLACK)}
   };
 
   int rank_idx = 0;
