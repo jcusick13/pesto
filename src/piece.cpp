@@ -1,5 +1,7 @@
 #include <algorithm>
 #include <bit>
+#include <functional>
+#include <iostream>
 
 #include "exceptions.h"
 #include "piece.h"
@@ -242,7 +244,8 @@ U64 getVertHorizAttacks(Square square, U64 &occupied)
 */
 
 U64 getLonePawnAttacks(Square square, U64 &occupied, U64 &same_color,
-                       Color color, bool &promotion, Square en_passant){
+                       Color color, bool &promotion, Square en_passant,
+                       bool attack_empty_squares){
     
     U64 pawn_bb = 1ULL << square;
 
@@ -274,10 +277,12 @@ U64 getLonePawnAttacks(Square square, U64 &occupied, U64 &same_color,
       capture_diag = pawn_bb >> 7 | pawn_bb >> 9;
       capture_en_passant = pawn_bb >> 7 | pawn_bb >> 9;
     }
-    if (!(capture_diag && occupied)) {
-       capture_diag = 0ULL; 
-    } else {
-      capture_diag &= occupied;
+    if (!attack_empty_squares) {
+      if (!(capture_diag && occupied)) {
+        capture_diag = 0ULL;
+      } else {
+        capture_diag &= occupied;
+      }
     }
     capture_en_passant &= (1ULL << en_passant);
 
@@ -356,3 +361,55 @@ U64 getLoneKingAttacks(Square square, U64 &occupied, U64 &same_color)
   return attacks & ~same_color;
 }
 
+U64 getPawnAttacks(U64 pawn_bb, U64 &occupied, U64 &same_color,
+                   Color color, bool &promotion, bool attack_empty_squares) {
+  U64 attacks = 0ULL;
+  while (true) {
+    try {
+      Square from_sq = popLeastSigBit(pawn_bb);
+      attacks |= getLonePawnAttacks(from_sq, occupied, same_color, color,
+                                    promotion, nullsq, attack_empty_squares);
+    } catch(EmptyBitboardException) { break; }
+  }
+  return attacks;
+}
+
+U64 getPieceAttacks(PieceType piece_type, U64 piece_bb, U64 &occupied,
+                    U64 &same_color) {
+
+  std::function<U64(Square, U64&, U64&)> getAttacks;
+  switch(piece_type) {
+    case KNIGHT:
+      getAttacks = getLoneKnightAttacks;
+      break;
+
+    case BISHOP:
+      getAttacks = getLoneBishopAttacks;
+      break;
+
+    case ROOK:
+      getAttacks = getLoneRookAttacks;
+      break;
+
+    case QUEEN:
+      getAttacks = getLoneQueenAttacks;
+      break;
+
+    case KING:
+      getAttacks = getLoneKingAttacks;
+      break;
+
+    default:
+      throw InvalidPieceException();
+  }
+
+  U64 attacks = 0ULL;
+  while (true) {
+    try {
+      Square from_sq = popLeastSigBit(piece_bb);
+      attacks |= getAttacks(from_sq, occupied, same_color);
+    } catch(EmptyBitboardException) { break; }
+  }
+
+  return attacks;
+}

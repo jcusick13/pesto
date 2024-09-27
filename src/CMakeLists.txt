@@ -20,6 +20,17 @@ target_include_directories(
 )
 
 add_library(
+    legal
+    legal.cpp
+    collections.cpp
+    piece.cpp
+)
+target_include_directories(
+    legal PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_library(
     move 
     move.cpp
     collections.cpp

@@ -51,13 +51,18 @@ U64 getVertHorizAttacks(Square square, U64 &occupied);
   Attack map generation
 */
 U64 getLonePawnAttacks(Square square, U64 &occupied, U64 &same_color,
-                       Color color, bool &promotion, Square en_passant = nullsq);
+                       Color color, bool &promotion, Square en_passant = nullsq,
+                       bool attack_empty_squares = false);
 U64 getLoneKnightAttacks(Square square, U64 &occupied, U64 &same_color);
 U64 getLoneBishopAttacks(Square square, U64 &occupied, U64 &same_color);
 U64 getLoneRookAttacks  (Square square, U64 &occupied, U64 &same_color);
 U64 getLoneQueenAttacks (Square square, U64 &occupied, U64 &same_color);
 U64 getLoneKingAttacks  (Square square, U64 &occupied, U64 &same_color);
 
+U64 getPawnAttacks(U64 pawn_bb, U64 &occupied, U64 &same_color,
+                   Color color, bool &promotion, bool attack_empty_squares);
+U64 getPieceAttacks(PieceType piece_type, U64 piece_bb, U64 &occupied,
+                    U64 &same_color);
 
 #endif  // _PIECE_H_
 

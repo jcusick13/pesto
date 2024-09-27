@@ -23,6 +23,8 @@ class Pieces {
     void initStartingPosition();
 
     std::vector<U64>* get(PieceType piece_type);
+    U64 getColor(Color color);
+    U64 occupied();
 
   private:
     std::unique_ptr<std::vector<U64>> _pawns;

@@ -101,3 +101,24 @@ bb_vec* Pieces::get(PieceType piece_type) {
   }
 }
 
+U64 Pieces::getColor(Color color) {
+  U64 bb = 0ULL;
+  return (
+    bb | _pawns->at(color) | _knights->at(color) |
+    _bishops->at(color) | _rooks->at(color) |
+    _queens->at(color) | _kings->at(color)
+  );
+}
+
+U64 Pieces::occupied() {
+  U64 bb = 0ULL;
+  return (
+    bb | _pawns->at(WHITE) | _pawns->at(BLACK) |
+    _knights->at(WHITE) | _knights->at(BLACK) |
+    _bishops->at(WHITE) | _bishops->at(BLACK) |
+    _rooks->at(WHITE) | _rooks->at(BLACK) |
+    _queens->at(WHITE) | _queens->at(BLACK) |
+    _kings->at(WHITE) | _kings->at(BLACK)
+  ) ;
+}
+
