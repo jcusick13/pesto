@@ -13,6 +13,8 @@ struct Move{
   Square to;
   PieceType promotion;
   PieceType captured;
+  // Location of the piece that was _captured_,
+  // not where the capturing piece moved to
   Square ep_capture;
 
   Move(Square from, Square to) : from(from), to(to) { 

@@ -9,6 +9,8 @@
 
 Square popLeastSigBit(U64 &piece_bb);
 Square popMostSigBit (U64 &piece_bb);
+Square getLeastSigBit(U64 piece_bb);
+Square getMostSigBit (U64 piece_bb);
 
 /* 
   Single square movements

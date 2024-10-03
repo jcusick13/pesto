@@ -23,6 +23,7 @@ add_library(
     legal
     legal.cpp
     collections.cpp
+    move.cpp
     piece.cpp
 )
 target_include_directories(

@@ -169,6 +169,17 @@ TEST(ApplyMoveTest, NoPieceExistsToMove)
   EXPECT_THROW(applyMove(&pieces, move, WHITE), InvalidPieceException);
 }
 
+TEST(ApplyMoveTest, EnPassantCapture)
+{
+  Pieces pieces;
+  pieces.get(PAWN)->at(BLACK) = 1ULL << d4;
+  pieces.get(PAWN)->at(WHITE) = 1ULL << c4;
+  Move move{d4, c3, NULL_PIECE, PAWN, c4};
+
+  applyMove(&pieces, move, BLACK);
+  EXPECT_EQ(pieces.get(PAWN)->at(BLACK), 1ULL << c3);
+  EXPECT_EQ(pieces.get(PAWN)->at(WHITE), 0ULL);
+}
 
 TEST(RevertMoveTest, UnobstructedMove)
 {
@@ -207,4 +218,15 @@ TEST(RevertMoveTest, NoPieceExistsToMove)
   Pieces pieces;
   Move move{d2, d4};
   EXPECT_THROW(revertMove(&pieces, move, WHITE), InvalidPieceException);
+}
+
+TEST(RevertMoveTest, EnPassantCapture)
+{
+  Pieces pieces;
+  pieces.get(PAWN)->at(BLACK) = 1ULL << c3;
+  Move move{d4, c3, NULL_PIECE, PAWN, c4};
+
+  revertMove(&pieces, move, BLACK);
+  EXPECT_EQ(pieces.get(PAWN)->at(BLACK), 1ULL << d4);
+  EXPECT_EQ(pieces.get(PAWN)->at(WHITE), 1ULL << c4);
 }

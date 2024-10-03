@@ -37,6 +37,37 @@ Square popMostSigBit(U64 &piece_bb)
   return Square(last_non_zero_idx);
 }
 
+/*
+  Find the least significant non-zero bit
+  and return the `Square` it represents.
+*/
+Square getLeastSigBit(U64 piece_bb)
+{
+  int first_non_zero_idx = std::countr_zero(piece_bb);
+  if (first_non_zero_idx == 64) {
+    throw EmptyBitboardException();
+  }
+
+  piece_bb &= ~(1ULL << first_non_zero_idx);
+  return Square(first_non_zero_idx);
+};
+
+/*
+  Find the most significant non-zero bit
+  and return the `Square` it represents.
+*/
+Square getMostSigBit(U64 piece_bb)
+{
+  int last_non_zero_idx = 63 - std::countl_zero(piece_bb);
+  if (last_non_zero_idx < 0) {
+    throw EmptyBitboardException();
+  }
+
+  piece_bb &= ~(1ULL << last_non_zero_idx);
+  return Square(last_non_zero_idx);
+}
+
+
 
 /*
   Single square movements

@@ -135,6 +135,10 @@ void applyMove(Pieces *pieces, Move &move, Color to_move) {
     move.captured = opp_piece_type;
   }
 
+  if (move.ep_capture != nullsq) {
+    pieces->get(PAWN)->at(other) &= ~(1ULL << move.ep_capture);
+  }
+
   // Flip bit of bitboard for the ending square
   if (move.promotion != NULL_PIECE) {
     pieces->get(move.promotion)->at(to_move) |= to_bb;
@@ -168,7 +172,11 @@ void revertMove(Pieces *pieces, Move &move, Color moved) {
 
   // Reset captured piece
   if (move.captured != NULL_PIECE) {
-    pieces->get(move.captured)->at(other) |= to_bb;
+    if (move.ep_capture != nullsq) {
+      pieces->get(PAWN)->at(other) |= (1ULL << move.ep_capture);
+    } else {
+      pieces->get(move.captured)->at(other) |= to_bb;
+    }
   }
 
   // Add piece back to it's original square

@@ -1,3 +1,4 @@
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include "legal.h"
@@ -56,3 +57,76 @@ TEST(SquareIsAttackedTest, AttackerIsBlockedByPiece)
   bool attacked = squareIsAttacked(&pieces, d8, WHITE);
   EXPECT_FALSE(attacked);
 }
+
+
+TEST(GenerateLegalMovesTest, NoLegalMoves)
+{
+  // King is trapped in the corner
+  Pieces pieces;
+  pieces.get(KING)->at(WHITE) = 1ULL << a1;
+  pieces.get(ROOK)->at(BLACK) = 1ULL << h2 | 1ULL << b8;
+
+  std::vector<Move> moves = generateLegalMoves(&pieces, WHITE);
+  EXPECT_TRUE(moves.size() == 0);
+}
+
+
+TEST(GenerateLegalMovesTest, NoLegalMovesPieceIsPinned)
+{
+  // King is stalemated and lone piece in front of it
+  // is pinned
+  Pieces pieces;
+  pieces.get(KING)->at(BLACK) = 1ULL << h8;
+  pieces.get(KNIGHT)->at(BLACK) = 1ULL << h7;
+  pieces.get(ROOK)->at(WHITE) = 1ULL << h1 | 1ULL << g1;
+
+  std::vector<Move> moves = generateLegalMoves(&pieces, BLACK);
+  EXPECT_TRUE(moves.size() == 0);
+}
+
+TEST(GenerateLegalMovesTest, SingleLegalNonKingMove)
+{
+  // King is trapped in the corner, though
+  // one pawn is free to move
+  Pieces pieces;
+  pieces.get(KING)->at(WHITE) = 1ULL << a1;
+  pieces.get(PAWN)->at(WHITE) = 1ULL << e4;
+  pieces.get(ROOK)->at(BLACK) = 1ULL << h2 | 1ULL << b8;
+
+  std::vector<Move> moves = generateLegalMoves(&pieces, WHITE);
+  EXPECT_THAT(moves, ::testing::ElementsAre(Move{e4, e5}));
+}
+
+TEST(GenerateLegalMovesTest, SingleLegalEnPassantMove)
+{
+  // King is trapped in the corner and can only
+  // escape with an en passant capture
+  Pieces pieces;
+  pieces.get(KING)->at(WHITE) = 1ULL << b4;
+  pieces.get(PAWN)->at(WHITE) = 1ULL << b5;
+  pieces.get(ROOK)->at(BLACK) = 1ULL << a1 | 1ULL << c1;
+  pieces.get(PAWN)->at(BLACK) = 1ULL << c5;
+  pieces.get(QUEEN)->at(BLACK) = 1ULL << h3;
+
+  std::vector<Move> moves = generateLegalMoves(&pieces, WHITE, c6);
+  EXPECT_THAT(moves, ::testing::ElementsAre(Move(b5, c6, NULL_PIECE, PAWN, c5)));
+}
+
+TEST(GenerateLegalMovesTest, MultipleLegalMoves)
+{
+  Pieces pieces;
+  pieces.get(KING)->at(WHITE) = 1ULL << a8;
+  pieces.get(PAWN)->at(WHITE) = 1ULL << b6;
+  pieces.get(BISHOP)->at(BLACK) = 1ULL << d6;
+
+  std::vector<Move> moves = generateLegalMoves(&pieces, WHITE);
+  EXPECT_THAT(moves,
+              ::testing::ElementsAre(Move{b6, b7},
+                                     Move{a8, a7},
+                                     Move{a8, b7}));
+}
+
+// TEST(GenerateLegalMovesTest, MultipleLegalMovesIncludesCastling)
+// {
+//   EXPECT_EQ(0, 1);
+// }

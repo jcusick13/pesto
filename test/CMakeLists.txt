@@ -35,6 +35,7 @@ target_link_libraries(
   legal_test
   legal
   GTest::gtest_main
+  GTest::gmock_main
 )
 
 add_executable(
