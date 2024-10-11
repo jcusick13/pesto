@@ -24,13 +24,21 @@ void addPawnMoves(std::vector<Move> *moves, U64 pawns, U64 &occupied,
         try {
           Square to_sq = popLeastSigBit(attacks);
 
+          PieceType captured = NULL_PIECE;
+          Square ep_capture = nullsq;
+          if (to_sq == en_passant) {
+            captured = PAWN;
+            if (color == WHITE) { ep_capture = Square(to_sq - 8); }
+            else { ep_capture = Square(to_sq + 8); }
+          }
+
           if (promotion) {
             for (PieceType piece : promotionPieces) {
-              Move move(from_sq, to_sq, piece);
+              Move move(from_sq, to_sq, piece, captured, ep_capture);
               moves->push_back(move);
             }
           } else {
-            Move move(from_sq, to_sq);
+            Move move(from_sq, to_sq, NULL_PIECE, captured, ep_capture);
             moves->push_back(move);
           }
 

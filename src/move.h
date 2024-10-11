@@ -13,20 +13,38 @@ struct Move{
   Square to;
   PieceType promotion;
   PieceType captured;
+  Square ep_capture;
 
   Move(Square from, Square to) : from(from), to(to) { 
     promotion = NULL_PIECE;
     captured = NULL_PIECE;
+    ep_capture = nullsq;
   };
 
   Move(Square from, Square to, PieceType promotion) : from(from), to(to),
-    promotion(promotion) { captured = NULL_PIECE; };
+    promotion(promotion) {
+      captured = NULL_PIECE;
+      ep_capture = nullsq;
+  };
 
   Move(Square from, Square to, PieceType promotion, PieceType captured)
-    : from(from), to(to), promotion(promotion), captured(captured) {};
+    : from(from), to(to), promotion(promotion), captured(captured) {
+      ep_capture = nullsq;
+  };
+
+  Move(Square from, Square to, PieceType promotion, PieceType captured,
+       Square ep_capture) :
+    from(from), to(to), promotion(promotion), captured(captured),
+    ep_capture(ep_capture) {};
 
   bool operator==(const Move &other) const {
-      return from == other.from && to == other.to;
+      return (
+        from == other.from
+        && to == other.to
+        && promotion == other.promotion
+        && captured == other.captured
+        && ep_capture == other.ep_capture
+      );
   }
 };
 

@@ -55,6 +55,24 @@ TEST(AddPawnMovesTest, SinglePawnPromotes)
   );
 }
 
+TEST(AddPawnMovesTest, EnPassantCapture)
+{
+  std::vector<Move> obs_moves;
+  U64 pawns = 1ULL << b5;
+  U64 occupied = 1ULL << b5 | 1ULL << c5;
+  Color color = WHITE;
+  U64 same_color = 1ULL << b5;
+  Square ep = c6;
+
+  addPawnMoves(&obs_moves, pawns, occupied, color, same_color, ep);
+  ASSERT_THAT(
+    obs_moves,
+    ::testing::ElementsAre(
+      Move{b5, b6}, Move(b5, c6, NULL_PIECE, PAWN, c5)
+    )
+  );
+}
+
 
 TEST(AddPieceTypeMovesTest, SingleBishop)
 {
