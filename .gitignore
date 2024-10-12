@@ -9,3 +9,5 @@
 
 *.cache/
 
+# Notes about where I'd left off, what remains to be done, etc
+commit-notes.txt
